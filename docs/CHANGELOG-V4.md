@@ -36,3 +36,11 @@
 - Xuất file nhập Wayground (Quizizz) và Kahoot (.xlsx theo mẫu nhập của từng nền tảng), chép sẵn cho Quizlet (Tab giữa câu và đáp án).
 - Dán link phòng bất kỳ → mã QR lớn, tải ảnh PNG. Hướng dẫn từng bước cho Wayground, Kahoot, Quizlet, có nút đọc to.
 - Phòng quiz trực tiếp trên điện thoại học sinh sẽ làm khi nối Supabase Realtime.
+
+## Giai đoạn 4 — Hộp Thư và Kho Dữ Liệu (20/10/2026)
+
+- **Hộp Thư Công Việc** (thay Bộ lọc Zalo): dán tin Zalo/email hoặc dùng hộp thư mẫu → `/api/mail/classify` gắn nhãn BGH khẩn / Chủ nhiệm / Bộ môn / Phụ huynh / Hành chính / Không liên quan, tìm lớp, tóm tắt, hạn chót, việc cần làm. Chưa có Gemini thì dùng bộ lọc từ khóa (có test). Bản tin đầu trang, lọc theo nhãn, tìm không dấu, đánh dấu đã xong, đổi nhãn, nhờ viết nháp trả lời (`/api/mail/reply`, không tự gửi). Hướng dẫn bật Gmail ở `docs/GMAIL.md`.
+- **Kho Dữ Liệu**: tải tài liệu theo 5 loại (sách, văn bản chỉ đạo, kế hoạch, chỉ tiêu, khác). Có Gemini thì đưa vào Gemini File Search riêng từng giáo viên (`/api/kho/upload`) và hỏi đáp có ghi nguồn (`/api/kho/ask`); chưa có thì đọc chữ Word/TXT ngay trên máy và tìm theo từ khóa.
+- Soạn Bài có ô "Dựa vào Kho Dữ Liệu": gửi kèm đoạn tài liệu liên quan và lấy thêm từ File Search.
+- Học sinh: nhập danh sách lớp từ Excel/CSV (có file mẫu), sửa đặc điểm từng em; Soạn Bài và Hôm Nay dùng danh sách mới.
+- Sang NotebookLM: chọn giáo án và tài liệu → tải "Gói NotebookLM" (kèm câu lệnh mẫu, không chứa tên/sức khỏe/tâm lý học sinh) + hướng dẫn 5 bước có đọc to. NotebookLM chưa có API công khai cho tài khoản thường nên chưa tạo sổ tự động.

@@ -14,6 +14,7 @@ import { Button, Card, Chip } from "@/components/ui";
 import { newId, suggestTiers } from "@/lib/lesson/build";
 import { classContext } from "@/lib/lesson/prompt";
 import { useLessons, useQuizUrl } from "@/lib/lesson/store";
+import { docsForLesson, useDocs, useStoreName } from "@/lib/kho/store";
 import { THEMES } from "@/lib/lesson/theme";
 import type { LessonPlan, LessonPlanContent, LessonRequest, Slide } from "@/lib/lesson/types";
 import { honorificLower } from "@/lib/persona/honorific";
@@ -75,6 +76,8 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
   const { profile, students, notes } = useApp();
   const h = honorificLower(profile);
   const [lessons, setLessons] = useLessons(profile.id);
+  const [docs] = useDocs(profile.id);
+  const [storeName] = useStoreName(profile.id);
   const [view, setView] = useState<"list" | "new" | "busy" | string>(initialLessonId ?? "list");
   const [tab, setTab] = useState<Tab>("slide");
   const [slideIdx, setSlideIdx] = useState(0);
@@ -88,7 +91,7 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
   const save = (next: LessonPlan) =>
     setLessons((all) => [{ ...next, updatedAt: new Date().toISOString() }, ...all.filter((l) => l.id !== next.id)]);
 
-  async function generate(r: LessonRequest, redo?: { base: LessonPlan; more: string }) {
+  async function generate(r: LessonRequest, redo?: { base: LessonPlan; more: string }, useKho = false) {
     const roster = students.filter((s) => s.classId === r.classId);
     const classNotes = notes.filter((n) => n.classId === r.classId);
     const tiers = redo?.base.tiers ?? suggestTiers(roster, classNotes);
@@ -107,6 +110,7 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
           context: classContext(roster, classNotes, tiers),
           redo: redo ? { previousTitle: redo.base.title, more: redo.more } : undefined,
           avoidImages: usedImages.slice(-30),
+          knowledge: useKho ? { docs: docsForLesson(docs, r.topic), storeName } : undefined,
         }),
       });
       const data = (await res.json()) as { mode: LessonPlan["mode"]; plan?: LessonPlanContent; warning?: string; error?: string };
@@ -149,7 +153,7 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
           </Button>
         )}
         <h1 className="text-2xl font-bold">Soạn Bài</h1>
-        <LessonForm busy={false} onSubmit={(r) => generate(r)} />
+        <LessonForm busy={false} docCount={docs.length} onSubmit={(r, o) => generate(r, undefined, o.useKho)} />
       </div>
     );
   }

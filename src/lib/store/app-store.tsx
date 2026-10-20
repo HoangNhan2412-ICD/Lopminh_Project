@@ -4,6 +4,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { DEMO_CLASSES, DEMO_PROFILES, DEMO_STUDENTS, DEMO_TIMETABLES, demoNotes } from "@/lib/demo/data";
 import type { ClassInfo, LoadLevel, Student, StudentNote, TeacherProfile, Timetable } from "@/lib/types";
 import { vnNow } from "@/lib/time";
+import { useLocal } from "@/lib/local-store";
+
+const NO_ROSTERS: Record<string, Student[]> = {};
 
 /*
   Kho dữ liệu phía trình duyệt cho CHẾ ĐỘ DEMO.
@@ -32,6 +35,8 @@ interface AppState {
   setLoad: (l: LoadLevel | null) => void;
   setFontScale: (s: FontScale) => void;
   resetDemo: () => void;
+  /** Thay danh sách học sinh của một lớp (nhập từ Excel ở Kho Dữ Liệu). */
+  setRoster: (classId: string, roster: Student[]) => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
@@ -89,6 +94,12 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const profile = profiles.find((p) => p.id === currentId) ?? profiles[0];
+  // Danh sách lớp do giáo viên nhập (ghi đè danh sách mẫu của đúng lớp đó)
+  const [rosters, setRosters] = useLocal<Record<string, Student[]>>(`lm:rosters:${currentId}`, NO_ROSTERS);
+  const setRoster = useCallback(
+    (classId: string, roster: Student[]) => setRosters((all) => ({ ...all, [classId]: roster })),
+    [setRosters],
+  );
 
   // Áp cỡ chữ và màu cá nhân lên thẻ <html>.
   useEffect(() => {
@@ -172,14 +183,13 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AppState>(() => {
     const classes = DEMO_CLASSES[profile.id] ?? [];
-    const classIds = new Set(classes.map((c) => c.id));
     return {
       ready,
       today,
       profiles,
       profile,
       classes,
-      students: DEMO_STUDENTS.filter((s) => classIds.has(s.classId)),
+      students: classes.flatMap((c) => rosters[c.id] ?? DEMO_STUDENTS.filter((s) => s.classId === c.id)),
       timetable: DEMO_TIMETABLES[profile.id] ?? {},
       notes,
       load,
@@ -191,8 +201,9 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       setLoad,
       setFontScale,
       resetDemo,
+      setRoster,
     };
-  }, [ready, today, profiles, profile, notes, load, fontScale, switchProfile, updateProfile, addNotes, removeNote, setLoad, setFontScale, resetDemo]);
+  }, [ready, today, profiles, profile, notes, load, fontScale, switchProfile, updateProfile, addNotes, removeNote, setLoad, setFontScale, resetDemo, rosters, setRoster]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

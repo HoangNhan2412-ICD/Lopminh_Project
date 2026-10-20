@@ -46,7 +46,7 @@ function Choice<T extends string>({
   );
 }
 
-export function LessonForm({ busy, onSubmit }: { busy: boolean; onSubmit: (r: LessonRequest) => void }) {
+export function LessonForm({ busy, docCount, onSubmit }: { busy: boolean; docCount: number; onSubmit: (r: LessonRequest, opts: { useKho: boolean }) => void }) {
   const { profile, classes } = useApp();
   const h = honorificLower(profile);
   const subjectClasses = classes.filter((c) => c.subject === profile.subject);
@@ -59,6 +59,7 @@ export function LessonForm({ busy, onSubmit }: { busy: boolean; onSubmit: (r: Le
   const [energy, setEnergy] = useState<LessonRequest["energy"]>("soi-noi");
   const [focus, setFocus] = useState<LessonRequest["focus"]>("game");
   const [tone, setTone] = useState<LessonRequest["tone"]>("than-thien");
+  const [useKho, setUseKho] = useState(docCount > 0);
 
   const append = useCallback((t: string) => setWishes((p) => (p ? `${p} ${t}` : t)), []);
   const speech = useSpeechToText(append);
@@ -89,7 +90,7 @@ export function LessonForm({ busy, onSubmit }: { busy: boolean; onSubmit: (r: Le
             energy,
             focus,
             tone,
-          });
+          }, { useKho: useKho && docCount > 0 });
         }}
       >
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_10rem_8rem]">
@@ -186,7 +187,11 @@ export function LessonForm({ busy, onSubmit }: { busy: boolean; onSubmit: (r: Le
           ]}
         />
 
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <label className={cn("flex min-h-11 items-center gap-3", docCount === 0 && "text-ink-muted")}>
+            <input type="checkbox" className="size-5" checked={useKho && docCount > 0} disabled={docCount === 0} onChange={(e) => setUseKho(e.target.checked)} />
+            {docCount > 0 ? `Dựa vào Kho Dữ Liệu (${docCount} tài liệu)` : "Kho Dữ Liệu chưa có tài liệu"}
+          </label>
           <Button type="submit" disabled={busy || !topic.trim()}>
             <Wand2 className="size-5" aria-hidden /> Soạn bài
           </Button>
