@@ -1,0 +1,35 @@
+import {
+  BookOpen,
+  ChartColumn,
+  CircleHelp,
+  Clock,
+  Earth,
+  FlaskConical,
+  Heart,
+  Leaf,
+  Lightbulb,
+  PenLine,
+  Sigma,
+  Target,
+  Trophy,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import type { IconKey } from "@/lib/lesson/types";
+
+export const ICONS: Record<IconKey, LucideIcon> = {
+  sach: BookOpen,
+  "bong-den": Lightbulb,
+  nhom: Users,
+  "dong-ho": Clock,
+  "muc-tieu": Target,
+  "cau-hoi": CircleHelp,
+  "cong-thuc": Sigma,
+  "thi-nghiem": FlaskConical,
+  "trai-dat": Earth,
+  "bieu-do": ChartColumn,
+  but: PenLine,
+  cup: Trophy,
+  la: Leaf,
+  tim: Heart,
+};

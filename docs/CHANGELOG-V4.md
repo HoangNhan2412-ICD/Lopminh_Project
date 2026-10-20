@@ -17,3 +17,14 @@
 - `supabase/migrations/0001_khoi_tao.sql`: bảng profiles, classes, students, student_notes, timetable có RLS (chưa nối vào app).
 
 **Chưa làm** (theo thứ tự SPEC mục 14): nối Supabase + đăng nhập Google, job nền xuất file, Soạn Bài, Phòng Quiz, Kho Dữ Liệu, Hộp Thư, Song Ngữ, Kỹ Năng Số, tour hướng dẫn.
+
+## Giai đoạn 2 — Soạn Bài và xuất file (20/10/2026)
+
+- Giao diện: đầu trang Hôm Nay là một tấm bảng phấn (đồng hồ, lời Bé Bảng, dải tiết); bìa Hồ sơ ghi câu phong cách dạy; sửa lỗi tên bị bìa che; sửa được phong cách dạy ngay trên Hồ sơ.
+- **Soạn Bài**: nhập tên bài, lớp, số phút, mong muốn (gõ hoặc nói), 3 câu chẩn đoán → `/api/lesson/generate` (Gemini structured output theo schema zod, thử lại khi quá tải, có giáo án khung khi chưa có khóa) → làm sạch (tách slide dài, đủ bìa/dặn dò/mã QR).
+- Một bộ dàn trang duy nhất (`src/lib/lesson/layout.ts`, 13 kiểu slide) vẽ cả bản xem trước trên web lẫn file PowerPoint, nên file tải về giống hệt bản xem.
+- Sửa từng slide: sửa tay, đổi kiểu, kéo lên xuống, hoặc "Làm lại slide này" với yêu cầu thêm (`/api/lesson/slide`). "Soạn lại cả bộ" với yêu cầu thêm.
+- Phân hóa hai tầng: xếp học sinh theo ghi chú thật, bấm để chuyển tầng.
+- Xuất PowerPoint 16:9 (biểu tượng vẽ thành ảnh nét, mã QR từ link quiz, lời giảng + câu lệnh tạo hình trong ghi chú) và Word theo Phụ lục IV CV 5512 (bảng 4 bước, phân hóa theo tên, phiếu hai tầng, đáp án trắc nghiệm).
+- 3 theme slide: Bảng xanh, Giấy kem, Tươi sáng.
+- Test: mọi kiểu slide × mọi theme không tràn khổ; giáo án qua bước làm sạch đúng cấu trúc 5512.
