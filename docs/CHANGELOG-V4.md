@@ -44,3 +44,15 @@
 - Soạn Bài có ô "Dựa vào Kho Dữ Liệu": gửi kèm đoạn tài liệu liên quan và lấy thêm từ File Search.
 - Học sinh: nhập danh sách lớp từ Excel/CSV (có file mẫu), sửa đặc điểm từng em; Soạn Bài và Hôm Nay dùng danh sách mới.
 - Sang NotebookLM: chọn giáo án và tài liệu → tải "Gói NotebookLM" (kèm câu lệnh mẫu, không chứa tên/sức khỏe/tâm lý học sinh) + hướng dẫn 5 bước có đọc to. NotebookLM chưa có API công khai cho tài khoản thường nên chưa tạo sổ tự động.
+
+## Giai đoạn 5 — Góc Thầy Cô, tour, bản mẫu HTML (20/10/2026)
+
+- **Tâm Tình**: luật giọng nói mới (câu ngắn, có cảm xúc, nhắc đúng chi tiết, không văn mẫu, có ví dụ tốt/kém), sổ ghi nhớ cập nhật ngầm mỗi 4 lượt bằng model nhanh (`/api/chat/memory`), thầy cô xem và xóa từng dòng. Tin ngắn dùng mức suy nghĩ tối thiểu để chữ hiện nhanh hơn.
+- **Song Ngữ**: khẩu lệnh theo 5 tình huống, thuật ngữ theo môn, câu song ngữ lấy từ slide đã soạn; nghe mẫu, tập nói (so khớp từng chữ, chỉ khen và chỉ ra một chữ), chuỗi ngày học.
+- **Kỹ Năng Số**: 6 bài 2 phút (chiếu PowerPoint, quét QR, chèn video, chia sẻ Drive, Google Form, Zalo máy tính), gợi ý theo việc vừa làm, đọc to, đánh dấu đã làm được. Nội dung ở `src/content/`.
+- **Tour hướng dẫn** (driver.js): nút dấu hỏi trên mọi trang, tự mở tour tổng quan lần đầu, có "Đọc to" và "Để sau", danh xưng theo hồ sơ.
+- Bản mẫu HTML cho nhóm sửa: `design/01-lop-minh-hom-nay.html`, `design/06-ho-so.html`.
+- Sửa tràn ngang trên điện thoại ở mọi trang.
+- `docs/TIET-KIEM-TOKEN.md`: cách tiết kiệm token khi code và khi app gọi Gemini.
+
+**Còn thiếu**: Supabase thật + đăng nhập Google (dữ liệu đang ở trình duyệt), phòng quiz trên điện thoại học sinh, đọc Gmail tự động, ảnh chụp màn hình cho hướng dẫn, kiểm tra slide bằng ảnh (Gemini vision), dark mode. Số đường dây nóng hỗ trợ tâm lý cần kiểm tra lại trước khi phát hành.

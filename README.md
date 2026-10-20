@@ -23,6 +23,21 @@ cp .env.example .env.local
 npm run dev
 ```
 
+## Có gì trong bản V4
+
+| Trang | Làm được gì |
+|---|---|
+| Lớp Mình Hôm Nay | Tấm bảng: giờ, lời Bé Bảng, các tiết. Lớp chủ nhiệm/bộ môn. Ghi nhanh bằng gõ tay hoặc giọng nói, Bé Bảng tách thành ghi chú từng em. |
+| Hộp Thư Công Việc | Lọc tin Zalo/email: BGH khẩn, chủ nhiệm, bộ môn, phụ huynh, hành chính, rác. Bắt hạn chót, viết nháp trả lời. |
+| Kho Dữ Liệu | Tài liệu (Gemini File Search, hỏi đáp có nguồn), danh sách lớp từ Excel, gói sang NotebookLM. |
+| Soạn Bài | Giáo án 5512 + 12–14 slide có hình (13 kiểu), phân hóa hai tầng theo tên học sinh, sửa/làm lại từng slide, tải PowerPoint và Word. |
+| Phòng Quiz | Câu hỏi từ giáo án hoặc nội dung dán vào, chiếu lên lớp thi theo tổ, xuất Wayground/Kahoot/Quizlet, mã QR, hướng dẫn từng bước. |
+| Tâm Tình | Trò chuyện stream, có sổ ghi nhớ xem/xóa được. |
+| Song Ngữ, Kỹ Năng Số | Khẩu lệnh lớp học, thuật ngữ theo môn, tập nói; bài kỹ năng số 2 phút. |
+| Hồ sơ | Danh xưng Thầy/Cô, phong cách dạy, chỉ tiêu, tâm trạng, màu riêng. |
+
+Mọi trang có nút dấu hỏi để xem hướng dẫn từng bước (có đọc to).
+
 ## Lệnh
 
 ```bash
@@ -40,7 +55,12 @@ Thư mục `design/` có các file HTML mở thẳng bằng trình duyệt. Sử
 
 ```
 src/app/            các trang (mỗi thư mục là một đường dẫn) + api/
-src/components/     giao diện, chia theo trang (today/, sanctuary/, profile/, shell/)
+src/components/     giao diện, chia theo trang (today/, lesson/, quiz/, mail/, kho/, growth/, sanctuary/, profile/, shell/)
+src/lib/lesson/     mô hình giáo án, dàn trang slide (dùng chung cho xem trước và PowerPoint), xuất PPTX/DOCX
+src/lib/quiz/       xuất file Wayground/Kahoot/Quizlet
+src/lib/mail/       phân loại thư (Gemini + bộ lọc từ khóa)
+src/lib/kho/        kho tài liệu, nhập danh sách lớp
+src/content/        nội dung Song Ngữ, Kỹ Năng Số (sửa ở đây, không cần đụng giao diện)
 src/lib/persona/    xưng hô Thầy/Cô và lời chào của Bé Bảng
 src/lib/ai/         gọi Gemini (chỉ chạy ở server), prompt, tên model
 src/lib/demo/       dữ liệu mẫu

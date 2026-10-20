@@ -12,7 +12,11 @@ Lưu ý cho Claude Code: người đang làm việc với bạn là **lập trì
 
 ## Tình trạng code
 
-Code V3.5 nằm ở `legacy-v3/`, mới khôi phục được 36/45 file nên chưa build được (xem `legacy-v3/KHOI-PHUC.md`). Phân tích lỗi xưng hô ở `docs/PHAN-TICH-XUNG-HO.md`. Khi có đủ file, hỏi Nhân trước khi chọn hướng: nâng cấp tiếp trên code V3.5 hay dựng V4 mới và chỉ tham khảo code cũ.
+V4 được dựng mới hoàn toàn ở thư mục gốc (Next.js 16). Đã xong: khung 3 trụ cột, xưng hô, Hôm Nay, Soạn Bài + xuất file, Phòng Quiz, Hộp Thư, Kho Dữ Liệu, Tâm Tình, Song Ngữ, Kỹ Năng Số, tour. Xem `docs/CHANGELOG-V4.md` để biết chi tiết và phần còn thiếu (Supabase thật, Gmail OAuth, phòng quiz trên điện thoại học sinh).
+
+Dữ liệu ở chế độ demo lưu trong localStorage qua `src/lib/local-store.ts` (khóa luôn có profileId). Khi nối Supabase, thay phần đọc/ghi ở đó và ở `src/lib/store/app-store.tsx`, giữ nguyên giao diện hàm.
+
+Code V3.5 cũ ở `legacy-v3/` chỉ để tham khảo (thiếu 9 file, không build được).
 
 ## Stack
 
@@ -25,7 +29,7 @@ Code V3.5 nằm ở `legacy-v3/`, mới khôi phục được 36/45 file nên ch
 
 1. **Bí mật.** Không commit `.env*`, key, token. Chỉ commit `.env.example` với giá trị giả. Nếu thấy key thật trong code hoặc tài liệu, dừng lại và báo cho người dùng để thu hồi key.
 2. **Xưng hô.** Danh xưng "Thầy"/"Cô" lấy từ trường `gender` trong hồ sơ, qua đúng một hàm `getHonorific()` ở `lib/persona/honorific.ts`. Không chuỗi nào trong UI hay prompt được tự viết cứng "Thầy"/"Cô" kèm tên. Không bao giờ để model tự đoán giới tính từ tên. Đổi tài khoản/hồ sơ thì reset toàn bộ state chat và cache theo `profileId`.
-3. **Tiếng Việt.** Font Be Vietnam Pro (qua `next/font/google`). Chuẩn hóa mọi chuỗi về NFC (`str.normalize('NFC')`) ở cả input người dùng lẫn output của AI. Không dùng font serif.
+3. **Tiếng Việt.** Font Be Vietnam Pro tự host qua `@fontsource/be-vietnam-pro` (không cần mạng khi chạy). Chuẩn hóa mọi chuỗi về NFC (`str.normalize('NFC')`) ở cả input người dùng lẫn output của AI. Không dùng font serif.
 4. **Giao diện không lộn xộn.** Chỉ dùng token trong `app/globals.css` / `tailwind.config` (xem `docs/SPEC-V4.md` mục Design System). Không mã màu hex rải trong component. Mỗi thẻ (card) có tối đa một nút hành động chính. Cỡ chữ nền 18px, vùng bấm tối thiểu 44×44px, tương phản đạt WCAG AA.
 5. **Dữ liệu nhạy cảm.** Sức khỏe, tâm lý của giáo viên và học sinh: chỉ chủ tài khoản thấy, không đưa vào log, không gửi cho dịch vụ bên thứ ba ngoài Gemini, không tự nhắc lại khi người dùng không hỏi.
 6. **Việc lâu thì chạy nền.** Xuất file (PPTX, DOCX, quiz, mindmap) chạy như job có tiến độ (bảng `jobs` + Realtime hoặc polling), không bắt người dùng ngồi chờ một request 60 giây.
@@ -40,9 +44,16 @@ Code V3.5 nằm ở `legacy-v3/`, mới khôi phục được 36/45 file nên ch
 
 Thư mục `design/` chứa các file HTML tự đứng một mình (mở thẳng bằng trình duyệt, không cần `npm`). Dùng khi cần bạn trong nhóm sửa giao diện mà không chạy Next.js. Quy ước:
 - Mỗi màn hình một file: `design/01-lop-minh-hom-nay.html`, `design/02-soan-bai.html`…
-- Dùng Tailwind CDN + cùng bộ token màu/chữ với app (copy từ `design/_tokens.css`).
+- CSS thuần + `design/_tokens.css` (bản sao token của `src/app/globals.css`), không cần cài gì.
 - Dữ liệu mẫu viết thẳng trong file, có comment `<!-- SỬA Ở ĐÂY -->` chỉ chỗ nên chỉnh.
 - Khi bạn trong nhóm sửa xong HTML, Claude Code chuyển phần thay đổi sang component React tương ứng, không copy nguyên khối HTML vào app.
+
+## Mấy điều dễ sai
+
+- Mọi lời gọi Gemini lấy JSON dùng `generateJson()` ở `src/lib/ai/json.ts` (schema zod → JSON Schema, thử lại khi quá tải, ghi số token). Phần cố định của prompt đặt TRƯỚC để Gemini tự cache.
+- Slide: chỉ sửa dàn trang ở `src/lib/lesson/layout.ts`. Bản xem trước (`SlideCanvas`) và PowerPoint (`export-pptx.ts`) cùng vẽ từ đó. Có test kiểm tra không tràn khổ.
+- CSS dùng chung kiểu `.chalkboard` phải nằm trong `@layer components`, nếu không sẽ đè các lớp `fixed`, `absolute` của Tailwind.
+- Lưới nhiều cột phải có `grid-cols-1` cho điện thoại, nếu không nội dung dài làm tràn ngang.
 
 ## Lệnh thường dùng
 

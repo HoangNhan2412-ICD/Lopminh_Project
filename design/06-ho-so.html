@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lớp Mình — Hồ sơ thấu hiểu bản thân (bản mẫu)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="_tokens.css" />
+  <style>
+    /* Bản mẫu trang Hồ sơ. Sửa xong, nhờ Claude Code chuyển sang src/components/profile/ProfileView.tsx.
+       Đổi màu riêng: sửa --personal ở dòng dưới (5 màu cho phép: #1e3a2f, #9a6213, #b5476b, #2b6cb0, #2f7d4f). */
+    :root { --personal: #b5476b; } /* SỬA Ở ĐÂY */
+    main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 20px; }
+    .cover { --board: var(--personal); padding: 32px 32px 80px; border-radius: var(--radius-card) var(--radius-card) 0 0; }
+    .quote { font-size: 1.85rem; font-weight: 600; line-height: 1.35; max-width: 34ch; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tags span { border: 1px solid rgb(243 239 226 / .4); border-radius: 999px; padding: 2px 12px; font-size: .9rem; }
+    .identity { padding: 0 32px 24px; }
+    .who { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+    .avatar { margin-top: -48px; width: 96px; height: 96px; border-radius: 50%; border: 4px solid var(--surface); background: var(--personal); color: #fff; display: grid; place-items: center; font-size: 1.9rem; font-weight: 700; position: relative; box-shadow: 0 4px 10px rgb(0 0 0 / .15); }
+    .who h1 { font-size: 1.9rem; margin-top: 12px; }
+    .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 24px; margin-top: 20px; }
+    .facts dt { color: var(--ink-muted); font-size: .9rem; }
+    .facts dd { margin: 0; font-weight: 600; font-size: 1.1rem; }
+    .cols { display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card h2 { font-size: 1.15rem; padding: 18px 20px 4px; }
+    .card .body { padding: 8px 20px 20px; }
+    .ring { display: flex; gap: 16px; align-items: center; margin-top: 12px; }
+    .ring svg { width: 72px; height: 72px; transform: rotate(-90deg); flex-shrink: 0; }
+    .moods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .mood { border: 1px solid var(--border); border-radius: 12px; padding: 12px; min-height: 88px; background: var(--surface); text-align: left; font: inherit; cursor: pointer; }
+    .mood.on { border-color: var(--personal); outline: 2px solid var(--personal); }
+    .mood b { display: block; }
+    .mood span { color: var(--ink-muted); font-size: .85rem; }
+    @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } .facts { grid-template-columns: repeat(2, minmax(0,1fr)); } .moods { grid-template-columns: repeat(2, minmax(0,1fr)); } .quote { font-size: 1.4rem; } }
+  </style>
+</head>
+<body>
+<main>
+  <section class="card" style="overflow:hidden">
+    <div class="chalkboard cover">
+      <!-- SỬA Ở ĐÂY: câu phong cách dạy và các chữ mô tả -->
+      <p class="quote">“Khơi gợi cảm xúc trước, phân tích sau; hay cho học sinh đóng vai nhân vật.”</p>
+      <div class="tags"><span>Truyền cảm hứng</span><span>Đóng vai</span><span>Lắng nghe</span></div>
+      <div class="chalk-tray"></div>
+    </div>
+    <div class="identity">
+      <div class="who">
+        <div class="avatar">P</div>
+        <div>
+          <h1>Cô Phương</h1>
+          <p class="muted">Lê Thu Phương</p>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt>Đứng lớp</dt><dd>7 năm</dd></div>
+        <div><dt>Môn dạy</dt><dd>Ngữ văn</dd></div>
+        <div><dt>Tổ chuyên môn</dt><dd>Tổ Xã hội</dd></div>
+        <div><dt>Trường</dt><dd>THCS Lê Lợi, Đà Nẵng</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="card">
+      <h2>Chỉ tiêu năm học</h2>
+      <div class="body">
+        <!-- SỬA Ở ĐÂY: KPI; stroke-dasharray = phần trăm × 1.885 -->
+        <div class="ring">
+          <svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="var(--surface-muted)" stroke-width="8"/><circle cx="36" cy="36" r="30" fill="none" stroke="var(--personal)" stroke-width="8" stroke-linecap="round" stroke-dasharray="169.6 188.5"/></svg>
+          <div><b>Học sinh 7B đạt chuẩn đọc hiểu</b><p class="muted"><b style="font-size:1.25rem;color:var(--ink)">90%</b> / mục tiêu 95%</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>Hôm nay cô thấy thế nào?</h2>
+      <div class="body">
+        <div class="moods">
+          <button class="mood"><b>Thư thái</b><span>Sẵn sàng sáng tạo</span></button>
+          <button class="mood on"><b>Ổn định</b><span>Mọi việc bình thường</span></button>
+          <button class="mood"><b>Căng thẳng</b><span>Nhiều áp lực</span></button>
+          <button class="mood"><b>Quá tải</b><span>Cần nghỉ ngơi ngay</span></button>
+        </div>
+        <p class="muted" style="margin-top:10px; font-size:.9rem">Chỉ mình cô thấy mục này.</p>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

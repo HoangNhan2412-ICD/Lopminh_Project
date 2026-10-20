@@ -4,7 +4,21 @@ Có hai trường hợp. Hiện tại code V3.5 chưa có trên GitHub, nên dù
 
 ---
 
-## Trường hợp 1 — Dựng V4 mới từ đầu (dùng ngay bây giờ)
+## Làm tiếp V4 (dùng từ bây giờ)
+
+V4 đã có đủ các trang trên nhánh `v4-nang-cap`. Mở Claude Code ở repo này (bản web hoặc trên máy), dán:
+
+```
+Làm tiếp Lớp Mình V4 trên nhánh v4-nang-cap. Đọc CLAUDE.md, rồi docs/CHANGELOG-V4.md để biết đã xong gì, và mục cần làm trong docs/SPEC-V4.md.
+Việc lần này: <ghi một việc cụ thể, ví dụ: nối Supabase thật cho hồ sơ, lớp, học sinh, ghi chú theo migration trong supabase/; giữ chế độ demo khi chưa có biến môi trường>.
+Lập kế hoạch ngắn cho mình duyệt trước. Code xong thì chạy npm run test, npm run lint, npm run build, thử trên trình duyệt ở khổ máy tính và điện thoại, ghi CHANGELOG, commit tiếng Việt và push lên v4-nang-cap.
+```
+
+Các việc còn lại, mỗi lần làm một việc: nối Supabase + đăng nhập Google; phòng quiz trực tiếp trên điện thoại học sinh (Supabase Realtime); đọc Gmail (docs/GMAIL.md); ảnh chụp màn hình cho các bước hướng dẫn trong `public/guides/`; dark mode.
+
+---
+
+## Trường hợp 1 — Dựng V4 mới từ đầu (đã làm xong, giữ lại để tham khảo)
 
 Chạy được cả trên Claude Code bản web (máy ảo đám mây) lẫn trên máy.
 
