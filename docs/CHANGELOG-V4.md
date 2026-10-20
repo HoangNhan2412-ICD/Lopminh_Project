@@ -28,3 +28,11 @@
 - Xuất PowerPoint 16:9 (biểu tượng vẽ thành ảnh nét, mã QR từ link quiz, lời giảng + câu lệnh tạo hình trong ghi chú) và Word theo Phụ lục IV CV 5512 (bảng 4 bước, phân hóa theo tên, phiếu hai tầng, đáp án trắc nghiệm).
 - 3 theme slide: Bảng xanh, Giấy kem, Tươi sáng.
 - Test: mọi kiểu slide × mọi theme không tràn khổ; giáo án qua bước làm sạch đúng cấu trúc 5512.
+
+## Giai đoạn 3 — Phòng Quiz (20/10/2026)
+
+- Lấy câu hỏi có sẵn từ giáo án vừa soạn, hoặc dán nội dung bài để Bé Bảng soạn câu mới (`/api/quiz/generate`, chọn số câu và mức độ), hoặc tự gõ. Sửa từng câu, đáp án đúng, thời gian.
+- **Chiếu lên lớp** không cần điện thoại: ô A-B-C-D bốn màu, đồng hồ đếm ngược, hiện đáp án và giải thích, bảng điểm 4 tổ. Phím tắt Space / → / Esc.
+- Xuất file nhập Wayground (Quizizz) và Kahoot (.xlsx theo mẫu nhập của từng nền tảng), chép sẵn cho Quizlet (Tab giữa câu và đáp án).
+- Dán link phòng bất kỳ → mã QR lớn, tải ảnh PNG. Hướng dẫn từng bước cho Wayground, Kahoot, Quizlet, có nút đọc to.
+- Phòng quiz trực tiếp trên điện thoại học sinh sẽ làm khi nối Supabase Realtime.

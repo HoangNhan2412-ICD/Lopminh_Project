@@ -42,6 +42,12 @@
   --board-deep: #16302a;
   --chalk: #f3efe2;
   --wood: #a8743a;
+
+  /* Bốn ô trắc nghiệm A-B-C-D (trùng màu với slide xuất ra, xem src/lib/lesson/theme.ts) */
+  --quiz-a: #c8423b;
+  --quiz-b: #2b6cb0;
+  --quiz-c: #d9921f;
+  --quiz-d: #2f7d4f;
 }
 
 :root[data-accent="phan"] { --personal: var(--sw-phan); }
@@ -84,6 +90,10 @@ html[data-scale="rat-lon"] { font-size: 137.5%; }
   --color-board: var(--board);
   --color-chalk: var(--chalk);
   --color-wood: var(--wood);
+  --color-quiz-a: var(--quiz-a);
+  --color-quiz-b: var(--quiz-b);
+  --color-quiz-c: var(--quiz-c);
+  --color-quiz-d: var(--quiz-d);
 
   --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
   --radius-card: 0.75rem;
@@ -97,6 +107,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Đặt trong @layer components để các lớp tiện ích (fixed, absolute…) vẫn ghi đè được */
+@layer components {
 /* Mặt bảng: nền xanh có vệt phấn mờ (nhiễu SVG nhẹ) và quầng sáng như bảng thật bị lau dở */
 .chalkboard {
   --board-tone: var(--board);
@@ -138,6 +150,7 @@ body {
   border-radius: 4px;
   background: var(--chalk);
   transform: rotate(-4deg);
+}
 }
 
 :focus-visible {
