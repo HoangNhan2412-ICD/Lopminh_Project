@@ -1,6 +1,39 @@
 # Prompt dán vào Claude Code
 
-Mở Claude Code ngay trong thư mục chứa code Lớp Mình trên máy (thư mục có `package.json`, `app/`…), rồi dán nguyên khối dưới đây. Đừng dán API key vào prompt.
+Có hai trường hợp. Hiện tại code V3.5 chưa có trên GitHub, nên dùng **Trường hợp 1**. Đừng dán API key vào prompt.
+
+---
+
+## Trường hợp 1 — Dựng V4 mới từ đầu (dùng ngay bây giờ)
+
+Chạy được cả trên Claude Code bản web (máy ảo đám mây) lẫn trên máy.
+
+```
+Dự án Lớp Mình: repo https://github.com/HoangNhan2412-ICD/Lopminh_Project, nhánh v4-nang-cap. Repo chưa có code, chỉ có CLAUDE.md và docs/SPEC-V4.md. Mình muốn dựng V4 mới từ đầu theo đúng spec.
+
+Đọc kỹ CLAUDE.md và docs/SPEC-V4.md trước. Sau đó lập kế hoạch cho GIAI ĐOẠN 1 dưới đây, gửi mình xem (cấu trúc thư mục, danh sách package, schema ban đầu), mình duyệt rồi mới code.
+
+GIAI ĐOẠN 1 — Bộ khung chạy được:
+1. Khởi tạo Next.js (App Router, TypeScript strict, Tailwind, ESLint), cài shadcn/ui, lucide-react, sonner, zod, @tanstack/react-query, zustand, vitest. Font Be Vietnam Pro qua next/font. .gitignore chặn .env*, tạo .env.example với giá trị giả.
+2. Design System theo mục 1 của spec: token trong app/globals.css, cấu hình Tailwind dùng token. Đồng thời tạo design/_tokens.css và design/00-styleguide.html (trang HTML tĩnh, mở bằng trình duyệt là xem được toàn bộ màu, chữ, nút, thẻ, nhãn, ô nhập).
+3. Khung giao diện: thanh điều hướng 6 mục (Lớp Mình Hôm Nay, Soạn Bài, Hộp Thư Công Việc, Kho Tri Thức, Góc Cởi Bỏ Chiếc Áo, Hồ Sơ), header có tên + danh xưng, nút "Aa" tăng cỡ chữ, SmartTimetableBar (đồng hồ GMT+7, dải tiết, chế độ Ở nhà).
+4. CHẾ ĐỘ DEMO: khi chưa có biến môi trường Supabase/Gemini, app vẫn chạy với dữ liệu mẫu trong lib/demo/ gồm 3 hồ sơ Cô Nguyễn Thị Mai Hoa (nữ), Thầy Trần Văn Tiến (nam), Cô Lê Thu Phương (nữ), mỗi người có lớp chủ nhiệm, lớp bộ môn, học sinh mẫu (An, Bình, Chi, Tâm…). Có nút đổi hồ sơ trên header. Như vậy bạn trong nhóm clone về là chạy npm run dev xem được ngay.
+5. Xưng hô theo mục 3 của spec: lib/persona/honorific.ts với getHonorific(), addressOf(), fixAddress(); đổi hồ sơ thì remount theo key={profileId} và xóa state chat. Viết test vitest: đổi Hoa → Tiến → Phương 10 vòng, mọi chỗ hiển thị đều đúng danh xưng.
+6. Supabase: client/server bằng @supabase/ssr, đăng nhập Google, migration SQL cho bảng profiles, classes, students, student_notes, timetable (có RLS). Màn hình chào lần đầu hỏi "Bé Bảng nên gọi mình là Thầy hay Cô ạ?".
+7. lib/ai/: client @google/genai chỉ chạy ở server, lib/ai/models.ts đọc tên model từ env. Kiểm tra tài liệu Gemini mới nhất trước khi đặt giá trị mặc định.
+
+Mỗi bước nhỏ ở trên xong (build + lint + test qua) thì commit tiếng Việt và push lên v4-nang-cap, ghi docs/CHANGELOG-V4.md. Xong giai đoạn 1 thì báo mình cách chạy thử và dừng lại chờ.
+
+Các giai đoạn sau làm theo mục 14 của spec, từ mục 3 trở đi (nhập tay Tab 1, xuất file, quiz, kho tri thức, email, tâm tình, hồ sơ, tour). Mỗi màn hình lớn làm bản HTML trong design/ trước rồi mới dựng React.
+
+Nguyên tắc: làm chắc hơn làm nhanh; kiểm tra tài liệu chính thức thay vì dựa trí nhớ; không dùng thư viện không chính thức đăng nhập hộ bằng cookie; chỗ nào tốn tiền, cần quyền Google đặc biệt hoặc spec chưa rõ thì hỏi mình. Mình là lập trình viên, cứ nói chuyện bình thường, không cần gọi Thầy/Cô.
+```
+
+---
+
+## Trường hợp 2 — Khi tìm lại được code V3.5
+
+Mở Claude Code trong thư mục chứa code cũ (thư mục có `package.json`, `app/`…), rồi dán khối dưới đây. Nếu V4 đã dựng xong một phần, nên để code cũ vào thư mục `legacy-v3/` làm tài liệu tham khảo thay vì gộp đè.
 
 ---
 

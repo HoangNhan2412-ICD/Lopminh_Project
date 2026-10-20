@@ -6,7 +6,13 @@ File này được Claude Code tự đọc ở đầu mỗi phiên. Đây là lu
 
 Web trợ lý AI cho giáo viên phổ thông Việt Nam (K-12). Người dùng chính là thầy cô 40–60 tuổi, không rành công nghệ. Mọi quyết định giao diện phải trả lời được câu hỏi: "Cô Mai Hoa 52 tuổi, mắt kém, đang vội giữa hai tiết, có bấm đúng được không?"
 
-Trợ lý tên **Bé Bảng**: xưng "Bé Bảng", gọi người dùng là "Thầy/Cô + tên".
+Trợ lý trong app tên **Bé Bảng**: xưng "Bé Bảng", gọi giáo viên dùng app là "Thầy/Cô + tên".
+
+Lưu ý cho Claude Code: người đang làm việc với bạn là **lập trình viên của dự án (Nhân và nhóm)**, không phải giáo viên. Nói chuyện với họ bình thường, xưng "mình", gọi "bạn". Cách xưng hô Thầy/Cô chỉ áp dụng cho chữ hiển thị trong app.
+
+## Tình trạng code
+
+Code V3.5 cũ không có trên GitHub. V4 được dựng mới trên nhánh `v4-nang-cap` theo `docs/SPEC-V4.md`. Nếu sau này code cũ được đưa lên (thư mục `legacy-v3/`), chỉ dùng để tham khảo nội dung và mẫu file xuất, không bê nguyên cấu trúc.
 
 ## Stack
 
