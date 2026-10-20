@@ -1,12 +1,13 @@
 "use client";
 
-import { Mic, RotateCcw, Send, Square, Volume2 } from "lucide-react";
+import { Brain, Mic, RotateCcw, Send, Square, Volume2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { LoadPicker } from "@/components/sanctuary/LoadPicker";
 import { Button, Card } from "@/components/ui";
 import { useSpeechToText } from "@/lib/hooks";
+import { useLocal } from "@/lib/local-store";
 import { addressOf, fixAddress, honorificLower } from "@/lib/persona/honorific";
 import { periodsToday } from "@/lib/schedule";
 import { speakVi } from "@/lib/speech";
@@ -34,6 +35,7 @@ export function ChatView() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [demo, setDemo] = useState(false);
+  const [memory, setMemory] = useLocal<string>(`lm:chatmem:${profile.id}`, "");
   const listRef = useRef<HTMLDivElement>(null);
 
   // Lịch sử trò chuyện tách riêng theo từng hồ sơ.
@@ -91,7 +93,7 @@ export function ChatView() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profile, load, todayContext: todayContext(), history, message: text }),
+        body: JSON.stringify({ profile, load, todayContext: todayContext(), history, message: text, memory }),
       });
       if (!res.ok || !res.body) {
         const err = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -111,6 +113,18 @@ export function ChatView() {
       const final = [...messages, userMsg, { ...botMsg, text: fixAddress(acc, profile) }];
       setMessages(final);
       persist(final);
+      // Cứ 4 lượt thì cập nhật sổ ghi nhớ ở chế độ nền (model nhanh, không chặn trò chuyện)
+      const userTurns = final.filter((m) => m.role === "user").length;
+      if (userTurns % 4 === 0) {
+        void fetch("/api/chat/memory", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ memory, recent: final.slice(-10).map(({ role, text }) => ({ role, text })) }),
+        })
+          .then((r) => r.json())
+          .then((d: { memory?: string }) => d.memory !== undefined && d.memory !== memory && setMemory(d.memory))
+          .catch(() => {});
+      }
     } catch (e) {
       toast.error((e as Error).message);
       setMessages((list) => list.filter((m) => m.id !== botMsg.id));
@@ -248,6 +262,38 @@ export function ChatView() {
       <div className="space-y-5">
         <Card className="p-5">
           <LoadPicker compact />
+        </Card>
+        <Card className="p-5">
+          <p className="flex items-center gap-2 font-semibold">
+            <Brain className="size-5 text-primary" aria-hidden /> Bé Bảng đang nhớ
+          </p>
+          {memory.trim() ? (
+            <>
+              <ul className="mt-2 space-y-1">
+                {memory
+                  .split("\n")
+                  .map((l) => l.replace(/^-\s*/, "").trim())
+                  .filter(Boolean)
+                  .map((line, i, all) => (
+                    <li key={`${i}-${line}`} className="flex items-start gap-2 text-ink-muted">
+                      <span className="flex-1">{line}</span>
+                      <button
+                        className="flex size-11 shrink-0 items-center justify-center rounded-lg hover:bg-urgent-soft hover:text-urgent"
+                        aria-label={`Quên ý: ${line}`}
+                        onClick={() => setMemory(all.filter((_, j) => j !== i).map((x) => `- ${x}`).join("\n"))}
+                      >
+                        <X className="size-4" />
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+              <Button variant="ghost" size="sm" className="-ml-3 mt-1 text-urgent hover:bg-urgent-soft" onClick={() => setMemory("")}>
+                Quên hết
+              </Button>
+            </>
+          ) : (
+            <p className="mt-1 text-ink-muted">Trò chuyện vài lượt, Bé Bảng sẽ ghi lại vài điều để lần sau hỏi thăm cho đúng. {capFirst(h)} xem và xóa được ở đây.</p>
+          )}
         </Card>
         <Card className="p-5 text-ink-muted">
           <p className="font-semibold text-ink">Chuyện ở đây là của riêng {h}</p>

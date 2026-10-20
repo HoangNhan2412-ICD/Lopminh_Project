@@ -31,6 +31,7 @@ const bodySchema = z.object({
   /** Chỉ gửi vài lượt gần nhất để tiết kiệm token (SPEC mục 15). */
   history: z.array(z.object({ role: z.enum(["user", "model"]), text: z.string().max(4000) })).max(8),
   message: z.string().min(1).max(4000),
+  memory: z.string().max(2000).default(""),
 });
 
 const encoder = new TextEncoder();
@@ -69,7 +70,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return Response.json({ error: "Dữ liệu gửi lên không hợp lệ." }, { status: 400 });
   }
-  const { load, todayContext, history, message } = parsed.data;
+  const { load, todayContext, history, message, memory } = parsed.data;
   const profile = parsed.data.profile as TeacherProfile;
 
   const ai = getGemini();
@@ -85,11 +86,12 @@ export async function POST(req: Request) {
       model: MODELS.default,
       contents,
       config: {
-        systemInstruction: sanctuarySystemPrompt(profile, load, todayContext),
-        temperature: 0.8,
-        maxOutputTokens: 600,
-        // Trò chuyện cần nhanh: suy nghĩ ít để chữ đầu tiên hiện sớm.
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+        systemInstruction: sanctuarySystemPrompt(profile, load, todayContext, memory),
+        temperature: 0.85,
+        maxOutputTokens: 700,
+        // Trò chuyện cần nhanh: tin ngắn thì gần như không suy nghĩ để chữ đầu tiên hiện ngay,
+        // tin dài/nặng nề thì cho suy nghĩ ít để trả lời chín chắn hơn.
+        thinkingConfig: { thinkingLevel: message.length < 160 && load !== "qua-tai" ? ThinkingLevel.MINIMAL : ThinkingLevel.LOW },
       },
     });
     async function* pieces() {
