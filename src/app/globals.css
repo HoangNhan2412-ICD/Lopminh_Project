@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/*
+  Bộ token màu của Lớp Mình. Component chỉ được dùng các lớp sinh ra từ
+  @theme bên dưới (bg-bg, text-ink, bg-primary…), không viết mã hex trực tiếp.
+  Bản sao cho các file HTML mẫu nằm ở design/_tokens.css — sửa ở đây thì sửa cả bên đó.
+*/
+:root {
+  --bg: #faf7f0;
+  --surface: #ffffff;
+  --surface-muted: #f2eee4;
+  --ink: #1f2a24;
+  --ink-muted: #56615a;
+  --primary: #1e3a2f;
+  --primary-hover: #2a4d3f;
+  --primary-fg: #ffffff;
+  --primary-soft: #e3ece6;
+  --accent: #e8b04a;
+  --accent-soft: #fbf0d9;
+  --border: #e3ddd0;
+  --urgent: #b42318;
+  --urgent-soft: #fdecea;
+  --homeroom: #9a6213;
+  --homeroom-soft: #fbf1df;
+  --subject: #2b6cb0;
+  --subject-soft: #e6f0fa;
+  --success: #2f7d4f;
+  --success-soft: #e4f3ea;
+
+  /* Năm màu riêng giáo viên chọn ở Hồ sơ */
+  --sw-bang: #1e3a2f;
+  --sw-phan: #9a6213;
+  --sw-sen: #b5476b;
+  --sw-troi: #2b6cb0;
+  --sw-la: #2f7d4f;
+
+  /* Màu chủ đạo cá nhân — mặc định là xanh bảng */
+  --personal: var(--sw-bang);
+}
+
+:root[data-accent="phan"] { --personal: var(--sw-phan); }
+:root[data-accent="sen"] { --personal: var(--sw-sen); }
+:root[data-accent="troi"] { --personal: var(--sw-troi); }
+:root[data-accent="la"] { --personal: var(--sw-la); }
+
+/* Cỡ chữ: nền 18px, nút "Aa" tăng lên hai mức. Mọi kích thước dùng rem nên co giãn theo. */
+html { font-size: 112.5%; }
+html[data-scale="lon"] { font-size: 125%; }
+html[data-scale="rat-lon"] { font-size: 137.5%; }
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-border: var(--border);
+  --color-urgent: var(--urgent);
+  --color-urgent-soft: var(--urgent-soft);
+  --color-homeroom: var(--homeroom);
+  --color-homeroom-soft: var(--homeroom-soft);
+  --color-subject: var(--subject);
+  --color-subject-soft: var(--subject-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-personal: var(--personal);
+  --color-sw-bang: var(--sw-bang);
+  --color-sw-phan: var(--sw-phan);
+  --color-sw-sen: var(--sw-sen);
+  --color-sw-troi: var(--sw-troi);
+  --color-sw-la: var(--sw-la);
+
+  --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(31 42 36 / 0.06), 0 1px 1px rgb(31 42 36 / 0.04);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

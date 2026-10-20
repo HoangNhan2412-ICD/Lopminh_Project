@@ -1,0 +1,53 @@
+/*
+  Bộ token màu và chữ của Lớp Mình cho các file HTML mẫu trong thư mục design/.
+  Đây là bản sao của src/app/globals.css — sửa màu ở đây thì báo để chuyển sang app.
+  Không cần mạng, không cần cài gì: mở file .html bằng trình duyệt là xem được.
+*/
+:root {
+  --bg: #faf7f0;
+  --surface: #ffffff;
+  --surface-muted: #f2eee4;
+  --ink: #1f2a24;
+  --ink-muted: #56615a;
+  --primary: #1e3a2f;
+  --primary-hover: #2a4d3f;
+  --primary-fg: #ffffff;
+  --primary-soft: #e3ece6;
+  --accent: #e8b04a;
+  --accent-soft: #fbf0d9;
+  --border: #e3ddd0;
+  --urgent: #b42318;
+  --urgent-soft: #fdecea;
+  --homeroom: #9a6213;
+  --homeroom-soft: #fbf1df;
+  --subject: #2b6cb0;
+  --subject-soft: #e6f0fa;
+  --success: #2f7d4f;
+  --success-soft: #e4f3ea;
+
+  --radius-card: 12px;
+  --shadow-card: 0 1px 2px rgb(31 42 36 / 0.06), 0 1px 1px rgb(31 42 36 / 0.04);
+  --font: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 112.5%; } /* chữ nền 18px */
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); line-height: 1.5; }
+h1, h2, h3, p { margin: 0; }
+
+/* Thành phần dùng chung */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 12px; font: 600 1rem var(--font); border: 0; cursor: pointer; }
+.btn-primary { background: var(--primary); color: var(--primary-fg); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
+.btn-ghost { background: transparent; color: var(--primary); }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 999px; font-size: 0.875rem; font-weight: 500; background: var(--surface-muted); }
+.chip-urgent { background: var(--urgent-soft); color: var(--urgent); }
+.chip-homeroom { background: var(--homeroom-soft); color: var(--homeroom); }
+.chip-subject { background: var(--subject-soft); color: var(--subject); }
+.chip-success { background: var(--success-soft); color: var(--success); }
+.chip-accent { background: var(--accent-soft); color: var(--ink); }
+.muted { color: var(--ink-muted); }
+.input { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 12px; font: 1rem var(--font); color: var(--ink); background: var(--surface); }
+.input:focus { outline: 3px solid var(--accent); outline-offset: 1px; border-color: var(--primary); }

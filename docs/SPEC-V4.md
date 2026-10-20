@@ -1,6 +1,6 @@
 # Lớp Mình V4 — Đặc tả chi tiết
 
-Tài liệu này dùng được cho bất kỳ AI lập trình nào (Claude Code, Cursor, Gemini…). Đọc hết trước khi code. Phần nào mâu thuẫn với code hiện có thì đặc tả này thắng, nhưng phải giữ lại dữ liệu và tính năng đang chạy tốt.
+Tài liệu này dùng được cho bất kỳ AI lập trình nào (Claude Code, Antigravity, Cursor, Gemini…). Đọc hết trước khi code. V4 là bản dựng mới hoàn toàn; code V3.5 trong `legacy-v3/` chỉ để tham khảo nội dung.
 
 Mốc model Gemini ghi bên dưới là tại thời điểm viết (10/2026). Trước khi code, mở https://ai.google.dev/gemini-api/docs/models và https://ai.google.dev/gemini-api/docs/changelog để xác nhận tên model còn dùng được.
 
@@ -14,6 +14,24 @@ Ba câu kiểm tra cho mọi màn hình:
 - Nhìn 3 giây có biết bấm vào đâu không?
 - Có chỗ nào màu mè mà không mang thông tin không? (có thì bỏ)
 - Bé Bảng nói câu này, một người trợ giảng thật có nói vậy không?
+
+### Ba trụ cột (từ yêu cầu gốc) và cách xếp điều hướng
+
+Web có ba trụ cột. Thanh điều hướng chia đúng ba nhóm này, mỗi nhóm có nhãn nhóm:
+
+1. **Giám sát & Nhập liệu**
+   - *Lớp Mình Hôm Nay* — tình hình lớp chủ nhiệm và lớp bộ môn trong ngày (mục 4).
+   - *Hộp Thư Công Việc* — lọc email và tin dán từ Zalo (mục 8).
+   - *Kho Dữ Liệu* — tài liệu giảng dạy, văn bản, kế hoạch tổ, sự kiện năm học, KPI, và hồ sơ học sinh (mục 7, 7b).
+2. **Soạn Giảng Số**
+   - *Soạn Bài* — giáo án 5512, slide, sơ đồ tư duy, phiếu học tập (mục 5).
+   - *Phòng Quiz* — tạo quiz, mã QR, xuất sang Wayground/Quizlet/Kahoot (mục 6).
+3. **Góc Thầy Cô** (học tập tự thân, không áp lực)
+   - *Tâm Tình* — Góc Cởi Bỏ Chiếc Áo (mục 9).
+   - *Song Ngữ* — tiếng Anh cho giáo viên không dạy ngoại ngữ (mục 9b).
+   - *Kỹ Năng Số* — bài học 2 phút mỗi ngày (mục 9c).
+
+Hồ sơ Thấu hiểu Bản thân (mục 10) mở từ avatar ở cuối thanh điều hướng. Trên điện thoại, thanh dưới chỉ có 3 nút trụ cột + nút Bé Bảng ở giữa; bấm trụ cột mới hiện các mục con.
 
 ---
 
@@ -48,7 +66,7 @@ Quy tắc: một màn hình chỉ có một màu `--primary` cho hành động c
 ### 1.3 Bố cục
 - Lưới 12 cột, nội dung tối đa 1200px, khoảng cách theo bội số 4px (4/8/12/16/24/32/48).
 - Bo góc: 12px cho thẻ, 999px cho chip/nhãn. Đổ bóng rất nhẹ, một mức duy nhất.
-- Điều hướng: thanh bên trái (desktop) / thanh dưới (mobile) với 6 mục, icon + chữ, không chỉ icon.
+- Điều hướng: thanh bên trái (desktop) / thanh dưới (mobile), chia theo 3 trụ cột ở mục 0, icon + chữ, không chỉ icon.
 - Mỗi thẻ: tiêu đề, nội dung, tối đa 1 nút chính + 1 nút phụ dạng chữ. Hành động hiếm dùng đưa vào menu "…".
 - Trạng thái rỗng, đang tải, lỗi phải có thiết kế riêng, lời nhắn bằng giọng Bé Bảng.
 - Animation: chỉ dùng để chỉ hướng (trượt panel, hiện toast). Tôn trọng `prefers-reduced-motion`.
@@ -151,6 +169,10 @@ Luật nội dung slide: tối đa 6 dòng, tối đa ~40 chữ phần thân, ch
 ### 5.3 Word 5512
 Giữ chuẩn hiện có (Times New Roman 13–14pt, lề hành chính, bảng 4 hoạt động × 4 bước), thêm: phần phân hóa theo lớp và theo học sinh cụ thể lấy từ dữ liệu Tab 1, phụ lục phiếu học tập, đáp án.
 
+### 5.3b Phân hóa hai tầng và gợi ý hình ảnh
+- Mỗi giáo án luôn có **hai tầng nhiệm vụ** trong hoạt động Luyện tập và Vận dụng: tầng Cơ bản và tầng Nâng cao. Học sinh được xếp tầng dựa trên dữ liệu thật trong Kho Dữ Liệu và ghi chú Tab 1 (ví dụ Tâm cần củng cố căn bậc hai → Cơ bản + phiếu ôn; Bình tiến bộ → Nâng cao). Thầy cô kéo thả để đổi tầng trước khi xuất.
+- Mỗi slide có thêm ô "Gợi ý tạo hình" — một câu lệnh chi tiết, có thể dán vào Canva Magic Media, Google Slides "Help me visualize" hoặc model sinh ảnh, để thầy cô tự tạo hình nếu muốn. Lưu lịch sử gợi ý theo bài để các ngày sau không lặp lại hình cũ.
+
 ### 5.4 Công cụ ngoài (tùy chọn, làm sau)
 Viết lớp adapter `ExportProvider` để sau này cắm thêm: Google Slides API (tạo thẳng trong Drive của thầy cô), hoặc dịch vụ tạo slide khác có API chính thức. Không dùng thư viện không chính thức đăng nhập hộ bằng cookie.
 
@@ -176,6 +198,19 @@ Thực tế: NotebookLM bản thường không có API công khai; chỉ Noteboo
 2. **Cá nhân hóa giáo án**: kết hợp kho tri thức + phong cách giảng dạy trong Hồ sơ (mục 10) + tình hình lớp (Tab 1) để soạn giáo án riêng cho từng lớp.
 3. **Cầu nối NotebookLM**: nút "Mở trong NotebookLM" xuất một gói gồm các tài liệu đã chọn + một file hướng dẫn và các câu lệnh mẫu để thầy cô tự tạo notebook (podcast, flashcard, video tóm tắt). Có hướng dẫn từng bước bằng hình như mục 6.
 4. **Adapter NotebookLM Enterprise** (để sẵn, tắt mặc định qua feature flag): nếu trường có Google Cloud và giấy phép, tạo notebook và thêm nguồn tự động qua API chính thức.
+
+Loại tài liệu trong Kho Dữ Liệu (mỗi loại một nhãn, AI dùng khác nhau):
+- *Sách & chương trình*: SGK (bộ sách đang dùng), phân phối chương trình, giáo án cũ.
+- *Văn bản chỉ đạo*: công văn, thông tư chuyên ngành (5512, 2345…). AI chỉ trích dẫn, không tự bịa số hiệu văn bản.
+- *Kế hoạch*: kế hoạch tổ chuyên môn, kế hoạch năm học, lịch sự kiện của trường. Sự kiện có ngày được đổ vào lịch và Thời khóa biểu.
+- *Chỉ tiêu*: KPI thi đua của năm, hiện ở Hồ sơ (mục 10).
+
+## 7b. Hồ sơ học sinh
+
+- Nhập danh sách lớp bằng file Excel/CSV (có file mẫu tải về), dán từ bảng tính, hoặc chụp ảnh danh sách (Gemini đọc ảnh, thầy cô duyệt lại).
+- Mỗi học sinh có: thông tin cơ bản, năng lực từng môn (theo điểm và nhận xét), tính cách/cách học (do thầy cô ghi, dạng chip: "hướng nội", "thích vận động", "cần khích lệ"…), dòng thời gian ghi chú.
+- Dữ liệu thay đổi theo thời gian thực từ Tab 1, kết quả quiz, điểm nhập vào. AI dùng dữ liệu này để xếp tầng phân hóa (5.3b) và đề xuất cách hỗ trợ từng em.
+- Dữ liệu học sinh là dữ liệu trẻ vị thành niên: chỉ giáo viên của lớp thấy, GVBM chỉ thấy phần học tập, không thấy phần tâm lý/gia đình do GVCN ghi trừ khi GVCN bật chia sẻ.
 
 ---
 
@@ -220,6 +255,23 @@ Bạn là Bé Bảng, trợ lý của ${addressOf(p)}. Ở Góc Cởi Bỏ Chi�
 ```
 
 Minigame theo sở thích, banner 18:00, cơ chế khen theo hành động thật: giữ như V3.5.
+
+Sau phần lắng nghe, nếu thầy cô muốn, Bé Bảng đưa ra biện pháp cho cả hai phía: việc thầy cô có thể làm cho bản thân, và việc có thể làm với học sinh/phụ huynh liên quan (lấy dữ liệu từ hồ sơ học sinh ở mục 7b). Hỏi "Cô có muốn em gợi ý vài cách không?" trước khi gợi ý.
+
+## 9b. Song Ngữ — tiếng Anh cho giáo viên không dạy ngoại ngữ
+
+Dành cho thầy cô Toán, Lý, Hóa, Sinh, Sử, Địa đang phải dạy song ngữ mức cơ bản.
+- **Bài nhỏ 5 phút theo môn**: 5–8 thuật ngữ của bài sắp dạy (lấy từ giáo án vừa soạn), mỗi từ có phiên âm, nghe phát âm, câu ví dụ trong lớp.
+- **Khẩu lệnh lớp học**: bộ câu ngắn ("Open your books to page 20", "Work in pairs") theo tình huống, nghe mẫu và luyện nói; Gemini chấm phát âm nhẹ nhàng, chỉ khen và chỉ ra một điểm sửa mỗi lần.
+- **Gắn vào giáo án**: khi bật "Tích hợp khẩu lệnh song ngữ" ở bước chẩn đoán (mục 5), slide tự có câu khẩu lệnh tiếng Anh nhỏ ở góc, kèm thuật ngữ song ngữ.
+- Không bảng xếp hạng, không điểm số công khai. Có chuỗi ngày học (streak) nhưng không trách khi mất chuỗi.
+
+## 9c. Kỹ Năng Số — bài học 2 phút mỗi ngày
+
+- Mỗi ngày gợi ý một bài: chèn video vào PowerPoint, quét mã QR, chia sẻ Google Drive, tạo Google Form, dùng Zalo trên máy tính, sao lưu điện thoại…
+- Mỗi bài: tối đa 5 bước, mỗi bước một ảnh chụp màn hình khoanh đỏ chỗ bấm, chữ to, có nút đọc to. Có nút "Thử ngay" mở đúng công cụ.
+- Ưu tiên bài liên quan việc thầy cô vừa gặp (vừa xuất file PPT → gợi ý "chiếu slide toàn màn hình").
+- Nội dung bài lưu trong `content/ky-nang-so/*.md` để nhóm tự thêm bài không cần sửa code.
 
 ---
 
@@ -277,3 +329,20 @@ Làm theo thứ tự, mỗi mục xong thì commit + push lên `v4-nang-cap`:
 11. Kiểm tra trợ năng (axe), dark mode, hiệu năng.
 
 Một mục chỉ được coi là xong khi: build và lint qua; có test cho logic chính; tự chạy thử trên trình duyệt (nếu có công cụ) ở khổ desktop và điện thoại; ghi vào `docs/CHANGELOG-V4.md`; có ảnh chụp hoặc mô tả ngắn để nhóm kiểm tra.
+
+Song Ngữ (9b) và Kỹ Năng Số (9c) làm sau mục 8 trong danh sách trên.
+
+---
+
+## 15. Tiết kiệm token khi gọi Gemini (chi phí chạy app)
+
+Gói free của Gemini có giới hạn số yêu cầu mỗi phút/ngày, nên tiết kiệm token cũng là để app không bị chặn giữa giờ dạy.
+
+1. **Đặt phần cố định lên đầu prompt.** Gemini tự cache phần đầu giống nhau giữa các lần gọi (implicit caching) và tính rẻ hơn cho phần đó. Thứ tự prompt luôn là: luật Bé Bảng (cố định) → hồ sơ giáo viên (ít đổi) → dữ liệu lớp → câu hỏi (đổi mỗi lần). Với tài liệu dài dùng lặp lại (SGK một chương), dùng explicit context caching.
+2. **Chọn model theo việc**: phân loại email, bóc tách ghi chú dùng `MODEL_FAST`; chỉ bước dàn ý giáo án dùng `MODEL_HEAVY`.
+3. **Không gửi cả lịch sử chat.** Giữ 6–8 lượt gần nhất + một bản tóm tắt các lượt cũ (cập nhật mỗi 10 lượt bằng `MODEL_FAST`).
+4. **Không gửi cả kho tài liệu.** Dùng File Search để chỉ lấy đoạn liên quan.
+5. **Structured output** (JSON schema) thay vì bảo model "trả lời dạng JSON" rồi gọi lại khi lỗi.
+6. **Cache kết quả**: cùng một ghi chú/email đã phân loại thì không gọi lại (lưu theo hash nội dung). Giáo án đã sinh thì chỉ sinh lại phần thầy cô yêu cầu sửa.
+7. **Batch API** cho việc không gấp (phân loại hộp thư buổi tối, tạo bài Song Ngữ cho tuần sau) — rẻ hơn gọi thường.
+8. Ghi số token mỗi lần gọi vào bảng `ai_usage` (không ghi nội dung) để xem tính năng nào tốn nhất.
