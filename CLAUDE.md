@@ -12,7 +12,7 @@ Lưu ý cho Claude Code: người đang làm việc với bạn là **lập trì
 
 ## Tình trạng code
 
-Code V3.5 cũ không có trên GitHub. V4 được dựng mới trên nhánh `v4-nang-cap` theo `docs/SPEC-V4.md`. Nếu sau này code cũ được đưa lên (thư mục `legacy-v3/`), chỉ dùng để tham khảo nội dung và mẫu file xuất, không bê nguyên cấu trúc.
+Code V3.5 nằm ở `legacy-v3/`, mới khôi phục được 36/45 file nên chưa build được (xem `legacy-v3/KHOI-PHUC.md`). Phân tích lỗi xưng hô ở `docs/PHAN-TICH-XUNG-HO.md`. Khi có đủ file, hỏi Nhân trước khi chọn hướng: nâng cấp tiếp trên code V3.5 hay dựng V4 mới và chỉ tham khảo code cũ.
 
 ## Stack
 
