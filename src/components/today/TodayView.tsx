@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BeBangCard } from "@/components/today/BeBangCard";
 import { ClassBoard } from "@/components/today/ClassBoard";
 import { HomeSummary } from "@/components/today/HomeSummary";
 import { QuickNoteInput } from "@/components/today/QuickNoteInput";
-import { TimetableBar } from "@/components/today/TimetableBar";
+import { TodayBoard } from "@/components/today/TodayBoard";
 import { Chip } from "@/components/ui";
 import { currentPeriod, isTeachingHours, periodsToday } from "@/lib/schedule";
 import { useApp } from "@/lib/store/app-store";
@@ -22,6 +21,7 @@ export function TodayView() {
     const now = vnNow();
     const periods = periodsToday(timetable, now);
     const live = currentPeriod(periods, now);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- giờ hiện tại chỉ biết được ở trình duyệt
     setSelectedId(live?.classId ?? homeroom?.id ?? null);
     setHomeMode(!isTeachingHours(periods, now) && now.hh >= 12);
   }, [timetable, homeroom?.id]);
@@ -31,7 +31,7 @@ export function TodayView() {
   return (
     <div className="space-y-5">
       <h1 className="sr-only">Lớp Mình Hôm Nay</h1>
-      <TimetableBar
+      <TodayBoard
         selectedClassId={selected?.id ?? null}
         homeMode={homeMode}
         onSelectClass={(id) => {
@@ -70,7 +70,6 @@ export function TodayView() {
           {homeMode ? <HomeSummary /> : selected && <ClassBoard cls={selected} />}
         </div>
         <div className="space-y-5">
-          <BeBangCard />
           {selected && <QuickNoteInput key={selected.id} cls={selected} />}
         </div>
       </div>

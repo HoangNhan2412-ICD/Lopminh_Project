@@ -65,7 +65,7 @@ export function ProfileSwitcher() {
 
       {open && (
         <div role="menu" className="absolute right-0 z-30 mt-2 w-80 rounded-xl border border-border bg-surface p-2 shadow-lg">
-          <p className="px-3 pb-2 pt-1 text-xs font-medium uppercase tracking-wide text-ink-muted">Hồ sơ giáo viên mẫu</p>
+          <p className="px-3 pb-2 pt-1 text-sm font-medium text-ink-muted">Hồ sơ giáo viên mẫu</p>
           {profiles.map((p) => {
             const active = p.id === profile.id;
             return (

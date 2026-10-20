@@ -179,7 +179,7 @@ export function QuickNoteInput({ cls }: { cls: ClassInfo }) {
 
           <div className="flex items-center justify-between gap-3">
             <p className="hidden text-sm text-ink-muted sm:block">Mỗi dòng một ý. Ctrl + Enter để gửi nhanh.</p>
-            <Button onClick={analyse} disabled={busy || !text.trim()}>
+            <Button onClick={analyse} disabled={busy || !text.trim()} className="shrink-0 whitespace-nowrap">
               {busy && <LoaderCircle className="size-5 animate-spin" aria-hidden />}
               {busy ? "Đang tách…" : "Ghi lại"}
             </Button>

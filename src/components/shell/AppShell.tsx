@@ -31,7 +31,7 @@ function Sidebar() {
       <nav aria-label="Điều hướng chính" className="flex-1 overflow-y-auto px-3 pb-4">
         {NAV.map((group) => (
           <div key={group.id} className="mt-4 first:mt-1">
-            <p className="px-3 pb-1.5 text-xs font-semibold uppercase tracking-wider text-ink-muted">{group.label}</p>
+            <p className="px-3 pb-1.5 text-sm font-semibold text-ink-muted">{group.label}</p>
             <ul className="space-y-0.5">
               {group.items.map((item) => {
                 const active = isActive(pathname, item.href);

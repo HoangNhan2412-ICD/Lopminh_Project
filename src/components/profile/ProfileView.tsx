@@ -2,7 +2,6 @@
 
 import { Award, Check, Palette, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { LoadPicker } from "@/components/sanctuary/LoadPicker";
 import { Button, Card, CardHeader, Chip } from "@/components/ui";
 import { addressOf, getHonorific, honorificFor, honorificLower } from "@/lib/persona/honorific";
@@ -53,64 +52,126 @@ function Ring({ kpi }: { kpi: Kpi }) {
   );
 }
 
+const STYLE_TAGS = [
+  "Bao dung",
+  "Chậm mà chắc",
+  "Dạy bằng hình ảnh",
+  "Nghiêm khắc",
+  "Hài hước",
+  "Hay đặt câu hỏi",
+  "Thích trò chơi",
+  "Học qua dự án",
+  "Gần gũi phụ huynh",
+];
+
 export function ProfileView() {
   const { profile, updateProfile, resetDemo } = useApp();
   const h = honorificLower(profile);
 
   return (
     <div className="space-y-5">
-      {/* Bìa + danh tính */}
+      {/* Bìa + danh tính: tấm bảng mang màu riêng, viết câu phong cách bằng "phấn" */}
       <Card className="overflow-hidden">
-        <div className="relative h-36 bg-personal sm:h-44">
-          <svg className="absolute inset-0 size-full opacity-[0.13]" aria-hidden>
-            <defs>
-              <pattern id="phan" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)">
-                <path d="M4 12h22M8 30h12M30 40h10" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
-                <circle cx="38" cy="10" r="2" fill="#fff" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#phan)" />
-          </svg>
-          <div className="absolute bottom-3 right-4 flex items-center gap-2 rounded-full bg-black/25 px-3 py-1 text-sm text-white">
-            <BeBangAvatar size={22} /> Hồ sơ thấu hiểu bản thân
+        <div className="chalkboard chalkboard-personal relative px-5 pb-16 pt-7 sm:px-8 sm:pb-20 sm:pt-9">
+          <p className="max-w-2xl text-2xl font-semibold leading-snug text-chalk sm:text-[1.9rem]">
+            “{profile.teachingStyle.summary}”
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {profile.teachingStyle.tags.map((t) => (
+              <span key={t} className="rounded-full border border-chalk/40 px-3 py-0.5 text-sm text-chalk/90">
+                {t}
+              </span>
+            ))}
           </div>
+          <div className="chalk-tray" aria-hidden />
         </div>
-        <div className="px-5 pb-5 sm:px-7">
-          <div className="-mt-12 flex flex-wrap items-end gap-4">
-            <span className="flex size-24 items-center justify-center rounded-full border-4 border-surface bg-primary text-3xl font-bold text-primary-fg ring-4 ring-personal">
+        <div className="relative px-5 pb-5 sm:px-8">
+          <div className="flex flex-wrap items-start gap-4">
+            <span className="relative -mt-12 flex size-24 items-center justify-center rounded-full border-4 border-surface bg-personal text-3xl font-bold text-primary-fg shadow-md">
               {profile.callName
                 .split(/\s+/)
                 .map((w) => w[0])
                 .join("")}
             </span>
-            <div className="pb-1">
+            <div className="pt-3">
               <h1 className="text-2xl font-bold sm:text-3xl">{addressOf(profile)}</h1>
               <p className="text-ink-muted">{profile.fullName}</p>
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Chip tone="primary">{profile.yearsTeaching} năm đứng lớp</Chip>
-            <Chip>{profile.subject}</Chip>
-            <Chip>{profile.team}</Chip>
-            <Chip>{profile.school}</Chip>
-          </div>
+          <dl className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-4">
+            <div>
+              <dt className="text-sm text-ink-muted">Đứng lớp</dt>
+              <dd className="text-lg font-semibold">{profile.yearsTeaching} năm</dd>
+            </div>
+            <div>
+              <dt className="text-sm text-ink-muted">Môn dạy</dt>
+              <dd className="text-lg font-semibold">{profile.subject}</dd>
+            </div>
+            <div>
+              <dt className="text-sm text-ink-muted">Tổ chuyên môn</dt>
+              <dd className="text-lg font-semibold">{profile.team}</dd>
+            </div>
+            <div>
+              <dt className="text-sm text-ink-muted">Trường</dt>
+              <dd className="text-lg font-semibold">{profile.school}</dd>
+            </div>
+          </dl>
         </div>
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        {/* Phong cách */}
+        {/* Phong cách: sửa được, Bé Bảng soạn bài theo đúng phong cách này */}
         <Card>
-          <CardHeader icon={<Sparkles className="size-6" />} title={`Phong cách của ${addressOf(profile)}`} />
-          <div className="p-5 pt-3">
-            <blockquote className="border-l-4 border-personal pl-4 text-lg leading-relaxed">
-              {profile.teachingStyle.summary}
-            </blockquote>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {profile.teachingStyle.tags.map((t) => (
-                <Chip key={t} tone="accent">{t}</Chip>
-              ))}
+          <CardHeader
+            icon={<Sparkles className="size-6" />}
+            title="Phong cách dạy"
+            subtitle="Bé Bảng soạn giáo án và gợi ý hoạt động theo đúng mục này"
+          />
+          <div className="space-y-4 p-5 pt-3">
+            <label className="block">
+              <span className="text-sm text-ink-muted">Một câu tả cách mình dạy</span>
+              <textarea
+                key={profile.id}
+                defaultValue={profile.teachingStyle.summary}
+                rows={3}
+                onBlur={(e) => {
+                  const summary = e.target.value.normalize("NFC").trim();
+                  if (summary && summary !== profile.teachingStyle.summary) {
+                    updateProfile({ teachingStyle: { ...profile.teachingStyle, summary } });
+                    toast.success("Đã lưu phong cách dạy");
+                  }
+                }}
+                className="mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-base leading-relaxed"
+              />
+            </label>
+            <div>
+              <p className="text-sm text-ink-muted">Chọn những chữ đúng với mình</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {STYLE_TAGS.map((t) => {
+                  const on = profile.teachingStyle.tags.includes(t);
+                  return (
+                    <button
+                      key={t}
+                      aria-pressed={on}
+                      onClick={() =>
+                        updateProfile({
+                          teachingStyle: {
+                            ...profile.teachingStyle,
+                            tags: on ? profile.teachingStyle.tags.filter((x) => x !== t) : [...profile.teachingStyle.tags, t],
+                          },
+                        })
+                      }
+                      className={cn(
+                        "min-h-11 rounded-full border px-4 text-sm font-medium",
+                        on ? "border-personal bg-personal text-primary-fg" : "border-border bg-surface hover:bg-surface-muted",
+                      )}
+                    >
+                      {t}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <p className="mt-3 text-sm text-ink-muted">Bé Bảng soạn giáo án và gợi ý hoạt động theo đúng phong cách này.</p>
           </div>
         </Card>
 

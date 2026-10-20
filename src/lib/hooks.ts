@@ -1,17 +1,51 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { vnNow, type VnNow } from "@/lib/time";
 
-/** Đồng hồ giờ Việt Nam, cập nhật mỗi giây. Trả về null trước khi trang tải xong. */
+/* Đồng hồ dùng chung: mỗi chu kỳ một bộ đếm, nhiều component cùng đọc. */
+interface Clock {
+  value: VnNow | null;
+  subs: Set<() => void>;
+  timer?: ReturnType<typeof setInterval>;
+}
+const clocks = new Map<number, Clock>();
+function clockFor(ms: number): Clock {
+  let c = clocks.get(ms);
+  if (!c) {
+    c = { value: null, subs: new Set() };
+    clocks.set(ms, c);
+  }
+  return c;
+}
+
+/** Đồng hồ giờ Việt Nam, mặc định cập nhật mỗi giây. Trả về null khi render ở server. */
 export function useVnClock(intervalMs = 1000): VnNow | null {
-  const [now, setNow] = useState<VnNow | null>(null);
-  useEffect(() => {
-    setNow(vnNow());
-    const t = setInterval(() => setNow(vnNow()), intervalMs);
-    return () => clearInterval(t);
-  }, [intervalMs]);
-  return now;
+  return useSyncExternalStore(
+    (onChange) => {
+      const c = clockFor(intervalMs);
+      c.subs.add(onChange);
+      if (!c.timer) {
+        c.timer = setInterval(() => {
+          c.value = vnNow();
+          c.subs.forEach((f) => f());
+        }, intervalMs);
+      }
+      return () => {
+        c.subs.delete(onChange);
+        if (c.subs.size === 0 && c.timer) {
+          clearInterval(c.timer);
+          c.timer = undefined;
+        }
+      };
+    },
+    () => {
+      const c = clockFor(intervalMs);
+      c.value ??= vnNow();
+      return c.value;
+    },
+    () => null,
+  );
 }
 
 /* ---------- Nhận dạng giọng nói tiếng Việt (Web Speech API) ---------- */
@@ -42,7 +76,11 @@ const ERROR_TEXT: Record<string, string> = {
 };
 
 export function useSpeechToText(onFinal: (text: string) => void) {
-  const [supported, setSupported] = useState(false);
+  const supported = useSyncExternalStore(
+    () => () => {},
+    () => getCtor() !== null,
+    () => false,
+  );
   const [listening, setListening] = useState(false);
   const [interim, setInterim] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -53,10 +91,7 @@ export function useSpeechToText(onFinal: (text: string) => void) {
     onFinalRef.current = onFinal;
   }, [onFinal]);
 
-  useEffect(() => {
-    setSupported(getCtor() !== null);
-    return () => recRef.current?.stop();
-  }, []);
+  useEffect(() => () => recRef.current?.stop(), []);
 
   const start = useCallback(() => {
     const C = getCtor();

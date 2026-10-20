@@ -75,6 +75,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   // Đọc dữ liệu đã lưu sau khi trang tải xong (tránh lệch giữa server và trình duyệt).
   useEffect(() => {
     const today = vnNow().date;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- đọc localStorage sau khi trang tải xong, tránh lệch giữa server và trình duyệt
     setToday(today);
     const savedProfiles = read<TeacherProfile[]>(K.profiles, DEMO_PROFILES);
     const savedCurrent = read<string>(K.current, DEMO_PROFILES[0].id);

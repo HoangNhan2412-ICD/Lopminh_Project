@@ -36,6 +36,12 @@
 
   /* Màu chủ đạo cá nhân — mặc định là xanh bảng */
   --personal: var(--sw-bang);
+
+  /* Tấm bảng: điểm nhấn duy nhất của giao diện (đầu trang Hôm Nay, bìa Hồ sơ) */
+  --board: #1e3a2f;
+  --board-deep: #16302a;
+  --chalk: #f3efe2;
+  --wood: #a8743a;
 }
 
 :root[data-accent="phan"] { --personal: var(--sw-phan); }
@@ -75,6 +81,9 @@ html[data-scale="rat-lon"] { font-size: 137.5%; }
   --color-sw-sen: var(--sw-sen);
   --color-sw-troi: var(--sw-troi);
   --color-sw-la: var(--sw-la);
+  --color-board: var(--board);
+  --color-chalk: var(--chalk);
+  --color-wood: var(--wood);
 
   --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
   --radius-card: 0.75rem;
@@ -86,6 +95,49 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Mặt bảng: nền xanh có vệt phấn mờ (nhiễu SVG nhẹ) và quầng sáng như bảng thật bị lau dở */
+.chalkboard {
+  --board-tone: var(--board);
+  position: relative;
+  isolation: isolate;
+  color: var(--chalk);
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgb(255 255 255 / 0.07), transparent 55%),
+    radial-gradient(80% 70% at 100% 100%, rgb(0 0 0 / 0.18), transparent 60%),
+    var(--board-tone);
+}
+.chalkboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.chalkboard-personal { --board-tone: var(--personal); }
+/* Máng phấn bằng gỗ ở mép dưới tấm bảng */
+.chalk-tray {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: linear-gradient(var(--wood), color-mix(in oklab, var(--wood), black 25%));
+}
+.chalk-tray::after {
+  content: "";
+  position: absolute;
+  right: 12%;
+  top: -5px;
+  width: 38px;
+  height: 7px;
+  border-radius: 4px;
+  background: var(--chalk);
+  transform: rotate(-4deg);
 }
 
 :focus-visible {

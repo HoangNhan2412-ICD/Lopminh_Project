@@ -40,6 +40,7 @@ export function ChatView() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(storageKey(profile.id));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- nạp lịch sử của đúng hồ sơ từ localStorage
       setMessages(raw ? (JSON.parse(raw) as Msg[]) : []);
     } catch {
       setMessages([]);
