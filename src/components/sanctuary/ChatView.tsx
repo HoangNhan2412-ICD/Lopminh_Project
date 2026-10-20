@@ -140,7 +140,7 @@ export function ChatView() {
   ];
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
       <Card className="flex h-[calc(100dvh-13rem)] min-h-[28rem] flex-col lg:h-[calc(100dvh-9rem)]">
         <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
           <div className="flex items-center gap-3">

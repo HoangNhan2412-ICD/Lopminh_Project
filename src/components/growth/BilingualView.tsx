@@ -147,7 +147,7 @@ export function BilingualView() {
         </Card>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <Card>
           <CardHeader title="Khẩu lệnh trong lớp" subtitle="Chọn tình huống, bấm loa để nghe, bấm micro để tập" />
           <div className="flex gap-2 overflow-x-auto px-5 pt-3">

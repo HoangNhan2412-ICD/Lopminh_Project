@@ -170,7 +170,7 @@ export function MailboxView() {
         {busy && <LoaderCircle className="size-6 animate-spin text-primary" aria-label="Đang lọc" />}
       </Card>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             {(["can-lam", "tat-ca", ...MAIL_LABELS] as const).map((f) => (

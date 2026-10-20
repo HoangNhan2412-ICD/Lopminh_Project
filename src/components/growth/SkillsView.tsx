@@ -43,7 +43,7 @@ export function SkillsView() {
           Mỗi bài 2 phút. {capFirst(h)} đã làm được {done.length}/{SKILLS.length} bài.
         </p>
       </div>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <Card>
           <div className="px-5 pt-5">
             {open.id === suggested.id && (

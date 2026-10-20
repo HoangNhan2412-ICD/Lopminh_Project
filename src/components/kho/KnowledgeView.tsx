@@ -113,7 +113,7 @@ function DocsTab() {
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
       <div className="space-y-5">
         <Card>
           <CardHeader icon={<FileUp className="size-6" />} title="Thêm tài liệu" subtitle="Bé Bảng dựa vào kho này khi soạn bài, trả lời và ghi rõ lấy từ tài liệu nào" />
@@ -303,7 +303,7 @@ function NotebookTab() {
   const toggle = (list: string[], set: (v: string[]) => void, id: string) => set(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <Card>
         <CardHeader icon={<NotebookPen className="size-6" />} title="Chọn nội dung đưa sang NotebookLM" subtitle="NotebookLM chưa cho ứng dụng khác tạo sổ tự động, nên Bé Bảng gói sẵn để thầy cô tải lên một lần" />
         <div className="space-y-4 p-5">

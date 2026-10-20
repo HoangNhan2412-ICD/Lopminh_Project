@@ -74,7 +74,7 @@ export function SlideEditor({
   const set = (patch: Partial<Slide>) => onChange({ ...slide, ...patch });
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
       <div className="space-y-3">
         <div className="overflow-hidden rounded-lg border border-border shadow-[var(--shadow-card)]">
           <SlideCanvas slide={slide} theme={THEMES[plan.theme]} index={index} total={plan.slides.length} lessonTitle={plan.title} quizUrl={quizUrl} />

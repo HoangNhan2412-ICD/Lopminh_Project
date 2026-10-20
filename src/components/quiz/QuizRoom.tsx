@@ -104,7 +104,7 @@ export function QuizRoom() {
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">Phòng Quiz</h1>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <div className="space-y-5">
           {/* Tạo bộ câu hỏi */}
           <Card>

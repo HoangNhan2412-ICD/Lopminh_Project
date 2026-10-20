@@ -277,7 +277,7 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
       {tab === "giao-an" && <PlanView plan={plan} />}
       {tab === "phan-hoa" && <TierBoard plan={plan} onChange={(tiers) => save({ ...plan, tiers })} />}
       {tab === "xuat" && (
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <ExportPanel
             plan={plan}
             quizUrl={quizUrl}

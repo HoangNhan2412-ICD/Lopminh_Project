@@ -119,7 +119,7 @@ export function ProfileView() {
         </div>
       </Card>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {/* Phong cách: sửa được, Bé Bảng soạn bài theo đúng phong cách này */}
         <Card>
           <CardHeader
