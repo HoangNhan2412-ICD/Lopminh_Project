@@ -86,7 +86,7 @@ export function ClassBoard({ cls }: { cls: ClassInfo }) {
     const withNotes = roster.filter((s) => notesOf(s.id).length > 0);
     const others = roster.filter((s) => notesOf(s.id).length === 0);
     return (
-      <Card>
+      <Card data-tour="class">
         {header}
         <div className="mt-3 border-t border-border">
           {withNotes.length > 0 && (

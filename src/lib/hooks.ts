@@ -75,7 +75,7 @@ const ERROR_TEXT: Record<string, string> = {
   network: "Nhận giọng nói cần mạng internet. Mình kiểm tra kết nối rồi thử lại nhé.",
 };
 
-export function useSpeechToText(onFinal: (text: string) => void) {
+export function useSpeechToText(onFinal: (text: string) => void, lang = "vi-VN") {
   const supported = useSyncExternalStore(
     () => () => {},
     () => getCtor() !== null,
@@ -99,7 +99,7 @@ export function useSpeechToText(onFinal: (text: string) => void) {
     setError(null);
     setInterim("");
     const rec = new C();
-    rec.lang = "vi-VN";
+    rec.lang = lang;
     rec.interimResults = true;
     rec.continuous = true;
     rec.onresult = (e) => {
@@ -119,7 +119,7 @@ export function useSpeechToText(onFinal: (text: string) => void) {
     recRef.current = rec;
     rec.start();
     setListening(true);
-  }, []);
+  }, [lang]);
 
   const stop = useCallback(() => recRef.current?.stop(), []);
 

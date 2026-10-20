@@ -47,7 +47,7 @@ export function ProfileSwitcher() {
   }, [open]);
 
   return (
-    <div className="relative" ref={ref}>
+    <div data-tour="profile" className="relative" ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}

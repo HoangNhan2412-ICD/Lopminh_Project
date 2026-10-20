@@ -92,7 +92,7 @@ export function QuickNoteInput({ cls }: { cls: ClassInfo }) {
   }
 
   return (
-    <Card>
+    <Card data-tour="note">
       <CardHeader
         title="Ghi nhanh tình hình lớp"
         subtitle={`Lớp ${cls.name} · ${h} gõ hoặc nói, Bé Bảng tách thành từng ghi chú`}

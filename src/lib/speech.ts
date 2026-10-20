@@ -33,3 +33,21 @@ export function speakVi(text: string) {
     run();
   }
 }
+
+/** Đọc mẫu tiếng Anh (giọng en-US/en-GB của trình duyệt), chậm hơn một chút cho dễ nghe. */
+export function speakEn(text: string, rate = 0.85) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const synth = window.speechSynthesis;
+  const run = () => {
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    u.rate = rate;
+    const voices = synth.getVoices().filter((v) => v.lang.toLowerCase().startsWith("en"));
+    const v = voices.find((x) => /google us|samantha|aria|jenny/i.test(x.name)) ?? voices[0];
+    if (v) u.voice = v;
+    synth.speak(u);
+  };
+  if (synth.getVoices().length === 0) synth.addEventListener("voiceschanged", run, { once: true });
+  else run();
+}

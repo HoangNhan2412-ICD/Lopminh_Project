@@ -13,7 +13,7 @@ const OPTIONS: { value: FontScale; label: string; cls: string }[] = [
 export function FontScaleToggle() {
   const { fontScale, setFontScale } = useApp();
   return (
-    <div role="radiogroup" aria-label="Cỡ chữ" className="flex rounded-xl border border-border bg-surface p-0.5">
+    <div data-tour="font" role="radiogroup" aria-label="Cỡ chữ" className="flex rounded-xl border border-border bg-surface p-0.5">
       {OPTIONS.map((o) => (
         <button
           key={o.value}

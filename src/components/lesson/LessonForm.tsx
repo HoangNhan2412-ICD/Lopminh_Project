@@ -67,7 +67,7 @@ export function LessonForm({ busy, docCount, onSubmit }: { busy: boolean; docCou
   const grade = cls ? `Lớp ${cls.name.match(/^\d+/)?.[0] ?? cls.name}` : "";
 
   return (
-    <Card>
+    <Card data-tour="lesson-form">
       <CardHeader
         icon={<Wand2 className="size-6" />}
         title="Soạn bài mới"

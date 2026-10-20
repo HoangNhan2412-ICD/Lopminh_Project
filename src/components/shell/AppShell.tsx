@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { FontScaleToggle } from "@/components/shell/FontScaleToggle";
+import { GuideTour } from "@/components/shell/GuideTour";
 import { ProfileInitials, ProfileSwitcher } from "@/components/shell/ProfileSwitcher";
 import { NAV, groupOf } from "@/lib/nav";
 import { addressOf } from "@/lib/persona/honorific";
@@ -28,7 +29,7 @@ function Sidebar() {
         </span>
       </Link>
 
-      <nav aria-label="Điều hướng chính" className="flex-1 overflow-y-auto px-3 pb-4">
+      <nav data-tour="nav" aria-label="Điều hướng chính" className="flex-1 overflow-y-auto px-3 pb-4">
         {NAV.map((group) => (
           <div key={group.id} className="mt-4 first:mt-1">
             <p className="px-3 pb-1.5 text-sm font-semibold text-ink-muted">{group.label}</p>
@@ -157,6 +158,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
           <div className="hidden lg:block" />
           <div className="flex items-center gap-2">
+            {ready && <GuideTour />}
             <FontScaleToggle />
             <ProfileSwitcher />
           </div>
