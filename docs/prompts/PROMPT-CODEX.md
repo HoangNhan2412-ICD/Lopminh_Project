@@ -68,6 +68,48 @@ Vấn đề: trên Vercel, khi chat không chạy thì không biết vì thiếu
 
 Xong khi: có test cho hàm phân loại lỗi; với khóa giả `GEMINI_API_KEY=sai` thì chat hiện đúng câu "khóa sai".
 
+### [ ] Giai đoạn 2B — Thẻ học sinh trực quan + quy trình riêng cho từng em
+
+Vấn đề: ghi chú học sinh hiện là danh sách chữ (`src/components/today/ClassBoard.tsx`), khó nhìn. Và khi biết một em vắng, thầy cô phải tự nhớ soạn bù, kiểm tra bù, báo phụ huynh.
+
+Làm bản HTML trước: `design/02-the-hoc-sinh.html` (theo quy ước thư mục `design/` trong CLAUDE.md), gửi mình xem, rồi mới dựng React.
+
+**A. Thẻ học sinh**
+
+- Lưới thẻ `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`, mỗi em một thẻ:
+  - Đầu thẻ: ô chữ viết tắt tên (màu lấy từ token theo id, không hex), số thứ tự, họ tên, nhãn học lực, nhãn lớp.
+  - Nút có mặt/vắng ở góc phải: bấm một lần là đổi, viền thẻ đổi màu theo trạng thái (vắng = màu cảnh báo).
+  - Một dòng nổi bật nếu có: thành tích (màu thành công) hoặc "Cần hỗ trợ: …" (màu chú ý).
+  - Các nhãn đặc điểm (`traits`), tối đa 3, còn lại gom "+2".
+  - Dòng "Gợi ý khi dạy: Tầng 1 (Cốt lõi)" hoặc "Tầng 2 (Nâng cao)" lấy từ `suggestTiers()` ở `src/lib/lesson/build.ts`.
+  - Chân thẻ: một nút chính "Ghi chú", một nút phụ biểu tượng máy ảnh. Nếu em đang có quy trình thì hiện nhãn tiến độ, ví dụ "Bù bài 2/5".
+- Thanh lọc phía trên: ô tìm không dấu (tên, đặc điểm, ghi chú) + chip có số đếm: Tất cả, Vắng/Ốm, Cần hỗ trợ, Tầng nâng cao, Đang có việc cần làm.
+- Bấm "Ghi chú" mở bảng nhỏ (trên điện thoại là sheet từ dưới lên): chip ghi nhanh một chạm ("Vắng có phép", "Vắng không phép", "Ốm", "Chưa làm bài", "Phát biểu tốt", "Mất tập trung", "Tiến bộ"), ô gõ, nút micro (`useSpeechToText`). Lưu thành `StudentNote` như hiện tại, map chip sang `NoteKind`.
+- Nút máy ảnh: chụp/chọn ảnh vở, bài làm làm minh chứng, gắn vào ghi chú, lưu cục bộ (thu nhỏ ≤ 1280px). Không gửi ảnh đi đâu ở giai đoạn này.
+- Bấm vào tên mở trang chi tiết của em: dòng thời gian ghi chú, các quy trình đã và đang chạy, ảnh minh chứng.
+- Thêm vào `Student` (`src/lib/types.ts`) các trường tùy chọn `hocLuc?: "gioi" | "kha" | "trung-binh" | "yeu"` và `noiBat?: { loai: "thanh-tich" | "can-ho-tro"; text: string }`. Nhập danh sách lớp từ Excel (`src/lib/kho/roster.ts`) đọc thêm cột "Học lực". Dữ liệu demo bổ sung cho đủ.
+- Không đưa chữ kỹ thuật lên giao diện (không "Tier", "Impact Engine", "Recharts"…). Ghi chú sức khỏe, tâm lý hiện biểu tượng khóa và không bao giờ đưa vào tin nhắn phụ huynh trừ khi thầy cô tự gõ.
+
+**B. Quy trình cho từng em**
+
+Khi có sự kiện về một em, app tự mở một quy trình gồm các bước, chuẩn bị sẵn bản nháp, thầy cô chỉ duyệt và bấm. Không có gì tự gửi đi.
+
+- Quy trình "Bù bài khi vắng", mở khi em bị đánh dấu vắng (bằng nút trên thẻ, chip ghi nhanh, hoặc ghi chú giọng nói có `absentToday`):
+  1. Tóm tắt bài em nghỉ: lấy giáo án đã soạn cho lớp đó ngày đó (`useLessons`). Không có thì hỏi thầy cô chọn bài hoặc gõ tên bài.
+  2. Phiếu bù bài theo tầng phù hợp của em: Gemini soạn từ giáo án (dùng `generateJson()`), xem trước, tải Word, in được.
+  3. Kiểm tra bù 5 câu: tạo bộ câu hỏi như Phòng Quiz, chiếu được hoặc in, có mã QR.
+  4. Hẹn ngày bù: mặc định 3 ngày học sau, thầy cô sửa được; đến hạn thì hiện ở trang Hôm Nay.
+  5. Nhắn phụ huynh: viết nháp (dùng lại cách của `/api/mail/reply`), có nút chép, không tự gửi.
+  6. Ghi kết quả bù (điểm hoặc nhận xét) và đóng quy trình.
+- Quy trình "Phụ đạo" khi em có `noiBat.loai = "can-ho-tro"` hoặc ghi chú học tập yếu lặp lại 3 lần trong 2 tuần: gợi ý kế hoạch 2 tuần (3 buổi, mỗi buổi mục tiêu + bài tập ngắn), theo dõi từng buổi.
+- Quy trình "Hỏi thăm khi ốm nhiều ngày" (vắng vì ốm từ 2 ngày): nhắc giảm bài, nháp tin hỏi thăm phụ huynh. Không ghi chẩn đoán.
+- Trên trang Hôm Nay thêm mục "Việc cho từng em hôm nay": các bước đến hạn, mỗi dòng một nút làm tiếp.
+- Mở quy trình là tạo bản nháp ngay nếu có Gemini (chạy nền, không chặn giao diện); không có khóa thì tạo khung bước với nội dung mẫu. Một em vắng nhiều tiết trong ngày chỉ mở một quy trình.
+- Dữ liệu: kiểu `StudentWorkflow` { id, studentId, classId, loai, noteId, lessonId?, steps: { key, label, status: "cho" | "dang-lam" | "xong" | "bo-qua", due?, ketQua?, artifact? }[], createdAt, closedAt? }, lưu `lm:workflows:<profileId>` qua `useLocal`. Mẫu quy trình để trong `src/lib/workflows/templates.ts`, logic mở/đóng là hàm thuần trong `src/lib/workflows/engine.ts` để test được. Giai đoạn 3 chuyển sang bảng Supabase.
+- Test: đánh dấu vắng → đúng 1 quy trình 6 bước; vắng 2 tiết cùng ngày → vẫn 1; đánh dấu có mặt lại trong ngày → hỏi có hủy quy trình không; ghi chú yếu 3 lần → gợi ý phụ đạo; tin nhắn phụ huynh không chứa ghi chú sức khỏe, tâm lý.
+
+Xong khi: Cô Mai Hoa (dữ liệu demo) bấm vắng cho một em ở thẻ, trong một phút thấy phiếu bù, 5 câu kiểm tra và nháp tin phụ huynh sẵn để duyệt; ở 390px thẻ không tràn, mọi nút ≥ 44px.
+
 ### [ ] Giai đoạn 3 — Supabase thật + đăng nhập Google
 
 **DỪNG trước khi code**: hỏi mình đã tạo project Supabase và bật Google provider chưa. Cần `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` trong `.env.local` (mình tự điền, bạn không hỏi giá trị). Chưa có thì vẫn làm được phần code, nhưng chỉ thử ở chế độ demo, và nói rõ chưa thử với Supabase thật.
