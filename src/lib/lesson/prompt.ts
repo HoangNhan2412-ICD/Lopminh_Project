@@ -1,6 +1,8 @@
 import type { Student, StudentNote, TeacherProfile } from "@/lib/types";
 import { profileBlock } from "@/lib/ai/prompts";
 import { ICON_KEYS, LAYOUT_LABEL, SLIDE_LAYOUTS, type LessonRequest } from "@/lib/lesson/types";
+import { findTextbookLesson } from "@/content/thu-vien/catalog";
+import { verifiedLessonFramework } from "@/content/thu-vien/van-ban";
 
 /*
   Thứ tự: luật cố định (được Gemini cache) → hồ sơ giáo viên → lớp học → yêu cầu hôm nay.
@@ -69,9 +71,11 @@ export function classContext(students: Student[], notes: StudentNote[], tiers: {
 }
 
 export function lessonUserPrompt(r: LessonRequest, context: string, extra?: { previousTitle?: string; more?: string; avoidImages?: string[] }): string {
+  const selected = r.textbook ? findTextbookLesson(r.textbook.bookId, r.textbook.lessonId) : undefined;
   return [
     `BÀI DẠY: ${r.topic}`,
     `Môn ${r.subject}, ${r.grade}, lớp ${r.className}, thời lượng ${r.minutes} phút.`,
+    selected ? `BÀI ĐÃ ĐỐI CHIẾU: ${selected.lesson.ten}; ${selected.lesson.soTietGoiY} tiết gợi ý.\nYÊU CẦU CẦN ĐẠT:\n${selected.lesson.yeuCauCanDat.map(y => `${y.text} [${y.location}; ${y.source}]`).join("\n")}` : "",
     `Bối cảnh lớp hôm nay:\n${context}`,
     `Điều chỉnh: ${ENERGY[r.energy]} ${FOCUS[r.focus]} ${TONE[r.tone]}`,
     r.wishes.trim() ? `Mong muốn riêng của giáo viên: ${r.wishes.trim()}` : "",
@@ -83,7 +87,7 @@ export function lessonUserPrompt(r: LessonRequest, context: string, extra?: { pr
 }
 
 export function lessonSystemPrompt(p: TeacherProfile): string {
-  return `${LESSON_RULES}\n\n${profileBlock(p)}\nSoạn bài đúng phong cách dạy này.`;
+  return `${verifiedLessonFramework()}\n\n${LESSON_RULES}\n\n${profileBlock(p)}\nSoạn bài đúng phong cách dạy này.`;
 }
 
 export const SLIDE_RULES = `Bạn sửa MỘT slide trong bộ bài giảng theo yêu cầu của giáo viên. Giữ nguyên chủ đề bài, trả về đúng JSON schema của một slide.

@@ -15,8 +15,9 @@ import { downloadBlob } from "@/lib/quiz/export";
 import { speakVi } from "@/lib/speech";
 import { useApp } from "@/lib/store/app-store";
 import { capFirst, cn, nfc, stripDiacritics } from "@/lib/text";
+import { SharedLibrary } from "@/components/kho/SharedLibrary";
 
-type Tab = "tai-lieu" | "hoc-sinh" | "notebooklm";
+type Tab = "thu-vien" | "tai-lieu" | "hoc-sinh" | "notebooklm";
 const inputCls =
   "w-full rounded-xl border border-border bg-surface px-3 py-2 text-base text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none";
 
@@ -127,6 +128,7 @@ function DocsTab() {
         <Card>
           <CardHeader icon={<FileUp className="size-6" />} title="Thêm tài liệu" subtitle="Bé Bảng dựa vào kho này khi soạn bài, trả lời và ghi rõ lấy từ tài liệu nào" />
           <div className="space-y-4 p-5">
+            <p className="text-sm text-ink-muted">Chỉ tải tài liệu mình có quyền sử dụng. Kho này được tách theo hồ sơ của mình.</p>
             <div className="grid gap-2 sm:grid-cols-2">
               {DOC_CATEGORIES.map((c) => (
                 <button
@@ -363,9 +365,10 @@ function NotebookTab() {
 }
 
 export function KnowledgeView() {
-  const [tab, setTab] = useState<Tab>("tai-lieu");
+  const [tab, setTab] = useState<Tab>("thu-vien");
   const tabs: { id: Tab; label: string }[] = [
-    { id: "tai-lieu", label: "Tài liệu" },
+    { id: "thu-vien", label: "Thư viện chung" },
+    { id: "tai-lieu", label: "Tài liệu của tôi" },
     { id: "hoc-sinh", label: "Học sinh" },
     { id: "notebooklm", label: "Sang NotebookLM" },
   ];
@@ -386,6 +389,7 @@ export function KnowledgeView() {
         ))}
       </div>
       {tab === "tai-lieu" && <DocsTab />}
+      {tab === "thu-vien" && <SharedLibrary />}
       {tab === "hoc-sinh" && <StudentsTab />}
       {tab === "notebooklm" && <NotebookTab />}
     </div>

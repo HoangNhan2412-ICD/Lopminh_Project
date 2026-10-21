@@ -1,0 +1,90 @@
+[
+  {
+    "id": "cv5512",
+    "soHieu": "5512/BGDĐT-GDTrH",
+    "ten": "Khung kế hoạch giáo dục và bài dạy",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "CV5512"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "tt32",
+    "soHieu": "32/2018/TT-BGDĐT",
+    "ten": "Chương trình giáo dục phổ thông",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "TT32"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "tt13",
+    "soHieu": "13/2022/TT-BGDĐT",
+    "ten": "Sửa đổi chương trình giáo dục phổ thông",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "TT13"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "tt22",
+    "soHieu": "22/2021/TT-BGDĐT",
+    "ten": "Đánh giá học sinh THCS, THPT",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "TT22"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "tt27",
+    "soHieu": "27/2020/TT-BGDĐT",
+    "ten": "Đánh giá học sinh tiểu học",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "TT27"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "cv2345",
+    "soHieu": "2345/BGDĐT-GDTH",
+    "ten": "Kế hoạch giáo dục cấp tiểu học",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "CV2345"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "qd3588",
+    "soHieu": "3588/QĐ-BGDĐT",
+    "ten": "Danh mục sách giáo khoa cần đối chiếu",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "QD3588"
+    ],
+    "tomTat": []
+  },
+  {
+    "id": "tt15",
+    "soHieu": "15/2026/TT-BGDĐT",
+    "ten": "Điều lệ trường cần đối chiếu",
+    "tinhTrang": "chua-kiem-tra",
+    "daKiemTra": false,
+    "tags": [
+      "TT15"
+    ],
+    "tomTat": []
+  }
+]

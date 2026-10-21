@@ -4,12 +4,14 @@ import { MODELS } from "@/lib/ai/models";
 import { profileBlock } from "@/lib/ai/prompts";
 import { fixAddress } from "@/lib/persona/honorific";
 import type { TeacherProfile } from "@/lib/types";
+import { searchStores } from "@/lib/ai/stores";
+import { logAiError } from "@/lib/ai/errors";
 
 export const maxDuration = 60;
 
 const bodySchema = z.object({
   question: z.string().min(2).max(1000),
-  storeName: z.string().startsWith("fileSearchStores/"),
+  storeName: z.string().startsWith("fileSearchStores/").optional(),
   profile: z.custom<TeacherProfile>((v) => typeof v === "object" && v !== null && "gender" in v),
 });
 
@@ -20,13 +22,15 @@ export async function POST(req: Request) {
   const ai = getGemini();
   if (!ai) return Response.json({ error: "Chưa có khóa Gemini." }, { status: 503 });
   const { question, storeName, profile } = parsed.data;
+  const stores = searchStores(storeName);
+  if (!stores.length) return Response.json({ error: "Chưa có kho tài liệu được cấu hình." }, { status: 400 });
   try {
     const res = await ai.models.generateContent({
       model: MODELS.default,
       contents: [{ role: "user", parts: [{ text: question.normalize("NFC") }] }],
       config: {
         systemInstruction: `Bạn trả lời câu hỏi của giáo viên CHỈ dựa trên tài liệu trong kho được cung cấp. Không có trong tài liệu thì nói rõ là không tìm thấy, không bịa. Trả lời ngắn, rõ, tiếng Việt.\n${profileBlock(profile)}`,
-        tools: [{ fileSearch: { fileSearchStoreNames: [storeName] } }],
+        tools: [{ fileSearch: { fileSearchStoreNames: stores } }],
         temperature: 0.2,
         abortSignal: AbortSignal.timeout(55_000),
       },
@@ -35,7 +39,7 @@ export async function POST(req: Request) {
     const sources = Array.from(new Set(chunks.map((c) => c.retrievedContext?.title).filter((t): t is string => Boolean(t))));
     return Response.json({ answer: fixAddress((res.text ?? "").trim(), profile), sources });
   } catch (err) {
-    console.error("kho/ask lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ error: "Gemini đang bận, thử lại sau ít phút nhé." }, { status: 502 });
   }
 }

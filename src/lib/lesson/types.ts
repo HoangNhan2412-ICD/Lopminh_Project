@@ -143,6 +143,7 @@ export type LessonPlanContent = z.infer<typeof lessonPlanSchema>;
 export type ThemeKey = "bang-xanh" | "giay-kem" | "tuoi-sang";
 
 export interface LessonRequest {
+  textbook?: { bookId: string; lessonId: string };
   topic: string;
   subject: string;
   grade: string;

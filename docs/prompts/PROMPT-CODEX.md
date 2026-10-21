@@ -116,6 +116,8 @@ Xong khi: Cô Mai Hoa (dữ liệu demo) bấm vắng cho một em ở thẻ, tr
 
 ### [ ] Giai đoạn 2C — Thư viện dựng sẵn: văn bản chỉ đạo + mục lục SGK Kết nối tri thức
 
+Tiến độ 21/10/2026: đã có schema, 5 tệp mục lục rỗng cho các môn/lớp demo, danh sách văn bản chờ đối chiếu, tab thư viện, bộ chọn bài, script kiểm tra/nạp và nối kho chung. 58 test, lint, build, Playwright 1280/390px qua. DỪNG phần nội dung: chờ PDF gốc, mục lục thật, yêu cầu cần đạt và kiểm tra hiệu lực từ nhóm; chưa chạy upload hoặc kiểm thử bài SGK thật.
+
 Mục tiêu: mở Kho Dữ Liệu là đã có sẵn văn bản soạn giáo án và mục lục SGK, thầy cô không phải tự tải. Soạn Bài chọn được bài trong SGK.
 
 Bối cảnh đã kiểm tra (10/2026):

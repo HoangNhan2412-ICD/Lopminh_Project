@@ -8,6 +8,7 @@ import type { LessonRequest } from "@/lib/lesson/types";
 import { honorificLower } from "@/lib/persona/honorific";
 import { useApp } from "@/lib/store/app-store";
 import { cn, nfc } from "@/lib/text";
+import { TextbookPicker } from "@/components/lesson/TextbookPicker";
 
 const inputCls =
   "w-full rounded-xl border border-border bg-surface px-3 py-2 text-base text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none";
@@ -53,6 +54,7 @@ export function LessonForm({ busy, docCount, onSubmit }: { busy: boolean; docCou
   const pool = subjectClasses.length ? subjectClasses : classes;
 
   const [topic, setTopic] = useState("");
+  const [textbook, setTextbook] = useState<LessonRequest["textbook"]>();
   const [classId, setClassId] = useState(pool[0]?.id ?? "");
   const [minutes, setMinutes] = useState(45);
   const [wishes, setWishes] = useState("");
@@ -81,6 +83,7 @@ export function LessonForm({ busy, docCount, onSubmit }: { busy: boolean; docCou
           speech.stop();
           onSubmit({
             topic: nfc(topic.trim()),
+            textbook,
             subject: cls.subject,
             grade,
             classId: cls.id,
@@ -93,20 +96,24 @@ export function LessonForm({ busy, docCount, onSubmit }: { busy: boolean; docCou
           }, { useKho: useKho && docCount > 0 });
         }}
       >
+        <TextbookPicker key={classId} subject={cls?.subject ?? profile.subject} grade={Number(cls?.name.match(/^\d+/)?.[0] ?? 0)} onPick={(bookId, lesson) => {
+          setTextbook(lesson ? { bookId, lessonId: lesson.id } : undefined);
+          if (lesson) { setTopic(lesson.ten); setMinutes(Math.min(180, lesson.soTietGoiY * 45)); }
+        }} />
         <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_10rem_8rem]">
           <label className="block">
             <span className="font-medium">Tên bài dạy</span>
             <input
               className={cn(inputCls, "mt-1")}
               value={topic}
-              onChange={(e) => setTopic(e.target.value)}
+              onChange={(e) => { setTopic(nfc(e.target.value)); setTextbook(undefined); }}
               placeholder="Ví dụ: Căn bậc hai và hằng đẳng thức √(A²) = |A|"
               required
             />
           </label>
           <label className="block">
             <span className="font-medium">Lớp</span>
-            <select className={cn(inputCls, "mt-1 min-h-11")} value={classId} onChange={(e) => setClassId(e.target.value)}>
+            <select className={cn(inputCls, "mt-1 min-h-11")} value={classId} onChange={(e) => { setClassId(e.target.value); setTextbook(undefined); }}>
               {pool.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} ({c.role === "chu-nhiem" ? "chủ nhiệm" : "bộ môn"})

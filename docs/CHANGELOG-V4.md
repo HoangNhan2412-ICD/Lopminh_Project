@@ -1,5 +1,14 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 2C, khung chờ nguồn (21/10/2026)
+
+- Schema Zod cho văn bản và mục lục: nguồn chính thức HTTPS, ngày, NFC, mã bài không trùng, yêu cầu cần đạt có vị trí trích dẫn; không cho trích nội dung khi chưa đối chiếu.
+- 8 đầu mục văn bản theo danh sách nhóm cung cấp, đều chưa xác minh, không tự điền ngày/hiệu lực/nội dung; 5 mục lục rỗng Toán 9, Vật lý 10/11, Ngữ văn 6/7. Chưa khẳng định chính sách dùng chung SGK khi chưa đối chiếu nguồn.
+- Kho có Thư viện chung và Tài liệu của tôi, tìm không dấu/lọc; Soạn Bài chọn chương/bài khi có nội dung đã kiểm tra, vẫn gõ tay được. Server xác thực mã bài và môn/lớp; yêu cầu cần đạt lấy từ catalog, không tin bản khách tự gửi.
+- Script kiểm tra định dạng và nạp PDF có kiểm tra đường dẫn/SHA256, mặc định chỉ kiểm tra. Chạy thử thấy 0 PDF đã đối chiếu, không upload. Kho chung `GEMINI_SHARED_STORE` được ghép với kho riêng trên server. Hướng dẫn `docs/THU-VIEN.md`.
+- 58/58 test, lint và build qua. Playwright 1280/390px: thư viện chờ nguồn, tìm không dấu, tab riêng và nhập bài thủ công hoạt động, không tràn.
+- Chưa hoàn thành Giai đoạn 2C: chờ nhóm cung cấp PDF/mục lục chính thức, kiểm tra hiệu lực, nạp store và thử bài SGK thật. Giữ khung luật soạn bài cũ cho demo trong lúc chưa có văn bản đã đối chiếu.
+
 ## Tiếp quản Codex — Giai đoạn 2B (21/10/2026)
 
 - `design/02-the-hoc-sinh.html`: thẻ, lọc không dấu, điểm danh, sheet ghi chú nhanh, chi tiết và quy trình bù bài 6 bước. Dùng token CSS, dữ liệu minh họa, không lưu hoặc gửi ảnh.

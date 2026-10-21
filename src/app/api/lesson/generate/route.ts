@@ -6,11 +6,15 @@ import { fallbackPlan, polishPlan } from "@/lib/lesson/build";
 import { lessonSystemPrompt, lessonUserPrompt } from "@/lib/lesson/prompt";
 import { lessonPlanSchema, type LessonRequest } from "@/lib/lesson/types";
 import type { TeacherProfile } from "@/lib/types";
+import { findTextbookLesson } from "@/content/thu-vien/catalog";
+import { searchStores } from "@/lib/ai/stores";
+import { logAiError } from "@/lib/ai/errors";
 
 export const maxDuration = 180;
 
 const bodySchema = z.object({
   request: z.object({
+    textbook: z.object({ bookId: z.string().max(100), lessonId: z.string().max(100) }).optional(),
     topic: z.string().min(2).max(300),
     subject: z.string().max(60),
     grade: z.string().max(40),
@@ -35,18 +39,18 @@ const bodySchema = z.object({
 });
 
 /** Lấy đoạn liên quan trong kho Gemini File Search của giáo viên (nếu có), để đưa vào prompt soạn bài. */
-async function retrieveFromStore(storeName: string, topic: string): Promise<string> {
+async function retrieveFromStore(storeNames: string[], topic: string): Promise<string> {
   const ai = getGemini();
   if (!ai) return "";
   try {
     const res = await ai.models.generateContent({
       model: MODELS.fast,
       contents: [{ role: "user", parts: [{ text: `Trích nguyên văn các đoạn trong tài liệu liên quan tới bài "${topic}" (kiến thức, ví dụ, phân phối chương trình, kế hoạch tổ). Ghi tên tài liệu trước mỗi đoạn. Tối đa 1500 chữ.` }] }],
-      config: { tools: [{ fileSearch: { fileSearchStoreNames: [storeName] } }], temperature: 0, abortSignal: AbortSignal.timeout(40_000) },
+      config: { tools: [{ fileSearch: { fileSearchStoreNames: storeNames } }], temperature: 0, abortSignal: AbortSignal.timeout(40_000) },
     });
     return (res.text ?? "").slice(0, 9000);
   } catch (err) {
-    console.error("lesson/generate: không lấy được đoạn từ kho", (err as Error).message);
+    logAiError(err);
     return "";
   }
 }
@@ -56,13 +60,19 @@ export async function POST(req: Request) {
   if (!parsed.success) return Response.json({ error: "Yêu cầu soạn bài chưa đủ thông tin." }, { status: 400 });
   const { request, profile, context, redo, avoidImages, knowledge } = parsed.data;
   const r = request as LessonRequest;
+  if (r.textbook) {
+    const selected = findTextbookLesson(r.textbook.bookId, r.textbook.lessonId);
+    if (!selected || selected.book.mon !== r.subject || selected.book.lop !== Number(r.grade.match(/\d+/)?.[0])) return Response.json({ error: "Bài SGK chưa được đối chiếu hoặc không khớp môn/lớp." }, { status: 400 });
+    r.topic = selected.lesson.ten;
+  }
 
   if (!isAiConfigured()) {
     return Response.json({ mode: "demo", plan: polishPlan(fallbackPlan(r), r) });
   }
 
   try {
-    const fromStore = knowledge?.storeName?.startsWith("fileSearchStores/") ? await retrieveFromStore(knowledge.storeName, r.topic) : "";
+    const stores = searchStores(knowledge?.storeName);
+    const fromStore = stores.length ? await retrieveFromStore(stores, r.topic) : "";
     const kho = [
       fromStore,
       ...(knowledge?.docs ?? []).map((d) => `[${d.name}]\n${d.text}`),
