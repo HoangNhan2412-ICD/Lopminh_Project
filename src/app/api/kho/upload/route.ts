@@ -1,4 +1,6 @@
 import { getGemini } from "@/lib/ai/client";
+import { privateStoreName, signedStoreName } from "@/lib/ai/stores";
+import { logAiError } from "@/lib/ai/errors";
 
 export const maxDuration = 120;
 
@@ -18,7 +20,7 @@ export async function POST(req: Request) {
   const file = form?.get("file");
   const category = String(form?.get("category") ?? "khac");
   const profileId = String(form?.get("profileId") ?? "").replace(/[^a-z0-9-]/gi, "").slice(0, 60);
-  let storeName = String(form?.get("storeName") ?? "");
+  let storeName = await privateStoreName(String(form?.get("storeName") ?? "")) ?? "";
   if (!(file instanceof File)) return Response.json({ error: "Chưa có tệp." }, { status: 400 });
   if (file.size > MAX_BYTES) return Response.json({ error: "Tệp lớn hơn 4 MB, thầy cô chia nhỏ hoặc đưa thẳng vào NotebookLM nhé." }, { status: 413 });
 
@@ -41,10 +43,11 @@ export async function POST(req: Request) {
       await sleep(2500);
       op = await ai.operations.get({ operation: op });
     }
-    if (!op.done) return Response.json({ mode: "ai", storeName, pending: true });
-    return Response.json({ mode: "ai", storeName, documentName: op.response?.documentName ?? null });
+    const token = await signedStoreName(storeName);
+    if (!op.done) return Response.json({ mode: "ai", storeName: token, pending: true });
+    return Response.json({ mode: "ai", storeName: token, documentName: op.response?.documentName ?? null });
   } catch (err) {
-    console.error("kho/upload lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ mode: "local", warning: "Chưa đưa được tệp lên Gemini, tạm lưu trên máy." });
   }
 }

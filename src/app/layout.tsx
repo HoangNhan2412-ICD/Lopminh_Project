@@ -10,7 +10,7 @@ import "@fontsource/be-vietnam-pro/latin-600.css";
 import "@fontsource/be-vietnam-pro/latin-700.css";
 import "./globals.css";
 import { AppShell } from "@/components/shell/AppShell";
-import { AppStoreProvider } from "@/lib/store/app-store";
+import { AccountProvider } from "@/components/account/AccountProvider";
 
 export const metadata: Metadata = {
   title: "Lớp Mình — trợ lý của thầy cô",
@@ -25,9 +25,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="vi">
       <body>
-        <AppStoreProvider>
+        <AccountProvider>
           <AppShell>{children}</AppShell>
-        </AppStoreProvider>
+        </AccountProvider>
         <Toaster position="top-center" richColors closeButton toastOptions={{ style: { fontSize: "1rem" } }} />
       </body>
     </html>

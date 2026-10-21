@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button, Card, CardHeader, Chip, type Tone } from "@/components/ui";
 import { demoMails } from "@/lib/demo/mail";
-import { useLocal } from "@/lib/local-store";
+import { useLocal, readLocal, writeLocal, storage } from "@/lib/local-store";
 import { LABEL_TEXT, MAIL_LABELS, type MailItem, type MailLabel, type RawMail } from "@/lib/mail/classify";
 import { honorificLower } from "@/lib/persona/honorific";
 import { useApp } from "@/lib/store/app-store";
@@ -76,10 +76,11 @@ export function MailboxView() {
   const seedKey = `lm:mail-seeded:${profile.id}`;
   useEffect(() => {
     if (!today) return;
+    if (storage.remote) return;
     let seeded = false;
     try {
-      seeded = localStorage.getItem(seedKey) === "1";
-      localStorage.setItem(seedKey, "1");
+      seeded = readLocal<number>(seedKey, 0) === 1;
+      writeLocal(seedKey, 1);
     } catch {
       /* bỏ qua */
     }

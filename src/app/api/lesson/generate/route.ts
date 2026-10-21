@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const stores = searchStores(knowledge?.storeName);
+    const stores = await searchStores(knowledge?.storeName);
     const fromStore = stores.length ? await retrieveFromStore(stores, r.topic) : "";
     const kho = [
       fromStore,

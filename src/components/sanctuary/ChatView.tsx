@@ -7,7 +7,7 @@ import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { LoadPicker } from "@/components/sanctuary/LoadPicker";
 import { Button, Card } from "@/components/ui";
 import { useSpeechToText } from "@/lib/hooks";
-import { useLocal } from "@/lib/local-store";
+import { useLocal, readLocal, writeLocal, removeLocal, storage } from "@/lib/local-store";
 import { addressOf, fixAddress, honorificLower } from "@/lib/persona/honorific";
 import { periodsToday } from "@/lib/schedule";
 import { speakVi } from "@/lib/speech";
@@ -37,16 +37,16 @@ export function ChatView() {
   const [demo, setDemo] = useState(false);
   const [memory, setMemory] = useLocal<string>(`lm:chatmem:${profile.id}`, "");
   const listRef = useRef<HTMLDivElement>(null);
+  const epoch = useRef(storage.epoch);
+  const pending = useRef<AbortController | null>(null);
+  const generation = useRef(0);
+  const [deleting, setDeleting] = useState(false);
+  useEffect(() => () => { generation.current++; pending.current?.abort(); }, []);
 
   // Lịch sử trò chuyện tách riêng theo từng hồ sơ.
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey(profile.id));
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- nạp lịch sử của đúng hồ sơ từ localStorage
-      setMessages(raw ? (JSON.parse(raw) as Msg[]) : []);
-    } catch {
-      setMessages([]);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- nạp lịch sử của đúng hồ sơ
+    setMessages(readLocal<Msg[]>(storageKey(profile.id), []));
   }, [profile.id]);
 
   useEffect(() => {
@@ -55,11 +55,7 @@ export function ChatView() {
 
   const persist = useCallback(
     (list: Msg[]) => {
-      try {
-        localStorage.setItem(storageKey(profile.id), JSON.stringify(list.slice(-HISTORY_KEPT)));
-      } catch {
-        /* bỏ qua */
-      }
+      writeLocal(storageKey(profile.id), list.slice(-HISTORY_KEPT), epoch.current);
     },
     [profile.id],
   );
@@ -79,7 +75,9 @@ export function ChatView() {
 
   async function send(textArg?: string) {
     const text = nfc((textArg ?? input).trim());
-    if (!text || streaming) return;
+    if (!text || streaming || deleting) return;
+    const turn = ++generation.current;
+    const controller = new AbortController(); pending.current = controller;
     if (speech.listening) speech.stop();
     const userMsg: Msg = { id: `u-${Date.now()}`, role: "user", text };
     const botMsg: Msg = { id: `m-${Date.now()}`, role: "model", text: "" };
@@ -92,6 +90,7 @@ export function ChatView() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
+        signal: controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ profile, load, todayContext: todayContext(), history, message: text, memory }),
       });
@@ -110,6 +109,7 @@ export function ChatView() {
         const shown = acc;
         setMessages((list) => list.map((m) => (m.id === botMsg.id ? { ...m, text: shown } : m)));
       }
+      if (turn !== generation.current || epoch.current !== storage.epoch) return;
       const final = [...messages, userMsg, { ...botMsg, text: fixAddress(acc, profile) }];
       setMessages(final);
       persist(final);
@@ -118,19 +118,32 @@ export function ChatView() {
       if (userTurns % 4 === 0) {
         void fetch("/api/chat/memory", {
           method: "POST",
+        signal: controller.signal,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ memory, recent: final.slice(-10).map(({ role, text }) => ({ role, text })) }),
         })
           .then((r) => r.json())
-          .then((d: { memory?: string }) => d.memory !== undefined && d.memory !== memory && setMemory(d.memory))
+          .then((d: { memory?: string }) => turn === generation.current && !controller.signal.aborted && d.memory !== undefined && d.memory !== memory && setMemory(nfc(d.memory)))
           .catch(() => {});
       }
     } catch (e) {
+      if (controller.signal.aborted) return;
       toast.error((e as Error).message);
       setMessages((list) => list.filter((m) => m.id !== botMsg.id));
     } finally {
-      setStreaming(false);
+      if (turn === generation.current) setStreaming(false);
     }
+  }
+
+  async function eraseConversation() {
+    if (!confirm("Xóa toàn bộ trò chuyện và sổ ghi nhớ của hồ sơ này? Dữ liệu sẽ bị xóa cả trên tài khoản đang đăng nhập.")) return;
+    generation.current++; pending.current?.abort(); setStreaming(false); setDeleting(true);
+    try {
+      await removeLocal([storageKey(profile.id), `lm:chatmem:${profile.id}`], epoch.current);
+      setMessages([]);
+      toast.success("Đã xóa toàn bộ trò chuyện và sổ ghi nhớ.");
+    } catch { toast.error("Chưa xóa được dữ liệu. Hãy kiểm tra mạng rồi thử lại."); }
+    finally { setDeleting(false); }
   }
 
   const starters = [
@@ -150,17 +163,15 @@ export function ChatView() {
               <p className="text-sm text-ink-muted">Ở đây {h} không cần là giáo viên. Cứ kể, Bé Bảng nghe.</p>
             </div>
           </div>
-          {messages.length > 0 && (
+          {(messages.length > 0 || memory) && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => {
-                setMessages([]);
-                persist([]);
-              }}
-              aria-label="Bắt đầu cuộc trò chuyện mới"
+              onClick={eraseConversation}
+              disabled={deleting}
+              aria-label="Xóa toàn bộ trò chuyện"
             >
-              <RotateCcw className="size-4" aria-hidden /> <span className="hidden sm:inline">Trò chuyện mới</span>
+              <RotateCcw className="size-4" aria-hidden /> <span className="hidden sm:inline">Xóa trò chuyện</span>
             </Button>
           )}
         </div>

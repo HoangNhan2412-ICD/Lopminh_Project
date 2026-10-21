@@ -4,8 +4,10 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { DEMO_CLASSES, DEMO_PROFILES, DEMO_STUDENTS, DEMO_TIMETABLES, demoNotes } from "@/lib/demo/data";
 import type { ClassInfo, LoadLevel, Student, StudentNote, TeacherProfile, Timetable } from "@/lib/types";
 import { vnNow } from "@/lib/time";
-import { useLocal } from "@/lib/local-store";
+import { useLocal, readLocal as read, writeLocal as write, storage } from "@/lib/local-store";
 
+const NO_CLASSES: ClassInfo[] = [];
+const NO_TIMETABLE: Timetable = {};
 const NO_ROSTERS: Record<string, Student[]> = {};
 
 /*
@@ -49,27 +51,10 @@ const K = {
   load: (pid: string, date: string) => `lm:load:${pid}:${date}`,
 };
 
-function read<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function write(key: string, value: unknown) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    /* trình duyệt chặn lưu trữ: vẫn chạy được, chỉ không nhớ */
-  }
-}
-
 export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
-  const [profiles, setProfiles] = useState<TeacherProfile[]>(DEMO_PROFILES);
-  const [currentId, setCurrentId] = useState<string>(DEMO_PROFILES[0].id);
+  const [profiles, setProfiles] = useState<TeacherProfile[]>(() => storage.remote ? read(K.profiles, DEMO_PROFILES) : DEMO_PROFILES);
+  const [currentId, setCurrentId] = useState<string>(() => storage.remote ? read(K.current, read(K.profiles, DEMO_PROFILES)[0].id) : DEMO_PROFILES[0].id);
   const [notes, setNotes] = useState<StudentNote[]>([]);
   const [load, setLoadState] = useState<LoadLevel | null>(null);
   const [fontScale, setFontScaleState] = useState<FontScale>("vua");
@@ -87,7 +72,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     const current = savedProfiles.some((p) => p.id === savedCurrent) ? savedCurrent : savedProfiles[0].id;
     setProfiles(savedProfiles);
     setCurrentId(current);
-    setNotes(read<StudentNote[]>(K.notes(current), demoNotes(current, today)));
+    setNotes(read<StudentNote[]>(K.notes(current), storage.remote ? [] : demoNotes(current, today)));
     setLoadState(read<LoadLevel | null>(K.load(current, today), null));
     setFontScaleState(read<FontScale>(K.font, "vua"));
     setReady(true);
@@ -100,6 +85,9 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     (classId: string, roster: Student[]) => setRosters((all) => ({ ...all, [classId]: roster })),
     [setRosters],
   );
+
+  const [savedClasses] = useLocal<ClassInfo[]>(`lm:classes:${profile.id}`, storage.remote ? NO_CLASSES : DEMO_CLASSES[profile.id] ?? NO_CLASSES);
+  const [savedTimetable] = useLocal<Timetable>(`lm:timetable:${profile.id}`, storage.remote ? NO_TIMETABLE : DEMO_TIMETABLES[profile.id] ?? NO_TIMETABLE);
 
   // Áp cỡ chữ và màu cá nhân lên thẻ <html>.
   useEffect(() => {
@@ -115,7 +103,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       // Đổi hồ sơ: nạp lại trọn bộ dữ liệu của hồ sơ mới, không giữ gì của hồ sơ cũ.
       setCurrentId(id);
       write(K.current, id);
-      setNotes(read<StudentNote[]>(K.notes(id), demoNotes(id, today)));
+      setNotes(read<StudentNote[]>(K.notes(id), storage.remote ? [] : demoNotes(id, today)));
       setLoadState(read<LoadLevel | null>(K.load(id, today), null));
     },
     [today],
@@ -168,6 +156,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetDemo = useCallback(() => {
+    if (storage.remote) return;
     try {
       Object.keys(localStorage)
         .filter((k) => k.startsWith("lm:"))
@@ -175,6 +164,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     } catch {
       /* bỏ qua */
     }
+    storage.invalidate();
     setProfiles(DEMO_PROFILES);
     setCurrentId(DEMO_PROFILES[0].id);
     setNotes(demoNotes(DEMO_PROFILES[0].id, today));
@@ -182,7 +172,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, [today]);
 
   const value = useMemo<AppState>(() => {
-    const classes = DEMO_CLASSES[profile.id] ?? [];
+    const classes = savedClasses;
     return {
       ready,
       today,
@@ -190,7 +180,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       profile,
       classes,
       students: classes.flatMap((c) => rosters[c.id] ?? DEMO_STUDENTS.filter((s) => s.classId === c.id)),
-      timetable: DEMO_TIMETABLES[profile.id] ?? {},
+      timetable: savedTimetable,
       notes,
       load,
       fontScale,
@@ -203,7 +193,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       resetDemo,
       setRoster,
     };
-  }, [ready, today, profiles, profile, notes, load, fontScale, switchProfile, updateProfile, addNotes, removeNote, setLoad, setFontScale, resetDemo, rosters, setRoster]);
+  }, [ready, today, profiles, profile, notes, load, fontScale, switchProfile, updateProfile, addNotes, removeNote, setLoad, setFontScale, resetDemo, rosters, setRoster, savedClasses, savedTimetable]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

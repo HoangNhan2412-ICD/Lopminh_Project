@@ -1,5 +1,16 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 3: code và demo, chờ project thật (21/10/2026)
+
+- Thêm client/server `@supabase/ssr`, refresh cookie sau cổng mật khẩu, callback Google, trang Tài khoản trong menu hồ sơ. Khi có cấu hình Supabase, API làm việc yêu cầu phiên hợp lệ; thiếu cấu hình vẫn dùng demo. Không xin Gmail hoặc đổi model.
+- Chào lần đầu yêu cầu tự chọn Thầy/Cô, tên gọi, môn/trường/lớp; Có/Không chuyển dữ liệu local. Chỉ đọc dữ liệu để chuyển sau khi chọn Có; giữ nguyên bản trên máy và các hồ sơ được chuyển. Không đoán giới tính từ tên OAuth.
+- Migration 0002 thêm `app_state` với RLS theo user_id, trường học lực/nổi bật/ảnh; giao dịch khởi tạo và cập nhật hồ sơ đồng bộ `profiles.gender/call_name`. Giữ nguyên 0001. Dữ liệu hiện lưu snapshot theo khóa, chưa chuẩn hóa mọi thực thể thành bảng riêng.
+- Giữ API useLocal/useLessons/useDocs; thêm engine chuyển local hoặc cloud, hàng đợi ghi nối tiếp, báo lỗi và thử lại. Đổi tài khoản hủy cache/state; callback cũ không ghi vào phiên mới. Dữ liệu cloud không ghi đè localStorage. Xóa toàn bộ chat đợi lệnh lưu cũ rồi xóa lịch sử/sổ ghi nhớ trên server, hủy request chat đang chạy.
+- Tên kho Gemini riêng có chữ ký gắn tài khoản, chặn tự gán kho người khác. Kho demo cũ/khóa Gemini đổi cần tải lại tài liệu. Kho chung vẫn từ cấu hình server.
+- 82/82 test, lint và build qua. Playwright 1280/390px: toàn bộ trang demo mở được, chat còn sau tải lại và xóa thật khỏi local, không lỗi JavaScript/tràn ngang. Migration và kiểm tra RLS chạy thành công trên PostgreSQL 17 Docker: hai user giả không đọc/ghi/xóa chéo, anonymous bị chặn, hồ sơ và xóa hoạt động; dữ liệu test rollback, container đã dừng.
+- Chưa thử Supabase/Google thật vì người dùng chưa tạo project. Không đánh dấu giai đoạn hoàn thành. Hạn chế: chưa có hàng đợi offline bền vững, mỗi lần ghi/nhập tối đa 3,5 MB, ghi đồng thời nhiều máy lấy lần ghi sau cùng, không cập nhật trực tiếp giữa hai máy. Cấu hình và kiểm tra tay trong `docs/DEPLOY.md`.
+
+
 ## Tiếp quản Codex — Giai đoạn 2D (21/10/2026)
 
 - Thêm `/xuong-hoc-lieu`, mục điều hướng và đường dẫn từ Xuất file của Soạn Bài. Dùng chung lớp/hồ sơ/mục lục đã đối chiếu, gõ hoặc nói yêu cầu, chọn 8 loại đầu ra, tiến độ và tải riêng, thử lại riêng từng lỗi.

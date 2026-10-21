@@ -202,6 +202,8 @@ Xong khi: với yêu cầu "đồ thị li độ theo thời gian của dao đ�
 
 ### [ ] Giai đoạn 3 — Supabase thật + đăng nhập Google
 
+> Code, demo và PostgreSQL/RLS cục bộ đã kiểm tra ngày 21/10/2026. Chờ project Supabase + Google provider để kiểm tra OAuth, cookie và đồng bộ hai máy thật; chưa đánh dấu xong.
+
 **DỪNG trước khi code**: hỏi mình đã tạo project Supabase và bật Google provider chưa. Cần `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` trong `.env.local` (mình tự điền, bạn không hỏi giá trị). Chưa có thì vẫn làm được phần code, nhưng chỉ thử ở chế độ demo, và nói rõ chưa thử với Supabase thật.
 
 - Client/server bằng `@supabase/ssr` (đã có trong package.json). Đăng nhập Google; trang chào lần đầu hỏi "Bé Bảng nên gọi mình là Thầy hay Cô ạ?" và tên gọi, ghi vào `profiles.gender`, `profiles.call_name`.

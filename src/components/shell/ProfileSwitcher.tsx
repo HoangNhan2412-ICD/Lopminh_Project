@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useAccount } from "@/components/account/AccountProvider";
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -29,6 +31,7 @@ export function ProfileInitials({ name, className }: { name: string; className?:
 /** Đổi hồ sơ giáo viên (chế độ demo). Khi có đăng nhập thật, đây là chỗ đổi tài khoản. */
 export function ProfileSwitcher() {
   const { profile, profiles, switchProfile } = useApp();
+  const account = useAccount();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -65,7 +68,8 @@ export function ProfileSwitcher() {
 
       {open && (
         <div role="menu" className="absolute right-0 z-30 mt-2 w-80 rounded-xl border border-border bg-surface p-2 shadow-lg">
-          <p className="px-3 pb-2 pt-1 text-sm font-medium text-ink-muted">Hồ sơ giáo viên mẫu</p>
+          <p className="px-3 pb-2 pt-1 text-sm font-medium text-ink-muted">{account.userId ? "Hồ sơ trong tài khoản" : "Hồ sơ giáo viên mẫu"}</p>
+          <Link href="/tai-khoan" className="mb-2 flex min-h-11 items-center rounded-lg border border-border px-3" onClick={() => setOpen(false)}>{account.userId ? "Quản lý tài khoản" : "Đăng nhập / Tài khoản"}</Link>
           {profiles.map((p) => {
             const active = p.id === profile.id;
             return (

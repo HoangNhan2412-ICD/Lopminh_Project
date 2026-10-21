@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   const ai = getGemini();
   if (!ai) return Response.json({ error: "Chưa có khóa Gemini." }, { status: 503 });
   const { question, storeName, profile } = parsed.data;
-  const stores = searchStores(storeName);
+  const stores = await searchStores(storeName);
   if (!stores.length) return Response.json({ error: "Chưa có kho tài liệu được cấu hình." }, { status: 400 });
   try {
     const res = await ai.models.generateContent({

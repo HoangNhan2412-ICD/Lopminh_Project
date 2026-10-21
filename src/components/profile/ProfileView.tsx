@@ -1,4 +1,5 @@
 "use client";
+import { useAccount } from "@/components/account/AccountProvider";
 
 import { Award, Check, Palette, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -66,6 +67,7 @@ const STYLE_TAGS = [
 
 export function ProfileView() {
   const { profile, updateProfile, resetDemo } = useApp();
+  const { userId } = useAccount();
   const h = honorificLower(profile);
 
   return (
@@ -270,7 +272,7 @@ export function ProfileView() {
         </Card>
       </div>
 
-      <div className="flex justify-end">
+      {!userId && <div className="flex justify-end">
         <Button
           variant="ghost"
           size="sm"
@@ -281,7 +283,7 @@ export function ProfileView() {
         >
           Đặt lại dữ liệu mẫu
         </Button>
-      </div>
+      </div>}
     </div>
   );
 }
