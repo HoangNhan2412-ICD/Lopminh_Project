@@ -7,6 +7,7 @@ import { ClassBoard } from "@/components/today/ClassBoard";
 import { HomeSummary } from "@/components/today/HomeSummary";
 import { QuickNoteInput } from "@/components/today/QuickNoteInput";
 import { TodayBoard } from "@/components/today/TodayBoard";
+import { StudentTasks } from "@/components/today/StudentTasks";
 import { Chip } from "@/components/ui";
 import { currentPeriod, isTeachingHours, periodsToday } from "@/lib/schedule";
 import { useApp } from "@/lib/store/app-store";
@@ -74,12 +75,11 @@ export function TodayView() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <StudentTasks />
+      {selected && <QuickNoteInput key={selected.id} cls={selected} />}
+      <div className="grid grid-cols-1 gap-5">
         <div className="space-y-5">
           {homeMode ? <HomeSummary /> : selected && <ClassBoard cls={selected} />}
-        </div>
-        <div className="space-y-5">
-          {selected && <QuickNoteInput key={selected.id} cls={selected} />}
         </div>
       </div>
     </div>

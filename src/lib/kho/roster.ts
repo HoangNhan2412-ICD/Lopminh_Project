@@ -8,7 +8,7 @@ import { stripDiacritics } from "@/lib/text";
   "Họ và tên" | "Giới tính" | "Đặc điểm" (cách nhau dấu phẩy). Có file mẫu tải về.
 */
 
-export const ROSTER_HEADERS = ["STT", "Họ và tên", "Giới tính (Nam/Nữ)", "Đặc điểm, cách học (cách nhau dấu phẩy)"];
+export const ROSTER_HEADERS = ["STT", "Họ và tên", "Giới tính (Nam/Nữ)", "Đặc điểm, cách học (cách nhau dấu phẩy)", "Học lực"];
 
 function pickCol(headers: string[], ...keys: string[]): number {
   const norm = headers.map((h) => stripDiacritics(h ?? ""));
@@ -22,6 +22,7 @@ export function rowsToStudents(rows: string[][], classId: string): Student[] {
   const iName = pickCol(head, "ho va ten", "ho ten", "ten");
   const iGender = pickCol(head, "gioi tinh", "gioi");
   const iTraits = pickCol(head, "dac diem", "tinh cach", "ghi chu");
+  const iAbility = pickCol(head, "hoc luc");
   const out: Student[] = [];
   for (const r of rows.slice((headerIdx >= 0 ? headerIdx : 0) + 1)) {
     const fullName = String(r[iName >= 0 ? iName : 1] ?? "").normalize("NFC").trim().replace(/\s+/g, " ");
@@ -30,7 +31,9 @@ export function rowsToStudents(rows: string[][], classId: string): Student[] {
     const gender: Gender = /^(nu|f|female)/.test(g) ? "nu" : "nam";
     const traits = iTraits >= 0 ? String(r[iTraits] ?? "").split(/[,;]/).map((t) => t.trim().normalize("NFC")).filter(Boolean) : [];
     const parts = fullName.split(" ");
-    out.push({ id: `${classId}-n${out.length + 1}`, fullName, shortName: parts[parts.length - 1], gender, classId, traits });
+    const levels: Record<string, Student["hocLuc"]> = { gioi: "gioi", kha: "kha", "trung binh": "trung-binh", yeu: "yeu" };
+    const hocLuc = levels[stripDiacritics(String(r[iAbility] ?? "").trim())];
+    out.push({ id: `${classId}-n${out.length + 1}`, fullName, shortName: parts[parts.length - 1], gender, classId, traits, ...(hocLuc ? { hocLuc } : {}) });
   }
   return out;
 }
@@ -58,9 +61,9 @@ export async function rosterTemplate(className: string): Promise<Blob> {
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet(`Lớp ${className}`);
   ws.addRow(ROSTER_HEADERS).font = { bold: true };
-  ws.addRow([1, "Nguyễn Văn A", "Nam", "Hướng nội, cần khích lệ"]);
-  ws.addRow([2, "Trần Thị B", "Nữ", "Tiếp thu nhanh, thích vẽ"]);
-  ws.columns = [{ width: 6 }, { width: 30 }, { width: 18 }, { width: 50 }];
+  ws.addRow([1, "Nguyễn Văn A", "Nam", "Hướng nội, cần khích lệ", "Trung bình"]);
+  ws.addRow([2, "Trần Thị B", "Nữ", "Tiếp thu nhanh, thích vẽ", "Giỏi"]);
+  ws.columns = [{ width: 6 }, { width: 30 }, { width: 18 }, { width: 50 }, { width: 16 }];
   const buf = await wb.xlsx.writeBuffer();
   return new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }

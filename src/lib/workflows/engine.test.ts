@@ -1,0 +1,18 @@
+import { describe, expect, it } from "vitest";
+import type { Student, StudentNote } from "@/lib/types";
+import { attendanceDecision, closeWorkflow, openWorkflow, parentDraft, schoolDaysAfter, suggestions, syncAbsences } from "./engine";
+const student: Student = { id:"s1", classId:"c1", fullName:"Học Sinh Mẫu", shortName:"Mẫu", gender:"nam", traits:[] };
+const now="2026-10-21T02:00:00Z";
+const note = (id:string,createdAt=now,patch:Partial<StudentNote>={}): StudentNote => ({id,studentId:student.id,classId:student.classId,rawName:student.fullName,kind:"chuyen-can",text:"Vắng hôm nay",absentToday:true,source:"go-tay",createdAt,...patch});
+describe("quy trình học sinh",()=>{
+ it("tự mở gợi ý phụ đạo và hỏi thăm, không lặp khi đọc lại",()=>{const s={...student,noiBat:{loai:"can-ho-tro" as const,text:"Cần củng cố"}};const notes=[note("1",now,{kind:"suc-khoe"}),note("2","2026-10-20T02:00:00Z",{kind:"suc-khoe"})];const w=syncAbsences([],[s],notes,"2026-10-21");expect(w.map(x=>x.loai).sort()).toEqual(["bu-bai","hoi-tham","phu-dao"]);expect(syncAbsences(w,[s],notes,"2026-10-21")).toBe(w)});
+ it("vắng mở đúng một quy trình sáu bước",()=>{const w=syncAbsences([], [student], [note("n1")],"2026-10-21");expect(w).toHaveLength(1);expect(w[0].steps).toHaveLength(6)});
+ it("vắng hai tiết cùng ngày, kể cả khác nguồn, không mở trùng",()=>{const a=note("n1"),b=note("n2","2026-10-21T09:00:00Z",{source:"giong-noi"});const w=syncAbsences([], [student],[a,b],"2026-10-21");expect(w).toHaveLength(1);expect(syncAbsences(w,[student],[a,b],"2026-10-21")).toBe(w)});
+ it("có mặt lại phải hỏi hủy, đóng không bị mở lại do đồng bộ ghi chú",()=>{const w=openWorkflow([],student,"bu-bai","n1",now);expect(attendanceDecision(student.id,w,"2026-10-21")).toBe("confirm-cancel");const closed=closeWorkflow(w[0],now,true);expect(closed.closedAt).toBe(now);expect(openWorkflow([closed],student,"bu-bai","n2",now)).toHaveLength(1)});
+ it("ghi chú yếu ba lần trong hai tuần gợi ý phụ đạo, loại ghi chú cũ",()=>{const notes=[note("1",now,{kind:"hoc-tap",text:"Chưa hiểu bài"}),note("2","2026-10-18T02:00:00Z",{kind:"hoc-tap",text:"Hổng kiến thức"}),note("3","2026-10-12T02:00:00Z",{kind:"hoc-tap",text:"Học yếu"})];expect(suggestions(student,notes,now)).toContain("phu-dao");expect(suggestions(student,[...notes.slice(0,2),note("4","2026-09-01T00:00:00Z",{kind:"hoc-tap",text:"Học yếu"})],now)).not.toContain("phu-dao")});
+ it("ốm hai ngày liên tiếp, không tính hai ghi chú trong một ngày",()=>{const a=note("1",now,{kind:"suc-khoe"}),b=note("2","2026-10-20T02:00:00Z",{kind:"suc-khoe"});expect(suggestions(student,[a,b],now)).toContain("hoi-tham");expect(suggestions(student,[a,{...a,id:"2"}],now)).not.toContain("hoi-tham")});
+ it("nháp gia đình không chứa ghi chú sức khỏe tâm lý hoặc tên thật",()=>{for(const kind of ["bu-bai","phu-dao","hoi-tham"] as const){const draft=parentDraft(kind,"2026-10-24");expect(draft).not.toMatch(/ốm|chẩn đoán|trầm cảm|tâm lý|Học Sinh Mẫu/)} });
+ it("không đóng trước khi hoàn tất; không trùng quy trình phụ đạo đang mở",()=>{const w=openWorkflow([],student,"phu-dao","n",now);expect(closeWorkflow(w[0],now)).toBe(w[0]);expect(openWorkflow(w,student,"phu-dao","n2","2026-10-22T02:00:00Z")).toBe(w)});
+ it("ngày hẹn theo ngày học, không lệ thuộc múi giờ máy",()=>{expect(schoolDaysAfter("2026-10-23",3)).toBe("2026-10-28");expect(schoolDaysAfter("2026-10-23",3,[1,2,3,4,5,6])).toBe("2026-10-27")});
+ it("không lấy ghi chú lớp khác hoặc ngày cũ",()=>{expect(syncAbsences([],[student],[note("1","2026-10-20T00:00:00Z"),note("2",now,{classId:"c2"})],"2026-10-21")).toHaveLength(0)});
+});

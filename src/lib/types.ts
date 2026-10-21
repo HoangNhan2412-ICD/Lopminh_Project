@@ -50,6 +50,8 @@ export interface Student {
   gender: Gender;
   classId: string;
   traits: string[];
+  hocLuc?: "gioi" | "kha" | "trung-binh" | "yeu";
+  noiBat?: { loai: "thanh-tich" | "can-ho-tro"; text: string };
 }
 
 export type NoteKind = "chuyen-can" | "suc-khoe" | "tam-ly" | "hoc-tap" | "khen-thuong" | "khac";
@@ -67,6 +69,8 @@ export interface StudentNote {
   absentToday?: boolean;
   source: "giong-noi" | "go-tay" | "dong-bo";
   createdAt: string;
+  /** Ảnh JPEG đã thu nhỏ, chỉ lưu trên máy trong giai đoạn thử nghiệm. */
+  evidence?: string[];
 }
 
 export interface Period {

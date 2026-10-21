@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { MessageCircleHeart } from "lucide-react";
+import { WorkflowSync } from "@/components/today/WorkflowSync";
 import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { FontScaleToggle } from "@/components/shell/FontScaleToggle";
 import { GuideTour } from "@/components/shell/GuideTour";
@@ -171,7 +172,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <MobileSubNav />
           {ready ? (
             // key theo hồ sơ: đổi hồ sơ là dựng lại toàn bộ trang, không sót state của người trước.
-            <div key={profile.id}>{children}</div>
+            <div key={profile.id}><WorkflowSync />{children}</div>
           ) : (
             <div className="flex items-center gap-3 py-16 text-ink-muted" aria-live="polite">
               <BeBangAvatar size={40} mood="nghi" />

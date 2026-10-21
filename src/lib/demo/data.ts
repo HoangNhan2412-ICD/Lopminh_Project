@@ -81,6 +81,9 @@ function students(classId: string, list: [string, "nam" | "nu", string[]?][]): S
       gender,
       classId,
       traits,
+      hocLuc: i % 4 === 1 ? "gioi" : i % 4 === 2 ? "kha" : "trung-binh",
+      ...(i === 1 ? { noiBat: { loai: "thanh-tich" as const, text: "Giải thích bài rõ ràng cho nhóm" } } : {}),
+      ...(traits.some(t => /Hổng|yếu/i.test(t)) ? { noiBat: { loai: "can-ho-tro" as const, text: "Cần thêm ví dụ và thời gian luyện tập" } } : {}),
     };
   });
 }

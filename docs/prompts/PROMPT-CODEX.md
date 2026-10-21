@@ -70,7 +70,9 @@ Vấn đề: trên Vercel, khi chat không chạy thì không biết vì thiếu
 
 Xong khi: có test cho hàm phân loại lỗi; với khóa giả `GEMINI_API_KEY=sai` thì chat hiện đúng câu "khóa sai".
 
-### [ ] Giai đoạn 2B — Thẻ học sinh trực quan + quy trình riêng cho từng em
+### [x] Giai đoạn 2B — Thẻ học sinh trực quan + quy trình riêng cho từng em
+
+Tiến độ 21/10/2026: người dùng đã duyệt HTML; đã dựng React, engine, nháp học liệu, Word/in/chiếu quiz và ảnh cục bộ. 49 test, lint, build và luồng demo Playwright 1280/390px qua. Chưa đo tiêu chí dưới một phút với Gemini thật (chưa có khóa); QR nhận link phòng do giáo viên dán, phòng điện thoại riêng chờ Giai đoạn 5.
 
 Vấn đề: ghi chú học sinh hiện là danh sách chữ (`src/components/today/ClassBoard.tsx`), khó nhìn. Và khi biết một em vắng, thầy cô phải tự nhớ soạn bù, kiểm tra bù, báo phụ huynh.
 

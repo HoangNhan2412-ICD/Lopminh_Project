@@ -26,6 +26,8 @@ export function suggestTiers(students: Student[], notes: StudentNote[]): { coBan
   }
   for (const s of students) {
     if (coBan.has(s.id) || nangCao.has(s.id)) continue;
+    if (s.hocLuc === "yeu" || s.noiBat?.loai === "can-ho-tro") { coBan.add(s.id); continue; }
+    if (s.hocLuc === "gioi") { nangCao.add(s.id); continue; }
     const traits = stripDiacritics(s.traits.join(" "));
     if (WEAK.test(traits)) coBan.add(s.id);
     else if (STRONG.test(traits)) nangCao.add(s.id);

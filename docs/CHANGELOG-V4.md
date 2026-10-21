@@ -1,5 +1,16 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 2B (21/10/2026)
+
+- `design/02-the-hoc-sinh.html`: thẻ, lọc không dấu, điểm danh, sheet ghi chú nhanh, chi tiết và quy trình bù bài 6 bước. Dùng token CSS, dữ liệu minh họa, không lưu hoặc gửi ảnh.
+- Playwright: mẫu 1280/390px không tràn; tìm không dấu và chip ghi chú hoạt động. Đã xem ảnh chụp cả hai khổ.
+- Người dùng đã duyệt bố cục, sau đó dựng thẻ React, sheet ghi chú/micro, ảnh minh chứng thu nhỏ ≤1280px và trang chi tiết `/hoc-sinh?id=...`. Thêm học lực/nổi bật, đọc cột Học lực từ Excel, bổ sung demo và phân tầng.
+- Engine thuần tự mở bù bài từ ghi chú vắng (nút/chip/giọng nói); một em một quy trình 6 bước/ngày. Gợi ý phụ đạo khi cần hỗ trợ hoặc 3 ghi chú học tập yếu/14 ngày; hỏi thăm khi ốm hai ngày liên tiếp. Có việc đến hạn trên Hôm Nay, ngày hẹn theo tuần học trong thời khóa biểu.
+- Chọn giáo án cùng lớp/ngày hoặc tự chọn/gõ tên; chuẩn bị nháp nền theo hồ sơ, có retry, chỉnh tóm tắt/phiếu/quiz, tải Word/in/chiếu quiz, QR từ link phòng đã có. Không có Gemini dùng khung mẫu và câu hỏi từ giáo án nếu có, đánh dấu rõ cần duyệt.
+- Nháp phụ huynh dùng mẫu an toàn không nhận ghi chú hoặc tên học sinh, giáo viên tự sửa và chép; không tự gửi. Trạng thái, ngày hẹn và kết quả từng bước lưu `lm:workflows:<profileId>`, có xác nhận hủy khi đánh dấu có mặt lại.
+- 49/49 test, lint và build qua. Playwright 1280/390px: điểm danh → 6 bước/5 câu → tải Word → chiếu quiz → xác nhận hủy, không tràn. Ảnh 2000×1500 thành 1280×960, còn sau tải lại, không gọi API upload.
+- Chưa thử Gemini thật hoặc đo thời gian AI dưới một phút. Ảnh còn ở localStorage, dung lượng phụ thuộc trình duyệt; chưa đồng bộ đa máy. Nháp phụ huynh hiện dùng mẫu xác định để tránh vô tình trộn ghi chú nhạy cảm.
+
 ## Tiếp quản Codex — Giai đoạn 2 (21/10/2026)
 
 - Phân loại lỗi Gemini bằng mã HTTP có cấu trúc; chat báo rõ lỗi khóa/API, model, hạn mức, máy chủ và kết nối. Đọc chunk đầu trước khi trả stream để bắt đúng lỗi khởi tạo; lỗi giữa stream có thông báo tiếng Việt.
