@@ -33,6 +33,8 @@ KHÔNG ĐƯỢC:
 - Dùng thư viện không chính thức đăng nhập hộ (NotebookLM, Quizizz, Zalo) bằng cookie.
 - Đoán khi thiếu thông tin. Gặp chỗ cần tài khoản, khóa, hay quyết định sản phẩm thì DỪNG và hỏi.
 
+Thứ tự: 0, 1, 2, 2B, 2C, 2D, 3, 4, 5, 6, 7, 8, 9, 10, và luôn kết thúc bằng Giai đoạn 11 (báo cáo tóm tắt, hạn chế, nâng cấp). Giai đoạn nào DỪNG chờ mình thì ghi lại lý do rồi chuyển sang giai đoạn kế tiếp làm được, đừng đứng im.
+
 Bắt đầu bằng Giai đoạn 0.
 ```
 
@@ -153,6 +155,45 @@ Mỗi văn bản một mục: số hiệu, tên, ngày ban hành, ngày hiệu l
 
 Xong khi: Cô Mai Hoa mở Kho thấy ngay các văn bản và mục lục môn mình; ở Soạn Bài chọn "Toán 9 → Chương 1 → Bài 2" là tên bài và yêu cầu cần đạt hiện sẵn, giáo án sinh ra bám đúng yêu cầu đó; test kiểm tra mọi file mục lục đúng schema.
 
+### [ ] Giai đoạn 2D — Xưởng học liệu: thầy cô nói cần gì, chọn loại file, app xuất ra
+
+Ý tưởng: thầy cô gõ hoặc nói một yêu cầu, ví dụ "làm đồ thị cho bài 11 Vật lý 11", rồi tick những thứ muốn nhận: slide, giáo án Word, sơ đồ tư duy, đồ thị, phiếu học tập, quiz, video ngắn… App tự làm và trả về từng file.
+
+Bối cảnh đã kiểm tra (10/2026): NotebookLM tạo được Video Overview, Slide Deck (PDF/PPTX), Infographic (PNG), Mind Map (PNG), Audio Overview, nhưng **không có API cho tài khoản thường**. API NotebookLM Enterprise trên Google Cloud đang ở bản Preview, chỉ tạo notebook, thêm nguồn, tạo Audio Overview, và không tải file về qua API. Vì vậy app tự tạo các loại file bằng Gemini + code của mình; riêng những thứ chỉ NotebookLM làm đẹp (Video Overview) thì app chuẩn bị gói nguồn + câu lệnh và hướng dẫn thầy cô bấm.
+
+**A. Ô chọn bài trong Soạn Bài** (dùng chung dữ liệu với Giai đoạn 2C)
+
+- Bộ môn, Khối lớp, Bộ SGK, Chương, Bài. Môn và khối tự điền theo lớp đang chọn và hồ sơ; Bộ SGK mặc định "Kết nối tri thức với cuộc sống (bộ dùng chung từ 2026–2027)", có thêm lựa chọn "Tài liệu khác / tự gõ".
+- Chọn bài xong thì tên bài, yêu cầu cần đạt, số tiết tự điền. Gõ tay vẫn được.
+
+**B. Chọn thứ cần xuất** (thay cho hàng 4 nút nhiều màu kiểu bản cũ)
+
+- Một lưới ô tick có biểu tượng + chữ, mỗi ô ghi rõ ra file gì:
+  - Giáo án 5512 (.docx) — đã có.
+  - Slide bài giảng (.pptx) — đã có.
+  - Sơ đồ tư duy (.png + .svg, và một slide trong bộ .pptx).
+  - Đồ thị / biểu đồ (.png + .svg, và chèn vào slide; trong PowerPoint dùng biểu đồ gốc sửa được bằng `addChart` của pptxgenjs khi là dữ liệu bảng).
+  - Phiếu học tập 2 tầng (.docx).
+  - Bộ câu hỏi (Wayground .xlsx, Kahoot .xlsx, Quizlet) — đã có ở Phòng Quiz, nối sang đây.
+  - Infographic một trang (.png, khổ A4 dọc).
+  - Âm thanh tóm tắt bài 2–3 phút (.wav/.mp3) bằng giọng đọc Gemini.
+  - Video bài giảng ngắn (thử nghiệm): ghép slide + giọng đọc thành video ngay trên trình duyệt.
+  - Gói NotebookLM (nguồn + câu lệnh riêng cho Video Overview / Slide Deck / Infographic) — đã có ở Kho, nối sang đây.
+- Một nút chính duy nhất: "Bé Bảng làm giúp". Các file làm lần lượt, mỗi file một dòng tiến độ, xong file nào tải được file đó, lỗi file nào thì chỉ file đó báo lỗi và có nút làm lại.
+- Có ô gợi ý nhanh theo môn (Vật lý: "đồ thị dao động", "bảng số liệu thí nghiệm"; Toán: "đồ thị hàm số"…).
+
+**C. Quy tắc cho từng loại**
+
+- Đồ thị: Gemini chỉ trả về **mô tả có cấu trúc** (zod schema: loại đồ thị, công thức thuộc một họ cho phép như tuyến tính, bậc hai, sin/cos, mũ, hoặc bảng số liệu; tham số; tên trục; đơn vị; khoảng vẽ). **Số liệu và điểm vẽ do code tính**, không để AI tự bịa tọa độ. Không dùng `eval`. Kiểm tra đơn vị và khoảng vẽ hợp lý; sai thì báo thầy cô sửa tham số.
+- Sơ đồ tư duy, đồ thị, infographic khi vào slide phải đi qua `src/lib/lesson/layout.ts` (thêm kiểu phần tử mới nếu cần) để bản xem trước và file .pptx giống nhau; thêm test không tràn khổ.
+- Giọng đọc: chọn model TTS hiện hành trong `src/lib/ai/models.ts` (thêm vai `tts`, đọc từ biến môi trường, kiểm tra tên model trên ai.google.dev). Ước tính số token/chi phí và **DỪNG hỏi mình trước khi bật** âm thanh và video, vì hai loại này tốn hơn chữ.
+- Video: làm trên trình duyệt (canvas + `MediaRecorder` hoặc WebCodecs), không chạy ffmpeg trên Vercel. Ghi rõ "thử nghiệm" trên giao diện; trình duyệt không hỗ trợ thì ẩn ô này.
+- Việc lâu (âm thanh, video, cả bộ nhiều file) chạy như job của Giai đoạn 4 khi đã có; trước đó thì chạy ở trình duyệt, không chặn giao diện.
+- Mọi file ghi tên theo mẫu `Lop11_VatLy_Bai11_Slide.pptx` (không dấu, không khoảng trắng).
+- Không đưa tên thật, sức khỏe, tâm lý học sinh vào nội dung gửi sang NotebookLM hay vào file chia sẻ được.
+
+Xong khi: với yêu cầu "đồ thị li độ theo thời gian của dao động điều hòa, A = 5 cm, T = 2 s" app xuất được .png, .svg và một slide có đồ thị đúng (có test tính điểm); tick 4 loại file thì nhận đủ 4 file, một file lỗi không làm hỏng ba file kia.
+
 ### [ ] Giai đoạn 3 — Supabase thật + đăng nhập Google
 
 **DỪNG trước khi code**: hỏi mình đã tạo project Supabase và bật Google provider chưa. Cần `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` trong `.env.local` (mình tự điền, bạn không hỏi giá trị). Chưa có thì vẫn làm được phần code, nhưng chỉ thử ở chế độ demo, và nói rõ chưa thử với Supabase thật.
@@ -236,6 +277,17 @@ Ba lựa chọn: **Sáng**, **Tối**, **Tự động**. Mặc định là Tự 
 - Viết `docs/KIEM-TRA-TRUOC-PHAT-HANH.md`: danh sách điều đã kiểm tra, điều cần người kiểm tra tay.
 
 ---
+
+### [ ] Giai đoạn 11 — Báo cáo cuối: tóm tắt, hạn chế, nâng cấp
+
+Làm sau cùng, kể cả khi có giai đoạn còn dừng chờ mình.
+
+- Viết `docs/BAO-CAO-V4.md` bằng tiếng Việt, câu ngắn, không văn mẫu, gồm ba phần:
+  1. **Tóm tắt**: app làm được gì, theo từng trang (Hôm Nay, Soạn Bài, Xưởng học liệu, Phòng Quiz, Hộp Thư, Kho Dữ Liệu, Tâm Tình, Song Ngữ, Kỹ Năng Số, Hồ sơ); giai đoạn nào xong, giai đoạn nào còn dừng và đang chờ gì.
+  2. **Hạn chế**: những gì chưa làm được hoặc làm được một phần, lỗi đã biết, chỗ phụ thuộc dịch vụ ngoài (Gemini, Supabase, Google, NotebookLM), chi phí ước tính mỗi tháng cho 10 / 100 giáo viên, rủi ro bảo mật và dữ liệu nhạy cảm, chỗ chưa được người thật kiểm tra (văn bản, mục lục SGK, số đường dây nóng, file nhập Kahoot/Wayground).
+  3. **Nâng cấp**: đề xuất tiếp theo, xếp theo thứ tự nên làm, mỗi mục ghi lợi ích cho thầy cô, công sức ước tính (nhỏ / vừa / lớn), và điều kiện cần có.
+- Kèm số liệu thật: số test, kết quả `npm run test` / `lint` / `build`, kích thước bundle trang lớn nhất, thời gian soạn một giáo án mẫu.
+- Commit `docs(bao-cao): báo cáo V4 — tóm tắt, hạn chế, nâng cấp`, push, rồi in nội dung báo cáo ra màn hình cho mình đọc.
 
 ## Việc không giao cho Codex
 
