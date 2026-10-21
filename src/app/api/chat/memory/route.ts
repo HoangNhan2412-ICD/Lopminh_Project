@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ThinkingLevel } from "@google/genai";
 import { getGemini } from "@/lib/ai/client";
+import { logAiError } from "@/lib/ai/errors";
 import { MODELS } from "@/lib/ai/models";
 import { MEMORY_RULES } from "@/lib/ai/prompts";
 
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
     const next = (res.text ?? "").trim().normalize("NFC").slice(0, 2000);
     return Response.json({ memory: next || memory });
   } catch (err) {
-    console.error("chat/memory lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ memory });
   }
 }

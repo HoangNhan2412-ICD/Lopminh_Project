@@ -214,7 +214,7 @@ export function ChatView() {
 
         {demo && (
           <p className="border-t border-border bg-accent-soft px-5 py-2 text-sm">
-            Đang chạy chế độ demo: chưa có GEMINI_API_KEY nên Bé Bảng trả lời theo mẫu.
+            Đang chạy thử, chưa nối Gemini
           </p>
         )}
 

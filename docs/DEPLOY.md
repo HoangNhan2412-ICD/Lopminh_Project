@@ -23,6 +23,13 @@ Từ đó mỗi lần push lên nhánh này, Vercel tự build lại.
 - Tải tài liệu lên Kho tối đa 4 MB mỗi tệp (Vercel giới hạn 4,5 MB mỗi request). Tệp lớn hơn chỉ lưu chữ trên máy.
 - Có `SITE_PASSWORD` thì mọi trang và mọi API đều phải nhập mật khẩu trước (cookie nhớ 30 ngày).
 
+## Kiểm tra
+
+- Sau khi nhập mật khẩu, mở `/api/health`. `ai`, `supabase`, `gate` chỉ cho biết đã có cấu hình hay chưa; `models` cho biết model đang dùng. Không có giá trị khóa trong kết quả.
+- `ping: "ok"` nghĩa là lời gọi Gemini bằng model nhanh thành công; `"not-configured"` là đang demo. 400/401/403: khóa sai hoặc API chưa bật; 404: model không tồn tại; 429: hết hạn mức; 5xx: lỗi dịch vụ hoặc kết nối.
+- Mỗi lần mở health có một lời gọi `ping`, tối đa 5 token đầu ra, timeout 10 giây. Không tự gọi liên tục. `supabase: true` chưa khẳng định kết nối hoặc RLS hoạt động.
+- Nếu chưa nhập mật khẩu khi `SITE_PASSWORD` được bật, API này trả 401 như các API khác.
+
 ## Giới hạn của bản chạy thử
 
 - Dữ liệu (ghi chú, giáo án, quiz, hộp thư, sổ ghi nhớ) còn lưu trong trình duyệt của từng người. Đổi máy hoặc xóa dữ liệu trình duyệt là mất. Muốn dùng thật nhiều máy cần nối Supabase.

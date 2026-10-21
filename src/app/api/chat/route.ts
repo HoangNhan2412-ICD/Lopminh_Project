@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ThinkingLevel } from "@google/genai";
 import { getGemini } from "@/lib/ai/client";
+import { classifyAiError, logAiError } from "@/lib/ai/errors";
 import { MODELS } from "@/lib/ai/models";
 import { sanctuarySystemPrompt } from "@/lib/ai/prompts";
 import { addressOf, honorificLower } from "@/lib/persona/honorific";
@@ -42,8 +43,8 @@ function textStream(gen: AsyncIterable<string>, mode: string) {
       try {
         for await (const piece of gen) controller.enqueue(encoder.encode(piece));
       } catch (err) {
-        console.error("chat: lỗi khi stream", (err as Error).message);
-        controller.enqueue(encoder.encode("\n\n(Em bị mất kết nối một chút, mình nói lại câu vừa rồi được không ạ?)"));
+        logAiError(err);
+        controller.enqueue(encoder.encode(`\n\n${classifyAiError(err).message}`));
       } finally {
         controller.close();
       }
@@ -58,7 +59,7 @@ function textStream(gen: AsyncIterable<string>, mode: string) {
 async function* demoReply(p: TeacherProfile, message: string) {
   const h = honorificLower(p);
   const short = message.length > 60 ? `${message.slice(0, 57)}…` : message;
-  const reply = `Em nghe ${h} kể rồi: "${short}". Nghe thôi mà em thấy ${h} đã gồng nhiều lắm. Hôm nay chuyện nào làm ${addressOf(p)} mệt nhất ạ?\n\n(Đây là câu trả lời mẫu vì Lớp Mình chưa được nối với Gemini — thêm GEMINI_API_KEY vào .env.local là Bé Bảng trò chuyện thật.)`;
+  const reply = `Em nghe ${h} kể rồi: "${short}". Nghe thôi mà em thấy ${h} đã gồng nhiều lắm. Hôm nay chuyện nào làm ${addressOf(p)} mệt nhất ạ?`;
   for (const word of reply.split(/(\s+)/)) {
     yield word;
     await new Promise((r) => setTimeout(r, 18));
@@ -94,17 +95,23 @@ export async function POST(req: Request) {
         thinkingConfig: { thinkingLevel: message.length < 160 && load !== "qua-tai" ? ThinkingLevel.MINIMAL : ThinkingLevel.LOW },
       },
     });
+    // SDK có thể chỉ báo lỗi khi đọc chunk đầu: đọc trước để còn trả đúng HTTP.
+    const iterator = stream[Symbol.asyncIterator]();
+    const first = await iterator.next();
     async function* pieces() {
-      for await (const chunk of stream) {
-        if (chunk.text) yield chunk.text;
+      let chunk = first;
+      while (!chunk.done) {
+        if (chunk.value.text) yield nfc(chunk.value.text);
+        chunk = await iterator.next();
       }
     }
     return textStream(pieces(), "ai");
   } catch (err) {
-    console.error("chat: Gemini lỗi", (err as Error).message);
+    logAiError(err);
+    const error = classifyAiError(err);
     return Response.json(
-      { error: "Bé Bảng chưa kết nối được với Gemini. Mình thử lại sau ít phút nhé." },
-      { status: 502 },
+      { error: error.message, code: error.kind },
+      { status: error.status || 502 },
     );
   }
 }

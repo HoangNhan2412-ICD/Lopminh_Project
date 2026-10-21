@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { getGemini } from "@/lib/ai/client";
 import { MODELS, type ModelRole } from "@/lib/ai/models";
+import { AiRequestError, classifyAiError, logAiError } from "@/lib/ai/errors";
 
 /** Bỏ các khóa Gemini không cần ($schema, default) khỏi JSON Schema sinh từ zod. */
 export function toGeminiSchema(schema: z.ZodType): Record<string, unknown> {
@@ -20,11 +21,6 @@ export function toGeminiSchema(schema: z.ZodType): Record<string, unknown> {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-function retryable(err: unknown): boolean {
-  const msg = String((err as Error)?.message ?? err);
-  return /\b(429|500|503|UNAVAILABLE|RESOURCE_EXHAUSTED|overloaded)\b/i.test(msg);
-}
 
 /**
  * Gọi Gemini lấy JSON đúng schema. Phần system (cố định) đặt trước để Gemini tự cache.
@@ -64,12 +60,13 @@ export async function generateJson<T>(opts: {
       return opts.schema.parse(JSON.parse(res.text ?? "{}"));
     } catch (err) {
       lastErr = err;
-      if (attempt < 2 && retryable(err)) {
+      if (attempt < 2 && classifyAiError(err).retryable) {
         await sleep(1500 * (attempt + 1));
         continue;
       }
       break;
     }
   }
-  throw lastErr;
+  logAiError(lastErr);
+  throw new AiRequestError(lastErr);
 }

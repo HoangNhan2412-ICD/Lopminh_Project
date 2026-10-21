@@ -1,5 +1,13 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 2 (21/10/2026)
+
+- Phân loại lỗi Gemini bằng mã HTTP có cấu trúc; chat báo rõ lỗi khóa/API, model, hạn mức, máy chủ và kết nối. Đọc chunk đầu trước khi trả stream để bắt đúng lỗi khởi tạo; lỗi giữa stream có thông báo tiếng Việt.
+- Log lỗi chat, sổ ghi nhớ và bộ sinh JSON chỉ có mã/loại; lỗi ném từ bộ sinh JSON đã loại thông báo thô SDK. Giữ log số token sử dụng, không ghi nội dung.
+- `/api/health` chạy tại thời điểm request, không cache, qua cổng mật khẩu; trả trạng thái cấu hình và ping model nhanh tối đa 5 token, timeout 10 giây. Nhãn demo rõ trong chat, hướng dẫn trong `docs/DEPLOY.md`.
+- 38/38 test, lint và build qua. Playwright 1280/390px: demo chat, không tràn, health demo; chạy dev với `GEMINI_API_KEY=sai` và mật khẩu thử: health chưa đăng nhập trả 401, sau đăng nhập ping trả 400, chat hiện lỗi khóa sai.
+- Còn cảnh báo dev của Next về kiểm tra instant navigation khi đổi trang nhanh; build production qua. Chưa thử khóa Gemini hợp lệ.
+
 ## Tiếp quản Codex — Giai đoạn 1 (21/10/2026)
 
 - Lời mời trò chuyện ngay đầu Hôm Nay, danh xưng qua `addressOf()`; nút chat nổi trên các trang làm việc, ẩn ở Tâm Tình và Đăng nhập.

@@ -59,7 +59,7 @@ Vấn đề: chat nằm ở Góc Thầy Cô → Tâm Tình (`/tam-tinh`), ngư�
 
 Xong khi: từ mọi trang bấm một lần là vào chat; không che nút Gửi hay thanh dưới ở 390px.
 
-### [ ] Giai đoạn 2 — Chat báo lỗi rõ ràng và trang kiểm tra sức khỏe
+### [x] Giai đoạn 2 — Chat báo lỗi rõ ràng và trang kiểm tra sức khỏe
 
 Vấn đề: trên Vercel, khi chat không chạy thì không biết vì thiếu khóa, khóa sai, hết hạn mức hay sai tên model.
 
