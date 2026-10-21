@@ -1,5 +1,14 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 0 (21/10/2026)
+
+- Đồng bộ nhánh `v4-nang-cap` tại `b390b86`, không sửa code ứng dụng.
+- `npm ci`: qua (634 package); `npm run test`: 6 file, 26/26 test qua; `npm run lint`: qua; `npm run build`: qua, 24 trang được prerender, biên dịch 4,5 giây.
+- Build trong sandbox bị kẹt; chạy lại ngoài sandbox thành công. Còn cảnh báo lockfile ở thư mục cha và cảnh báo thư viện phụ thuộc cũ, chưa đổi dependency.
+- Playwright Chromium trên `npm run dev`: 10 đường dẫn × 2 khổ 1280/390px, không tràn ngang. Công cụ kiểm tra cài trong `/tmp/lopminh-browser-check`, không thêm dependency repo.
+- Không có `.env.local`, nên không có tên biến để liệt kê. Toàn bộ kiểm tra ở chế độ demo, chưa gọi Gemini hoặc Supabase thật.
+- Người dùng xác nhận chưa có Supabase và hoãn Gmail. Giai đoạn 3 chỉ thử demo; Giai đoạn 5 và 6 chờ thiết lập dịch vụ.
+
 ## Giai đoạn 1 — Bộ khung chạy được (20/10/2026)
 
 **Đã có**

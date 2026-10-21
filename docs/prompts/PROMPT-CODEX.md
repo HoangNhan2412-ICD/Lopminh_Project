@@ -42,7 +42,7 @@ Bắt đầu bằng Giai đoạn 0.
 
 ## Các giai đoạn
 
-### [ ] Giai đoạn 0 — Kiểm tra nền
+### [x] Giai đoạn 0 — Kiểm tra nền
 
 - `npm ci`, rồi `npm run test`, `npm run lint`, `npm run build`. Ghi lại kết quả.
 - Liệt kê biến môi trường đang có trong `.env.local` (chỉ tên biến, không in giá trị).
