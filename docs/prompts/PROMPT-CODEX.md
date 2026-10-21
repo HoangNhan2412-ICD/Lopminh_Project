@@ -127,11 +127,19 @@ Xong khi: có test cho phần ghép thư Gmail thành `RawMail[]` (dùng dữ li
 - Script Playwright (`scripts/chup-huong-dan.ts`) chạy app ở chế độ demo, chụp các bước trong `PlatformGuide.tsx` (phần của Lớp Mình) và `src/content/ky-nang-so.ts` vào `public/guides/` (WebP, rộng ≤ 1200px).
 - Gắn ảnh vào từng bước, có `alt` tiếng Việt. Bước nằm trên trang của nền tảng khác (Wayground, Kahoot, Quizlet) thì không chụp, ghi rõ "chụp tay" trong CHANGELOG.
 
-### [ ] Giai đoạn 9 — Dark mode
+### [ ] Giai đoạn 9 — Giao diện Sáng / Tối / Tự động theo giờ Việt Nam
 
-- Thêm bộ token tối trong `src/app/globals.css` (theo `prefers-color-scheme` + nút chuyển ở header, nhớ lựa chọn trong `lm:theme`). Không thêm mã màu hex vào component.
-- Kiểm tra tương phản WCAG AA cho chữ thường và chữ trên nút. Bảng phấn (`.chalkboard`) giữ nguyên nhận diện.
-- Cập nhật `design/_tokens.css` cho khớp.
+Ba lựa chọn: **Sáng**, **Tối**, **Tự động**. Mặc định là Tự động.
+
+- **Tự động theo giờ Việt Nam (GMT+7), không theo cài đặt máy**: từ 06:00 đến trước 18:00 là Sáng, từ 18:00 đến trước 06:00 là Tối. Hai mốc giờ để thành hằng số ở một chỗ (ví dụ `src/lib/theme.ts`) để dễ chỉnh. Tính giờ bằng múi `Asia/Ho_Chi_Minh` (dùng lại `vnNow()` / `useVnClock` ở `src/lib/time.ts`, `src/lib/hooks.ts`), nên máy để múi giờ khác vẫn đúng giờ Việt Nam.
+- Đang mở app mà qua mốc 18:00 hoặc 06:00 thì tự đổi, không cần tải lại trang. Chuyển màu êm (transition ngắn), tôn trọng `prefers-reduced-motion`.
+- Không nháy màn hình sai màu lúc mở trang: đặt một đoạn script nhỏ trong `<head>` (`src/app/layout.tsx`) đọc `lm:theme` và giờ Việt Nam rồi gắn `data-theme="light|dark"` lên `<html>` trước khi vẽ. Bọc đọc localStorage trong try/catch; lỗi thì coi như Tự động.
+- Lưu lựa chọn trong `lm:theme` (`auto` | `light` | `dark`). Khi có Supabase (Giai đoạn 3) thì lưu thêm vào hồ sơ để đổi máy vẫn giữ.
+- Nút chọn: ở header cạnh nút "Aa", và trong trang Hồ sơ. Ba lựa chọn có chữ rõ ("Sáng", "Tối", "Tự động theo giờ"), không chỉ biểu tượng. Khi đang Tự động, hiện dòng nhỏ kiểu "Đang tối vì đã sau 18 giờ". Vùng bấm ≥ 44×44px.
+- Bộ token tối trong `src/app/globals.css` dưới `:root[data-theme="dark"]`. Không thêm mã màu hex vào component. Kiểm tra tương phản WCAG AA cho chữ thường, chữ trên nút, nhãn màu của Hộp Thư, ô A-B-C-D của quiz.
+- Giữ nguyên: bảng phấn (`.chalkboard`) vẫn là bảng xanh; khung xem trước slide (`SlideCanvas`) và file PowerPoint/Word xuất ra không đổi theo giao diện app, vì chúng theo theme slide riêng. Màn hình "Chiếu lên lớp" có nút chọn riêng, mặc định Sáng vì máy chiếu trong lớp thường sáng.
+- Thêm bước vào tour giới thiệu nút này. Test: hàm chọn giao diện theo giờ (05:59 → tối, 06:00 → sáng, 17:59 → sáng, 18:00 → tối) chạy đúng dù múi giờ máy là UTC hay America/New_York.
+- Cập nhật `design/_tokens.css` và `design/00-styleguide.html` có cả bản tối.
 
 ### [ ] Giai đoạn 10 — Rà soát trước khi cho thầy cô dùng thử
 
