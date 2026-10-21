@@ -1,5 +1,6 @@
 import { QUIZ_COLORS, QUIZ_LETTERS, type SlideTheme } from "@/lib/lesson/theme";
 import type { IconKey, Slide } from "@/lib/lesson/types";
+import { visualSize, type WorkshopVisual } from "@/lib/workshop/visual";
 
 /*
   Bộ dàn trang slide DUY NHẤT. Cả bản xem trước trên web lẫn file PowerPoint đều vẽ
@@ -12,6 +13,7 @@ export const SLIDE_H = 7.5;
 const M = 0.6; // lề
 
 export type El =
+  | { kind: "visual"; x: number; y: number; w: number; h: number; visual: WorkshopVisual }
   | { kind: "rect"; x: number; y: number; w: number; h: number; fill: string; radius?: number; line?: string }
   | { kind: "ellipse"; x: number; y: number; w: number; h: number; fill: string; line?: string }
   | { kind: "line"; x1: number; y1: number; x2: number; y2: number; color: string; width: number }
@@ -95,6 +97,14 @@ export function layoutSlide(
   const top = 1.75;
   const bodyH = SLIDE_H - top - 0.85;
   const fullW = SLIDE_W - 2 * M;
+
+  if (s.visual) {
+    const size = visualSize(s.visual);
+    const w = Math.min(fullW, bodyH * size.width / size.height);
+    const h = w * size.height / size.width;
+    els.push(title(s.title, th), { kind: "visual", x: (SLIDE_W - w) / 2, y: top, w, h, visual: s.visual });
+    return els;
+  }
 
   switch (s.layout) {
     case "bia": {

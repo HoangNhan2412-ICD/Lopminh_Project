@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { WorkshopVisual } from "@/lib/workshop/visual";
 
 /* Mô hình giáo án dùng chung cho: AI sinh ra, xem trước trên web, xuất PowerPoint và Word 5512. */
 
@@ -96,7 +97,7 @@ export const slideSchema = z.object({
   /** Khẩu lệnh song ngữ nhỏ ở góc slide (khi bật tích hợp song ngữ). */
   englishCue: z.string().optional(),
 });
-export type Slide = z.infer<typeof slideSchema>;
+export type Slide = z.infer<typeof slideSchema> & { visual?: WorkshopVisual };
 
 export const activitySchema = z.object({
   key: z.enum(ACTIVITY_KEYS),
@@ -157,6 +158,7 @@ export interface LessonRequest {
 }
 
 export interface LessonPlan extends LessonPlanContent {
+  slides: Slide[];
   id: string;
   request: LessonRequest;
   theme: ThemeKey;

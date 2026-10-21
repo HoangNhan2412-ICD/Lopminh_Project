@@ -3,6 +3,7 @@ import {
   CalendarCheck,
   Coffee,
   FolderOpen,
+  FileOutput,
   Languages,
   Mail,
   MonitorSmartphone,
@@ -41,6 +42,7 @@ export const NAV: NavGroup[] = [
     short: "Soạn giảng",
     items: [
       { href: "/soan-bai", label: "Soạn Bài", icon: BookOpen },
+      { href: "/xuong-hoc-lieu", label: "Xưởng học liệu", icon: FileOutput },
       { href: "/phong-quiz", label: "Phòng Quiz", icon: QrCode },
     ],
   },

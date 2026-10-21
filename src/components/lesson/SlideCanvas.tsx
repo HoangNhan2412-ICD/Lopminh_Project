@@ -5,6 +5,7 @@ import { ICONS } from "@/lib/lesson/icons";
 import { SLIDE_H, SLIDE_W, layoutSlide } from "@/lib/lesson/layout";
 import type { SlideTheme } from "@/lib/lesson/theme";
 import type { Slide } from "@/lib/lesson/types";
+import { svgData, visualSvg } from "@/lib/workshop/visual";
 
 /*
   Vẽ slide trên web từ cùng bộ phần tử với file PowerPoint.
@@ -42,6 +43,10 @@ export function SlideCanvas({
     >
       {els.map((e, i) => {
         switch (e.kind) {
+          case "visual":
+            // SVG nội bộ được vẽ từ dữ liệu đã kiểm tra, không tải ảnh ngoài.
+            // eslint-disable-next-line @next/next/no-img-element
+            return <img key={i} src={svgData(visualSvg(e.visual))} alt={e.visual.kind === "graph" ? e.visual.graph.title : e.visual.title} className="absolute" style={{ left: pctX(e.x), top: pctY(e.y), width: pctX(e.w), height: pctY(e.h) }} />;
           case "rect":
             return (
               <div

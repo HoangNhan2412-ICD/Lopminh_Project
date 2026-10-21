@@ -5,6 +5,7 @@ import { ICONS } from "@/lib/lesson/icons";
 import { layoutSlide, type El } from "@/lib/lesson/layout";
 import { THEMES } from "@/lib/lesson/theme";
 import type { IconKey, LessonPlan } from "@/lib/lesson/types";
+import { visualPng } from "@/lib/workshop/visual";
 
 /*
   Dựng file PowerPoint trong trình duyệt bằng pptxgenjs, từ đúng bộ phần tử của bản xem trước.
@@ -62,6 +63,18 @@ export async function buildPptx(plan: LessonPlan, opts: { quizUrl?: string | nul
     const els: El[] = layoutSlide(s, theme, { index: i, total, lessonTitle: plan.title, quizUrl: opts.quizUrl });
     for (const e of els) {
       switch (e.kind) {
+        case "visual": {
+          if (e.visual.kind === "graph" && e.visual.graph.family === "table") {
+            const g = e.visual.graph;
+            slide.addChart(pptx.ChartType.bar, [{ name: g.yLabel, labels: g.rows.map(r => r.label), values: g.rows.map(r => r.value) }], {
+              x: e.x, y: e.y, w: e.w, h: e.h, barDir: "col", showLegend: false,
+              showTitle: true, title: g.title,
+              catAxisTitle: `${g.xLabel} (${g.xUnit})`, valAxisTitle: `${g.yLabel} (${g.yUnit})`,
+              chartColors: [theme.accent], showValue: true,
+            });
+          } else slide.addImage({ data: await visualPng(e.visual), x: e.x, y: e.y, w: e.w, h: e.h });
+          break;
+        }
         case "rect":
           slide.addShape(e.radius ? pptx.ShapeType.roundRect : pptx.ShapeType.rect, {
             x: e.x,

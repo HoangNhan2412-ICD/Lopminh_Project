@@ -88,6 +88,7 @@ export function ExportPanel({
 
   return (
     <div className="space-y-5">
+      <Card><div className="space-y-3 p-5"><p>Muốn thêm sơ đồ, đồ thị, phiếu hoặc nhiều loại file cùng lúc?</p><Link className={buttonCls("primary")} href="/xuong-hoc-lieu">Mở Xưởng học liệu</Link></div></Card>
       <Card>
         <CardHeader title="Màu slide" subtitle="Đổi là cả bản xem trước và file tải về đổi theo" />
         <div className="grid gap-2 p-5 sm:grid-cols-3">

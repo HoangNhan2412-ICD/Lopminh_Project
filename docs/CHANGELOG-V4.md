@@ -1,5 +1,16 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 2D (21/10/2026)
+
+- Thêm `/xuong-hoc-lieu`, mục điều hướng và đường dẫn từ Xuất file của Soạn Bài. Dùng chung lớp/hồ sơ/mục lục đã đối chiếu, gõ hoặc nói yêu cầu, chọn 8 loại đầu ra, tiến độ và tải riêng, thử lại riêng từng lỗi.
+- Tái dùng xuất giáo án Word, slide PowerPoint và quiz; thêm phiếu hai tầng Word, sơ đồ PNG/SVG, infographic A4 PNG, gói nguồn/câu lệnh NotebookLM. Tên file ASCII. Không gửi danh sách lớp/ghi chú học sinh sang luồng tạo học liệu; chặn nguồn có tên trong danh sách hoặc dấu hiệu ghi chú riêng trước khi xuất.
+- Đồ thị có schema bậc nhất/bậc hai/sin/cos/mũ/bảng, code tính 801 điểm, không eval. Giáo viên xác nhận đơn vị/công thức/pha/khoảng vẽ. Mẫu A=5 cm, T=2 s chạy không khóa, ghi rõ pha mặc định 0. Bảng số liệu do giáo viên nhập, PowerPoint chứa biểu đồ gốc và workbook chỉnh sửa được.
+- Sơ đồ, đồ thị, infographic vào slide qua `layout.ts`; preview và PPTX dùng chung vị trí/kích thước. Biểu đồ PowerPoint gốc có thể khác cách vẽ nhãn so với SVG; không cam kết giống từng pixel.
+- 67/67 test, lint, build qua (29 trang). Playwright localhost 1280/390px: 4 loại tạo 7 file, không tràn và không lỗi JavaScript. Kiểm tra thêm mọi loại file; giả lập lỗi ảnh: 3 loại còn lại xong, thử lại riêng sơ đồ thành công. Đọc XML DOCX/PPTX, xác nhận biểu đồ có dữ liệu 2, −3, 7 và workbook nhúng.
+- Đã sửa nút chính bị trùng lớp màu khi xem ảnh chụp. Dev server cần dùng localhost; 127.0.0.1 bị chặn tài nguyên sau khi khởi động lại. Còn cảnh báo kiểm tra instant navigation của khung app trong dev như trước.
+- Người dùng xác nhận hoãn âm thanh/video. Chưa gọi TTS hoặc bật dịch vụ trả phí. Dự toán và nguồn giá trong `docs/XUONG-HOC-LIEU.md`. Chưa thử Gemini thật; giáo án/phiếu/quiz demo là khung mẫu. Hàng đợi hiện ở trình duyệt, rời trang phải tạo lại; công thức vật lý vẫn cần giáo viên kiểm tra đơn vị. File Wayground/Kahoot còn chờ mẫu ở Giai đoạn 7.
+
+
 ## Tiếp quản Codex — Giai đoạn 2C, khung chờ nguồn (21/10/2026)
 
 - Schema Zod cho văn bản và mục lục: nguồn chính thức HTTPS, ngày, NFC, mã bài không trùng, yêu cầu cần đạt có vị trí trích dẫn; không cho trích nội dung khi chưa đối chiếu.

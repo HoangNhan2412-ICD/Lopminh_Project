@@ -159,7 +159,9 @@ Mỗi văn bản một mục: số hiệu, tên, ngày ban hành, ngày hiệu l
 
 Xong khi: Cô Mai Hoa mở Kho thấy ngay các văn bản và mục lục môn mình; ở Soạn Bài chọn "Toán 9 → Chương 1 → Bài 2" là tên bài và yêu cầu cần đạt hiện sẵn, giáo án sinh ra bám đúng yêu cầu đó; test kiểm tra mọi file mục lục đúng schema.
 
-### [ ] Giai đoạn 2D — Xưởng học liệu: thầy cô nói cần gì, chọn loại file, app xuất ra
+### [x] Giai đoạn 2D — Xưởng học liệu: thầy cô nói cần gì, chọn loại file, app xuất ra
+
+> Đã xong phần xuất file/demo và kiểm tra ngày 21/10/2026. Người dùng duyệt tạm hoãn âm thanh/video; chưa bật TTS. Chưa thử Gemini thật. Chi tiết: `docs/XUONG-HOC-LIEU.md`.
 
 Ý tưởng: thầy cô gõ hoặc nói một yêu cầu, ví dụ "làm đồ thị cho bài 11 Vật lý 11", rồi tick những thứ muốn nhận: slide, giáo án Word, sơ đồ tư duy, đồ thị, phiếu học tập, quiz, video ngắn… App tự làm và trả về từng file.
 
