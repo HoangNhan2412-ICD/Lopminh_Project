@@ -21,6 +21,7 @@ export function toursFor(p: TeacherProfile): Record<string, TourStep[]> {
     "/": [
       { title: `Chào ${addressOf(p)}`, text: `Em là Bé Bảng. Em dẫn ${h} đi một vòng chừng 1 phút nhé. Bấm “Tiếp” để đi tiếp, “Để sau” nếu ${h} đang bận.` },
       { element: "[data-tour=board]", title: "Tấm bảng hôm nay", text: `Giờ hiện tại, lời nhắn của em và các tiết trong ngày. ${H} bấm vào một tiết để xem lớp đó, bấm “Ở nhà” để xem tổng quan ngày mai.` },
+      { element: "[data-tour=chat-shortcut]", title: "Trò chuyện với Bé Bảng", text: `${H} bấm nút này để kể chuyện với em. Nút luôn ở góc dưới bên phải trên các trang làm việc, phía trên thanh điều hướng điện thoại.` },
       { element: "[data-tour=class]", title: "Tình hình lớp", text: `Lớp chủ nhiệm hiện đủ mọi mặt; lớp bộ môn chỉ hiện em vắng, em cần gỡ điểm và em làm tốt cho gọn.` },
       { element: "[data-tour=note]", title: "Ghi nhanh", text: `${H} gõ hoặc bấm “Nói” rồi nói tự nhiên, ví dụ “An nghỉ ốm đến hết tuần”. Em tách thành ghi chú cho từng em, ${h} xem lại rồi mới lưu.` },
       { element: "[data-tour=nav]", title: "Ba nhóm việc", text: `Giám sát & Nhập liệu, Soạn Giảng Số, và Góc Thầy Cô để nghỉ ngơi, học thêm. Mỗi trang đều có nút dấu hỏi ở trên để xem lại hướng dẫn.` },

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { MessageCircleHeart } from "lucide-react";
 import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { FontScaleToggle } from "@/components/shell/FontScaleToggle";
 import { GuideTour } from "@/components/shell/GuideTour";
@@ -166,7 +167,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-5 sm:px-6 lg:pb-10">
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 lg:pb-28">
           <MobileSubNav />
           {ready ? (
             // key theo hồ sơ: đổi hồ sơ là dựng lại toàn bộ trang, không sót state của người trước.
@@ -180,6 +181,17 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
       </div>
       <MobileNav />
+      {ready && pathname !== "/tam-tinh" && (
+        <Link
+          href="/tam-tinh"
+          data-tour="chat-shortcut"
+          aria-label="Trò chuyện với Bé Bảng"
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-primary p-3 font-semibold text-primary-fg shadow-[var(--shadow-card)] hover:bg-primary-hover lg:bottom-5 lg:right-6 lg:px-5"
+        >
+          <MessageCircleHeart className="size-6" aria-hidden />
+          <span className="hidden lg:inline">Trò chuyện với Bé Bảng</span>
+        </Link>
+      )}
     </div>
   );
 }

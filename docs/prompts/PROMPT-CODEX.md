@@ -48,7 +48,7 @@ Bắt đầu bằng Giai đoạn 0.
 - Liệt kê biến môi trường đang có trong `.env.local` (chỉ tên biến, không in giá trị).
 - Không sửa code ở giai đoạn này. Báo kết quả rồi làm tiếp Giai đoạn 1.
 
-### [ ] Giai đoạn 1 — Nút "Trò chuyện với Bé Bảng" dễ thấy
+### [x] Giai đoạn 1 — Nút "Trò chuyện với Bé Bảng" dễ thấy
 
 Vấn đề: chat nằm ở Góc Thầy Cô → Tâm Tình (`/tam-tinh`), người thử không tìm ra.
 

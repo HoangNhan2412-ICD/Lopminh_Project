@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { MessageCircleHeart } from "lucide-react";
 import { ClassBoard } from "@/components/today/ClassBoard";
 import { HomeSummary } from "@/components/today/HomeSummary";
 import { QuickNoteInput } from "@/components/today/QuickNoteInput";
@@ -9,9 +11,10 @@ import { Chip } from "@/components/ui";
 import { currentPeriod, isTeachingHours, periodsToday } from "@/lib/schedule";
 import { useApp } from "@/lib/store/app-store";
 import { vnNow } from "@/lib/time";
+import { addressOf } from "@/lib/persona/honorific";
 
 export function TodayView() {
-  const { classes, timetable } = useApp();
+  const { profile, classes, timetable } = useApp();
   const homeroom = classes.find((c) => c.role === "chu-nhiem") ?? classes[0];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [homeMode, setHomeMode] = useState(false);
@@ -31,6 +34,12 @@ export function TodayView() {
   return (
     <div className="space-y-5">
       <h1 className="sr-only">Lớp Mình Hôm Nay</h1>
+      <section data-tour="chat-invite" className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
+        <p>{addressOf(profile)} muốn kể chuyện hôm nay? Bé Bảng ở đây nghe mình.</p>
+        <Link href="/tam-tinh" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 font-semibold text-primary-fg hover:bg-primary-hover">
+          <MessageCircleHeart className="size-5" aria-hidden /> Trò chuyện với Bé Bảng
+        </Link>
+      </section>
       <TodayBoard
         selectedClassId={selected?.id ?? null}
         homeMode={homeMode}

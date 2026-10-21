@@ -1,5 +1,11 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 1 (21/10/2026)
+
+- Lời mời trò chuyện ngay đầu Hôm Nay, danh xưng qua `addressOf()`; nút chat nổi trên các trang làm việc, ẩn ở Tâm Tình và Đăng nhập.
+- Điện thoại chỉ hiện biểu tượng, cao hơn thanh điều hướng và safe area; cuối trang có khoảng trống để cuộn nội dung khỏi nút nổi. Máy tính có nhãn chữ. Thêm bước tour.
+- 26/26 test, lint và build qua. Playwright: 10 trang × 1280/390px không tràn; nút ≥44px, không đè thanh dưới; bấm một lần vào chat từ 8 trang, đúng hai trang ẩn nút.
+
 ## Tiếp quản Codex — Giai đoạn 0 (21/10/2026)
 
 - Đồng bộ nhánh `v4-nang-cap` tại `b390b86`, không sửa code ứng dụng.
