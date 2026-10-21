@@ -110,6 +110,49 @@ Khi có sự kiện về một em, app tự mở một quy trình gồm các bư
 
 Xong khi: Cô Mai Hoa (dữ liệu demo) bấm vắng cho một em ở thẻ, trong một phút thấy phiếu bù, 5 câu kiểm tra và nháp tin phụ huynh sẵn để duyệt; ở 390px thẻ không tràn, mọi nút ≥ 44px.
 
+### [ ] Giai đoạn 2C — Thư viện dựng sẵn: văn bản chỉ đạo + mục lục SGK Kết nối tri thức
+
+Mục tiêu: mở Kho Dữ Liệu là đã có sẵn văn bản soạn giáo án và mục lục SGK, thầy cô không phải tự tải. Soạn Bài chọn được bài trong SGK.
+
+Bối cảnh đã kiểm tra (10/2026):
+- Từ năm học 2026–2027 cả nước dùng một bộ SGK: **Kết nối tri thức với cuộc sống** (NXB Giáo dục Việt Nam), lớp 1–12, theo Quyết định 3588/QĐ-BGDĐT ngày 26/12/2025. Không cần làm các bộ khác.
+- Công văn 5512/BGDĐT-GDTrH (18/12/2020) vẫn còn hiệu lực; Thông tư 15/2026/TT-BGDĐT (Điều lệ trường, hiệu lực 10/5/2026) chỉ bắt buộc giáo viên bộ môn một loại hồ sơ là kế hoạch bài dạy.
+- SGK có bản quyền của NXB. Bản đọc miễn phí chính thức ở taphuan.nxbgd.vn. Văn bản quy phạm pháp luật và văn bản hành chính thì không thuộc đối tượng bảo hộ quyền tác giả, nên được đưa nguyên văn vào app.
+
+**DỪNG trước khi nạp nội dung**: nhờ mình (hoặc nhóm) tải bản PDF gốc của từng văn bản từ nguồn chính thức (vbpl.vn, moet.gov.vn, chinhphu.vn) vào `kho-mac-dinh/van-ban/`. Không tự viết lại nội dung văn bản từ trí nhớ, không lấy từ trang tổng hợp không chính thức.
+
+**A. Văn bản chỉ đạo** (`kho-mac-dinh/van-ban/` + `src/content/thu-vien/van-ban.ts`)
+
+Danh sách cần có (nhóm kiểm tra lại số hiệu, ngày, còn hiệu lực hay không trên vbpl.vn trước khi nạp):
+- Công văn 5512/BGDĐT-GDTrH (18/12/2020): đủ Phụ lục I–IV, nhấn Phụ lục IV (khung kế hoạch bài dạy, 4 hoạt động, mỗi hoạt động có mục tiêu / nội dung / sản phẩm / tổ chức thực hiện 4 bước).
+- Thông tư 32/2018/TT-BGDĐT (Chương trình giáo dục phổ thông 2018) và các thông tư sửa đổi (ví dụ 13/2022/TT-BGDĐT): đây là nguồn của "yêu cầu cần đạt" từng môn, từng lớp.
+- Thông tư 22/2021/TT-BGDĐT (đánh giá học sinh THCS, THPT) và Thông tư 27/2020/TT-BGDĐT (đánh giá học sinh tiểu học).
+- Công văn 2345/BGDĐT-GDTH (kế hoạch giáo dục cấp tiểu học).
+- Quyết định 3588/QĐ-BGDĐT (bộ SGK thống nhất), Thông tư 15/2026/TT-BGDĐT (Điều lệ trường).
+- Công văn hướng dẫn nhiệm vụ năm học 2026–2027 của Bộ (giáo dục trung học, giáo dục tiểu học).
+
+Mỗi văn bản một mục: số hiệu, tên, ngày ban hành, ngày hiệu lực, tình trạng, đường dẫn bản gốc, tóm tắt các phần dùng cho soạn bài (trích đúng điều/mục, ghi rõ trích từ đâu), thẻ (`#CV5512`, `#Khung bài dạy`…). Có trường `daKiemTra` và ngày kiểm tra; chưa kiểm tra thì giao diện hiện "Chưa đối chiếu bản gốc".
+
+**B. Mục lục SGK Kết nối tri thức** (`src/content/thu-vien/sgk/<mon>-<lop>.json`)
+
+- Chỉ lưu mục lục (tập, chương/chủ đề, tên bài, số tiết gợi ý) và **yêu cầu cần đạt lấy từ Chương trình GDPT 2018** (Thông tư 32/2018). Không chép nội dung trang sách, bài tập, hình ảnh của SGK vào app hay vào Gemini File Search.
+- Mỗi bài có đường dẫn "Đọc sách" tới bản điện tử chính thức trên taphuan.nxbgd.vn (mở tab mới).
+- Làm trước các môn, lớp của 3 hồ sơ demo; các môn khác để file trống theo cùng định dạng kèm hướng dẫn `docs/THU-VIEN.md` cho nhóm nhập dần. Không tự đoán tên bài: nhóm nhập từ mục lục sách thật, Codex viết schema zod, script kiểm tra định dạng và test.
+
+**C. Giao diện Kho Dữ Liệu**
+
+- Hai tab: **Thư viện chung** (dựng sẵn, chỉ đọc, giống nhau cho mọi thầy cô) và **Tài liệu của tôi** (như hiện tại, riêng từng người).
+- Thẻ tài liệu như ảnh mẫu bạn mình gửi: tiêu đề, nhãn phần (ví dụ "Phụ lục IV: Khung kế hoạch bài dạy" hoặc "Chương 1: …"), tóm tắt có viền bên trái, thẻ `#…`, nút "Mở bản gốc" / "Đọc sách". Lọc theo loại (Văn bản / SGK), môn, lớp; tìm không dấu.
+- Thầy cô tự tải SGK hay tài liệu của mình vào "Tài liệu của tôi" thì vẫn được (kho riêng, chỉ họ thấy), ghi chú nhắc dùng tài liệu mình có quyền dùng.
+
+**D. Nối vào Soạn Bài**
+
+- Thêm ô chọn "Bài trong SGK Kết nối tri thức": môn, lớp lấy theo lớp đang chọn → chương → bài. Chọn xong tự điền "Tên bài dạy" và gửi kèm yêu cầu cần đạt + số tiết vào prompt soạn bài (`src/lib/lesson/prompt.ts`). Gõ tay tên bài vẫn được như cũ.
+- Phần luật soạn theo Phụ lục IV trong prompt đặt ở đầu (để Gemini tự cache) và lấy chữ từ văn bản đã nạp, không viết lại một bản khác.
+- Có Gemini: tạo một File Search store chung cho văn bản (script `scripts/nap-thu-vien.ts`, chạy một lần, tên store đặt trong biến môi trường `GEMINI_SHARED_STORE`), dùng cùng store riêng của thầy cô khi soạn bài và khi hỏi đáp. Không có khóa thì tìm theo từ khóa trong dữ liệu dựng sẵn.
+
+Xong khi: Cô Mai Hoa mở Kho thấy ngay các văn bản và mục lục môn mình; ở Soạn Bài chọn "Toán 9 → Chương 1 → Bài 2" là tên bài và yêu cầu cần đạt hiện sẵn, giáo án sinh ra bám đúng yêu cầu đó; test kiểm tra mọi file mục lục đúng schema.
+
 ### [ ] Giai đoạn 3 — Supabase thật + đăng nhập Google
 
 **DỪNG trước khi code**: hỏi mình đã tạo project Supabase và bật Google provider chưa. Cần `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` trong `.env.local` (mình tự điền, bạn không hỏi giá trị). Chưa có thì vẫn làm được phần code, nhưng chỉ thử ở chế độ demo, và nói rõ chưa thử với Supabase thật.
@@ -196,4 +239,4 @@ Ba lựa chọn: **Sáng**, **Tối**, **Tự động**. Mặc định là Tự 
 
 ## Việc không giao cho Codex
 
-Các việc này cần tài khoản của bạn: thu hồi khóa Gemini cũ; tạo project Supabase; bật Google OAuth và Gmail API trên Google Cloud; cài biến môi trường và Deployment Protection trên Vercel; tải file mẫu Wayground/Kahoot.
+Các việc này cần tài khoản của bạn: thu hồi khóa Gemini cũ; tạo project Supabase; bật Google OAuth và Gmail API trên Google Cloud; cài biến môi trường và Deployment Protection trên Vercel; tải file mẫu Wayground/Kahoot; tải bản PDF gốc các văn bản (5512, Thông tư 32/2018…) và nhập mục lục SGK Kết nối tri thức cho các môn còn lại.
