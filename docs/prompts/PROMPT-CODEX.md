@@ -1,0 +1,149 @@
+# Prompt cho Codex CLI — làm nốt Lớp Mình V4
+
+Cách dùng: mở Codex ở thư mục gốc repo (đã `git checkout v4-nang-cap`, đã có `.env.local`), dán **Prompt chính** ở dưới. Codex sẽ làm lần lượt từng giai đoạn trong file này, mỗi giai đoạn một commit, và dừng ở những chỗ ghi **DỪNG** để chờ bạn.
+
+Muốn Codex chỉ làm một giai đoạn thì thêm vào cuối prompt: `Lần này chỉ làm Giai đoạn N.`
+
+---
+
+## Prompt chính
+
+```
+Bạn là lập trình viên tiếp quản dự án Lớp Mình (web trợ lý AI cho giáo viên phổ thông Việt Nam), nhánh v4-nang-cap.
+
+ĐỌC TRƯỚC, theo thứ tự, chưa sửa gì:
+1. CLAUDE.md — luật của dự án. Tuy tên file là của Claude Code nhưng mọi luật trong đó áp dụng y nguyên cho bạn (xưng hô qua getHonorific(), không commit khóa, NFC, chỉ dùng token màu, dữ liệu nhạy cảm, quy trình git).
+2. AGENTS.md — đây là Next.js 16, khác Next.js bạn biết. Trước khi dùng API nào của Next (proxy, after, route handler, cache), đọc hướng dẫn trong node_modules/next/dist/docs/.
+3. docs/CHANGELOG-V4.md — những gì đã xong.
+4. docs/prompts/PROMPT-CODEX.md — danh sách giai đoạn cần làm, tiêu chí xong, chỗ phải dừng.
+5. Mục liên quan trong docs/SPEC-V4.md khi bắt đầu từng giai đoạn (đừng đọc cả file một lúc).
+
+CÁCH LÀM:
+- Làm từng giai đoạn theo thứ tự trong PROMPT-CODEX.md. Đầu mỗi giai đoạn: viết kế hoạch 5–10 dòng (file nào sửa, package nào thêm, vì sao), rồi làm luôn, trừ khi giai đoạn đó ghi DỪNG.
+- Chế độ demo phải luôn chạy: thiếu biến môi trường Supabase/Gemini/Google thì app vẫn mở được, dùng dữ liệu trong trình duyệt như hiện tại. Không được làm hỏng điều này.
+- Xong mỗi giai đoạn: npm run test, npm run lint, npm run build đều phải qua. Mở npm run dev và thử bằng Playwright ở khổ 1280px và 390px (không tràn ngang). Ghi docs/CHANGELOG-V4.md. Đánh dấu [x] giai đoạn đó trong PROMPT-CODEX.md. Commit tiếng Việt dạng feat(pham-vi): mô tả, push lên origin v4-nang-cap.
+- Báo mình 3–5 dòng sau mỗi giai đoạn: đã làm gì, thử thế nào, còn gì chưa xong.
+
+KHÔNG ĐƯỢC:
+- Push lên main, push --force, sửa lịch sử git.
+- Commit .env*, khóa, token. Không in khóa ra log hay ra màn hình. Thấy khóa thật trong code thì dừng và báo.
+- Viết cứng "Thầy"/"Cô" kèm tên trong UI hoặc prompt. Để model đoán giới tính từ tên.
+- Ghi sức khỏe, tâm lý, nội dung chat, nội dung thư vào log.
+- Thêm dịch vụ tốn tiền, đổi model Gemini mặc định, hay xin quyền Google mới mà chưa hỏi mình.
+- Dùng thư viện không chính thức đăng nhập hộ (NotebookLM, Quizizz, Zalo) bằng cookie.
+- Đoán khi thiếu thông tin. Gặp chỗ cần tài khoản, khóa, hay quyết định sản phẩm thì DỪNG và hỏi.
+
+Bắt đầu bằng Giai đoạn 0.
+```
+
+---
+
+## Các giai đoạn
+
+### [ ] Giai đoạn 0 — Kiểm tra nền
+
+- `npm ci`, rồi `npm run test`, `npm run lint`, `npm run build`. Ghi lại kết quả.
+- Liệt kê biến môi trường đang có trong `.env.local` (chỉ tên biến, không in giá trị).
+- Không sửa code ở giai đoạn này. Báo kết quả rồi làm tiếp Giai đoạn 1.
+
+### [ ] Giai đoạn 1 — Nút "Trò chuyện với Bé Bảng" dễ thấy
+
+Vấn đề: chat nằm ở Góc Thầy Cô → Tâm Tình (`/tam-tinh`), người thử không tìm ra.
+
+- Trang Hôm Nay (`src/components/today/TodayView.tsx` / `TodayBoard.tsx`): thêm một lời mời trò chuyện ngắn có nút dẫn tới `/tam-tinh`. Chữ dùng danh xưng qua `getHonorific()` / `addressOf()`.
+- Nút nổi góc dưới phải trên mọi trang trừ `/tam-tinh` và `/dang-nhap`, biểu tượng lucide (ví dụ `MessageCircleHeart`), có nhãn chữ trên máy tính, chỉ biểu tượng trên điện thoại. Trên điện thoại đặt cao hơn thanh điều hướng dưới, không che nội dung.
+- Vùng bấm ≥ 44×44px, có `aria-label`, chỉ dùng token màu trong `src/app/globals.css`.
+- Thêm bước tương ứng vào tour (`src/lib/tours.ts`, thuộc tính `data-tour`).
+
+Xong khi: từ mọi trang bấm một lần là vào chat; không che nút Gửi hay thanh dưới ở 390px.
+
+### [ ] Giai đoạn 2 — Chat báo lỗi rõ ràng và trang kiểm tra sức khỏe
+
+Vấn đề: trên Vercel, khi chat không chạy thì không biết vì thiếu khóa, khóa sai, hết hạn mức hay sai tên model.
+
+- `src/app/api/chat/route.ts` (và `src/lib/ai/json.ts`): phân loại lỗi Gemini theo mã HTTP: 400/401/403 khóa sai hoặc chưa bật API; 404 tên model không tồn tại; 429 hết hạn mức; 5xx Google quá tải. Trả về cho người dùng câu tiếng Việt dễ hiểu theo từng loại. Log server chỉ ghi mã lỗi và loại, không ghi nội dung tin nhắn.
+- Thêm `GET /api/health`: trả `{ ai: true|false, models: {...}, supabase: true|false, gate: true|false }` và kết quả một lời gọi Gemini rất ngắn (`MODELS.fast`, prompt "ping", tối đa 5 token) dạng `ok` / mã lỗi. Không bao giờ trả khóa. Route này phải đi qua cổng mật khẩu như các API khác (`src/proxy.ts`).
+- Khi trả lời ở chế độ demo, giao diện chat hiện một dòng nhỏ "Đang chạy thử, chưa nối Gemini" thay vì chỉ có ghi chú ở cuối câu.
+- Thêm phần "Kiểm tra" vào `docs/DEPLOY.md`: mở `/api/health` để biết thiếu gì.
+
+Xong khi: có test cho hàm phân loại lỗi; với khóa giả `GEMINI_API_KEY=sai` thì chat hiện đúng câu "khóa sai".
+
+### [ ] Giai đoạn 3 — Supabase thật + đăng nhập Google
+
+**DỪNG trước khi code**: hỏi mình đã tạo project Supabase và bật Google provider chưa. Cần `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` trong `.env.local` (mình tự điền, bạn không hỏi giá trị). Chưa có thì vẫn làm được phần code, nhưng chỉ thử ở chế độ demo, và nói rõ chưa thử với Supabase thật.
+
+- Client/server bằng `@supabase/ssr` (đã có trong package.json). Đăng nhập Google; trang chào lần đầu hỏi "Bé Bảng nên gọi mình là Thầy hay Cô ạ?" và tên gọi, ghi vào `profiles.gender`, `profiles.call_name`.
+- Migration mới `supabase/migrations/0002_...sql` cho các dữ liệu đang nằm trong localStorage mà 0001 chưa có. Các khóa hiện có: `lm:profiles`, `lm:current`, `lm:notes:<pid>`, `lm:rosters:<pid>`, `lm:lessons:<pid>`, `lm:quiz:<pid>`, `lm:quizurl:<lessonId>`, `lm:mail:<pid>`, `lm:docs:<pid>`, `lm:filestore:<pid>`, `lm:chat:<pid>`, `lm:chatmem:<pid>`, `lm:load:<pid>:<date>`, `lm:kynang:<pid>`, `lm:songngu-days:<pid>`. Mọi bảng có `user_id` và RLS `auth.uid() = user_id`. Không sửa migration 0001 đã có, chỉ thêm migration mới.
+- Giữ nguyên giao diện hàm của `useLocal` / `src/lib/store/app-store.tsx` / `useLessons` / `useDocs`: thêm lớp lưu trữ chọn localStorage hoặc Supabase tùy có biến môi trường và có phiên đăng nhập. Component không phải sửa nhiều.
+- Lần đầu đăng nhập mà trình duyệt còn dữ liệu demo: hỏi "Chuyển dữ liệu trên máy này vào tài khoản?", có/không. Không tự xóa dữ liệu cục bộ.
+- Đổi tài khoản thì xóa sạch state chat và cache theo `profileId` (luật xưng hô số 2). Giữ test đổi hồ sơ 10 vòng, thêm test cho lớp lưu trữ.
+- Chat và sổ ghi nhớ là dữ liệu nhạy cảm: lưu được (RLS chỉ chủ tài khoản đọc), nhưng có nút "Xóa toàn bộ trò chuyện" xóa thật trên server.
+- Cổng `SITE_PASSWORD` giữ nguyên, chạy trước bước đăng nhập. Ghi cách tắt khi đã có đăng nhập Google vào `docs/DEPLOY.md`.
+
+Xong khi: không có biến Supabase thì app y như cũ; có thì đăng nhập, dữ liệu theo tài khoản, mở máy khác thấy cùng dữ liệu.
+
+### [ ] Giai đoạn 4 — Soạn giáo án chạy nền (luật số 6)
+
+Vấn đề: `/api/lesson/generate` là một request kéo tới 3 phút; mạng chập chờn là mất.
+
+- Bảng `jobs` (id, user_id, kind, status `cho|dang-chay|xong|loi`, progress 0–100, step, result jsonb, error, created_at) trong migration mới, có RLS.
+- `POST /api/jobs/lesson`: tạo job, trả `jobId` ngay, phần soạn chạy sau khi trả lời. Đọc `node_modules/next/dist/docs/` về `after()` trong Next 16 và giới hạn thời gian trên Vercel trước khi chọn cách làm. `GET /api/jobs/[id]` trả trạng thái. Client hỏi lại mỗi 2–3 giây hoặc dùng Supabase Realtime.
+- `LessonStudio.tsx`: thanh tiến độ theo `step` thật; đóng tab mở lại vẫn thấy job đang chạy hoặc kết quả.
+- Không có Supabase: giữ đường cũ (gọi thẳng), không lỗi.
+- Xuất PPTX/DOCX đang chạy trên trình duyệt (`ExportPanel.tsx`), giữ nguyên, chỉ thêm chỉ báo tiến độ nếu chưa có.
+
+Xong khi: tắt mạng giữa chừng rồi bật lại, giáo án vẫn hiện khi job xong.
+
+### [ ] Giai đoạn 5 — Phòng quiz trên điện thoại học sinh
+
+**DỪNG nếu chưa có Supabase** (cần Realtime).
+
+- Giáo viên bấm "Mở phòng" trong Phòng Quiz → tạo phòng mã 6 số + mã QR (dùng `qrcode.react`) dẫn tới `/choi/<ma>`.
+- `/choi/<ma>`: học sinh không cần đăng nhập, chỉ nhập biệt danh. Trang này và `/api` của nó phải đi qua được cổng `SITE_PASSWORD` (học sinh không có mật khẩu): cho phép riêng đường `/choi/*` trong `src/proxy.ts`, giới hạn tốc độ gửi.
+- Màn hình học sinh: 4 ô A-B-C-D màu `--quiz-a..d`, chữ to, bấm một lần. Màn hình chiếu của giáo viên (`QuizPlayer.tsx`): số em đã trả lời, biểu đồ đáp án, bảng xếp hạng.
+- Supabase Realtime (broadcast/presence) cho câu hiện tại và đếm người; bảng `quiz_rooms`, `quiz_answers` có RLS phù hợp (giáo viên sở hữu phòng; học sinh chỉ ghi câu trả lời của mình). Không lưu tên thật hay thông tin cá nhân của học sinh; xóa phòng sau 24 giờ.
+
+Xong khi: một máy tính chiếu + 3 tab điện thoại giả lập chơi trọn một bộ 5 câu, điểm đúng.
+
+### [ ] Giai đoạn 6 — Đọc Gmail (chỉ đọc)
+
+**DỪNG trước khi code**: hỏi mình đã làm bước 1–3 trong `docs/GMAIL.md` chưa. Đây là quyền "restricted", chưa xác minh thì tối đa 100 tài khoản thử.
+
+- Làm theo bước 4–5 của `docs/GMAIL.md`. Nút "Kết nối Gmail" trong Hộp Thư, xin quyền riêng khi bấm (không xin lúc đăng nhập).
+- Lấy thư 3 ngày gần nhất, gom nhiều thư vào một lần gọi `/api/mail/classify`. Cache kết quả theo hash nội dung để không phân loại lại.
+- Ô "Dán tin" cho Zalo giữ nguyên.
+
+Xong khi: có test cho phần ghép thư Gmail thành `RawMail[]` (dùng dữ liệu giả); không có quyền Gmail thì Hộp Thư vẫn như cũ.
+
+### [ ] Giai đoạn 7 — Đối chiếu file nhập Wayground và Kahoot
+
+**DỪNG**: nhờ mình tải file mẫu chính thức của Wayground (Quizizz) và Kahoot, đặt vào `docs/mau-nhap/`. Không tự đoán cột.
+
+- So cột, dòng tiêu đề, dòng bắt đầu dữ liệu, giới hạn thời gian và số đáp án với `src/lib/quiz/export.ts`. Sửa cho khớp.
+- Thêm test đọc file mẫu và so tiêu đề với file mình xuất.
+
+### [ ] Giai đoạn 8 — Ảnh minh họa cho hướng dẫn
+
+- Script Playwright (`scripts/chup-huong-dan.ts`) chạy app ở chế độ demo, chụp các bước trong `PlatformGuide.tsx` (phần của Lớp Mình) và `src/content/ky-nang-so.ts` vào `public/guides/` (WebP, rộng ≤ 1200px).
+- Gắn ảnh vào từng bước, có `alt` tiếng Việt. Bước nằm trên trang của nền tảng khác (Wayground, Kahoot, Quizlet) thì không chụp, ghi rõ "chụp tay" trong CHANGELOG.
+
+### [ ] Giai đoạn 9 — Dark mode
+
+- Thêm bộ token tối trong `src/app/globals.css` (theo `prefers-color-scheme` + nút chuyển ở header, nhớ lựa chọn trong `lm:theme`). Không thêm mã màu hex vào component.
+- Kiểm tra tương phản WCAG AA cho chữ thường và chữ trên nút. Bảng phấn (`.chalkboard`) giữ nguyên nhận diện.
+- Cập nhật `design/_tokens.css` cho khớp.
+
+### [ ] Giai đoạn 10 — Rà soát trước khi cho thầy cô dùng thử
+
+- Tìm chuỗi viết cứng "Thầy "/"Cô " kèm tên trong `src/` (trừ test và `honorific.ts`). Sửa qua `getHonorific()`.
+- Tìm mã màu hex trong `src/components/`. Chuyển sang token.
+- Vùng bấm < 44px, chữ < 18px ở nội dung chính, trang tràn ngang ở 390px. Sửa.
+- Mọi input người dùng và output AI qua `nfc()`.
+- Thông tin đường dây nóng trong `src/lib/ai/prompts.ts` (`SANCTUARY_RULES`): KHÔNG tự sửa số. Liệt kê các số/đường dây đang dùng trong báo cáo để mình kiểm tra với nguồn chính thức.
+- Viết `docs/KIEM-TRA-TRUOC-PHAT-HANH.md`: danh sách điều đã kiểm tra, điều cần người kiểm tra tay.
+
+---
+
+## Việc không giao cho Codex
+
+Các việc này cần tài khoản của bạn: thu hồi khóa Gemini cũ; tạo project Supabase; bật Google OAuth và Gmail API trên Google Cloud; cài biến môi trường và Deployment Protection trên Vercel; tải file mẫu Wayground/Kahoot.
