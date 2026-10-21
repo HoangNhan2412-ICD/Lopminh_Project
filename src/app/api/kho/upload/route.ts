@@ -2,7 +2,8 @@ import { getGemini } from "@/lib/ai/client";
 
 export const maxDuration = 120;
 
-const MAX_BYTES = 20 * 1024 * 1024;
+// Vercel giới hạn thân request 4,5 MB, chừa lề cho phần form
+const MAX_BYTES = 4 * 1024 * 1024;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
   const profileId = String(form?.get("profileId") ?? "").replace(/[^a-z0-9-]/gi, "").slice(0, 60);
   let storeName = String(form?.get("storeName") ?? "");
   if (!(file instanceof File)) return Response.json({ error: "Chưa có tệp." }, { status: 400 });
-  if (file.size > MAX_BYTES) return Response.json({ error: "Tệp lớn hơn 20 MB, thầy cô chia nhỏ giúp em nhé." }, { status: 413 });
+  if (file.size > MAX_BYTES) return Response.json({ error: "Tệp lớn hơn 4 MB, thầy cô chia nhỏ hoặc đưa thẳng vào NotebookLM nhé." }, { status: 413 });
 
   try {
     if (!storeName.startsWith("fileSearchStores/")) {

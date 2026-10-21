@@ -56,3 +56,9 @@
 - `docs/TIET-KIEM-TOKEN.md`: cách tiết kiệm token khi code và khi app gọi Gemini.
 
 **Còn thiếu**: Supabase thật + đăng nhập Google (dữ liệu đang ở trình duyệt), phòng quiz trên điện thoại học sinh, đọc Gmail tự động, ảnh chụp màn hình cho hướng dẫn, kiểm tra slide bằng ảnh (Gemini vision), dark mode. Số đường dây nóng hỗ trợ tâm lý cần kiểm tra lại trước khi phát hành.
+
+## Chuẩn bị đưa lên mạng (20/10/2026)
+
+- Cổng mật khẩu chung `SITE_PASSWORD` (`src/proxy.ts`, trang `/dang-nhap`): bật khi chạy trên mạng để người lạ không dùng ké khóa Gemini. Tắt khi để trống.
+- `vercel.json` đặt máy chủ ở Singapore. Giới hạn tải tệp còn 4 MB cho khớp Vercel.
+- Hướng dẫn deploy ở `docs/DEPLOY.md`.

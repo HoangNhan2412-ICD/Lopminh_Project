@@ -44,6 +44,15 @@ function DocsTab() {
       setBusy(file.name);
       try {
         const text = await extractText(file).catch(() => null);
+        if (file.size > 4 * 1024 * 1024) {
+          // Máy chủ chỉ nhận tệp tới 4 MB: tệp lớn chỉ giữ chữ đọc được trên máy
+          setDocs((all) => [
+            { id: newId("doc"), name: file.name.normalize("NFC"), category, size: file.size, addedAt: new Date().toISOString(), text: text ? text.slice(0, 60_000) : null, remote: false },
+            ...all,
+          ]);
+          toast.info(`${file.name} lớn hơn 4 MB nên chỉ lưu trên máy. ${capFirst(h)} chia nhỏ tệp nếu muốn Gemini đọc.`);
+          continue;
+        }
         const form = new FormData();
         form.set("file", file);
         form.set("category", category);
@@ -135,7 +144,7 @@ function DocsTab() {
             <label htmlFor="kho-file" className="flex min-h-28 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-surface-muted p-4 text-center hover:border-primary">
               {busy ? <LoaderCircle className="size-7 animate-spin text-primary" aria-hidden /> : <Upload className="size-7 text-primary" aria-hidden />}
               <span className="font-semibold">{busy ? `Đang đọc ${busy}…` : "Bấm để chọn tệp PDF, Word, TXT"}</span>
-              <span className="text-sm text-ink-muted">Tối đa 20 MB mỗi tệp</span>
+              <span className="text-sm text-ink-muted">Tối đa 4 MB mỗi tệp. Tệp lớn hơn thì chia nhỏ, hoặc đưa thẳng vào NotebookLM</span>
             </label>
           </div>
         </Card>

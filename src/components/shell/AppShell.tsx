@@ -146,6 +146,8 @@ function MobileSubNav() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { ready, profile } = useApp();
+  const pathname = usePathname();
+  if (pathname === "/dang-nhap") return <>{children}</>;
 
   return (
     <div className="flex min-h-dvh">
