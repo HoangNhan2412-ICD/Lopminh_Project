@@ -269,7 +269,7 @@ Xong khi: có test cho phần ghép thư Gmail thành `RawMail[]` (dùng dữ li
 - Script Playwright (`scripts/chup-huong-dan.ts`) chạy app ở chế độ demo, chụp các bước trong `PlatformGuide.tsx` (phần của Lớp Mình) và `src/content/ky-nang-so.ts` vào `public/guides/` (WebP, rộng ≤ 1200px).
 - Gắn ảnh vào từng bước, có `alt` tiếng Việt. Bước nằm trên trang của nền tảng khác (Wayground, Kahoot, Quizlet) thì không chụp, ghi rõ "chụp tay" trong CHANGELOG.
 
-### [ ] Giai đoạn 9 — Giao diện Sáng / Tối / Tự động theo giờ Việt Nam
+### [x] Giai đoạn 9 — Giao diện Sáng / Tối / Tự động theo giờ Việt Nam
 
 Ba lựa chọn: **Sáng**, **Tối**, **Tự động**. Mặc định là Tự động.
 

@@ -11,6 +11,7 @@ import "@fontsource/be-vietnam-pro/latin-700.css";
 import "./globals.css";
 import { AppShell } from "@/components/shell/AppShell";
 import { AccountProvider } from "@/components/account/AccountProvider";
+import { THEME_BOOTSTRAP } from "@/lib/theme";
 
 export const metadata: Metadata = {
   title: "Lớp Mình — trợ lý của thầy cô",
@@ -23,7 +24,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
+      <head><script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} /></head>
       <body>
         <AccountProvider>
           <AppShell>{children}</AppShell>

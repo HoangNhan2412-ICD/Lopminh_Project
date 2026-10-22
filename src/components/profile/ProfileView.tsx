@@ -1,4 +1,5 @@
 "use client";
+import { ThemePicker } from "@/components/shell/ThemePicker";
 import { useAccount } from "@/components/account/AccountProvider";
 
 import { Award, Check, Palette, Sparkles } from "lucide-react";
@@ -72,6 +73,7 @@ export function ProfileView() {
 
   return (
     <div className="space-y-5">
+      <ThemePicker />
       {/* Bìa + danh tính: tấm bảng mang màu riêng, viết câu phong cách bằng "phấn" */}
       <Card className="overflow-hidden">
         <div className="chalkboard chalkboard-personal relative px-5 pb-16 pt-7 sm:px-8 sm:pb-20 sm:pt-9">
@@ -89,7 +91,7 @@ export function ProfileView() {
         </div>
         <div className="relative px-5 pb-5 sm:px-8">
           <div className="flex flex-wrap items-start gap-4">
-            <span className="relative -mt-12 flex size-24 items-center justify-center rounded-full border-4 border-surface bg-personal text-3xl font-bold text-primary-fg shadow-md">
+            <span className="relative -mt-12 flex size-24 items-center justify-center rounded-full border-4 border-surface bg-personal text-3xl font-bold text-chalk shadow-md">
               {profile.callName
                 .split(/\s+/)
                 .map((w) => w[0])
@@ -165,7 +167,7 @@ export function ProfileView() {
                       }
                       className={cn(
                         "min-h-11 rounded-full border px-4 text-sm font-medium",
-                        on ? "border-personal bg-personal text-primary-fg" : "border-border bg-surface hover:bg-surface-muted",
+                        on ? "border-personal bg-personal text-chalk" : "border-border bg-surface hover:bg-surface-muted",
                       )}
                     >
                       {t}

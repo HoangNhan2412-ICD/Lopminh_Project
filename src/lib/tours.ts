@@ -25,6 +25,7 @@ export function toursFor(p: TeacherProfile): Record<string, TourStep[]> {
       { element: "[data-tour=class]", title: "Tình hình lớp", text: `Lớp chủ nhiệm hiện đủ mọi mặt; lớp bộ môn chỉ hiện em vắng, em cần gỡ điểm và em làm tốt cho gọn.` },
       { element: "[data-tour=note]", title: "Ghi nhanh", text: `${H} gõ hoặc bấm “Nói” rồi nói tự nhiên, ví dụ “An nghỉ ốm đến hết tuần”. Em tách thành ghi chú cho từng em, ${h} xem lại rồi mới lưu.` },
       { element: "[data-tour=nav]", title: "Ba nhóm việc", text: `Giám sát & Nhập liệu, Soạn Giảng Số, và Góc Thầy Cô để nghỉ ngơi, học thêm. Mỗi trang đều có nút dấu hỏi ở trên để xem lại hướng dẫn.` },
+      { element: "[data-tour=theme]", title: "Sáng, Tối hoặc Tự động", text: "Bấm Màu để chọn giao diện. Tự động chuyển sáng lúc 6 giờ và tối lúc 18 giờ theo giờ Việt Nam." },
       { element: "[data-tour=font]", title: "Chữ to hơn", text: `Chữ nhỏ quá thì ${h} bấm chữ “Aa” to hơn ở đây.` },
       { element: "[data-tour=profile]", title: "Hồ sơ của mình", text: `Bấm vào đây để đổi hồ sơ hoặc xem Hồ sơ thấu hiểu bản thân. Ở đó ${h} chọn để em gọi là Thầy hay Cô, và tả phong cách dạy để em soạn bài cho đúng ý.` },
     ],

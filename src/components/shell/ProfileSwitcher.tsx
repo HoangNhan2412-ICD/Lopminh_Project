@@ -18,7 +18,7 @@ export function ProfileInitials({ name, className }: { name: string; className?:
   return (
     <span
       className={cn(
-        "inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-personal font-semibold text-primary-fg",
+        "inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-personal font-semibold text-chalk",
         className,
       )}
       aria-hidden
@@ -56,14 +56,15 @@ export function ProfileSwitcher() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex min-h-11 items-center gap-2.5 rounded-xl border border-border bg-surface py-1.5 pl-1.5 pr-3 hover:bg-surface-muted"
+        aria-label={`Hồ sơ: ${addressOf(profile)}`}
+        className="flex min-h-11 items-center gap-2.5 rounded-xl border border-border bg-surface py-1.5 pl-1.5 pr-1.5 sm:pr-3 hover:bg-surface-muted"
       >
         <ProfileInitials name={profile.callName} className="size-9 text-sm" />
         <span className="hidden text-left sm:block">
           <span className="block text-sm font-semibold leading-tight">{addressOf(profile)}</span>
           <span className="block text-xs text-ink-muted">Đổi hồ sơ</span>
         </span>
-        <ChevronDown className="size-4 text-ink-muted" aria-hidden />
+        <ChevronDown className="hidden size-4 text-ink-muted sm:block" aria-hidden />
       </button>
 
       {open && (

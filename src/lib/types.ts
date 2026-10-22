@@ -14,6 +14,7 @@ export interface Kpi {
 }
 
 export interface TeacherProfile {
+  theme?: "auto" | "light" | "dark";
   id: string;
   fullName: string;
   /** Tên dùng để gọi, ví dụ "Mai Hoa". Bé Bảng gọi "Cô Mai Hoa". */

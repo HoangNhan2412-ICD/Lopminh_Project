@@ -1,4 +1,5 @@
 "use client";
+import { ThemePicker, ThemeSync } from "@/components/shell/ThemePicker";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -153,17 +154,19 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-dvh">
+      <ThemeSync />
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur sm:px-6">
-          <Link href="/" className="flex items-center gap-2 lg:hidden">
+        <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur sm:px-6">
+          <Link href="/" className="hidden items-center gap-2 min-[480px]:flex lg:hidden">
             <BeBangAvatar size={36} />
             <span className="hidden text-lg font-bold text-primary min-[480px]:inline">Lớp Mình</span>
           </Link>
           <div className="hidden lg:block" />
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center justify-between gap-2 min-[480px]:w-auto min-[480px]:justify-end">
             {ready && <GuideTour />}
             <FontScaleToggle />
+            <ThemePicker compact />
             <ProfileSwitcher />
           </div>
         </header>

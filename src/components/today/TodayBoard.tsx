@@ -100,7 +100,7 @@ export function TodayBoard({ selectedClassId, homeMode, onSelectClass, onHome }:
                 className={cn(
                   "min-h-16 min-w-36 shrink-0 rounded-xl border-2 px-3 py-2 text-left transition-colors",
                   state === "dang-day"
-                    ? "border-accent bg-accent text-ink"
+                    ? "border-accent bg-accent text-accent-fg"
                     : selected
                       ? "border-chalk bg-white/10"
                       : "border-chalk/30 hover:border-chalk/60",
@@ -138,7 +138,7 @@ export function TodayBoard({ selectedClassId, homeMode, onSelectClass, onHome }:
           <div className="mt-3 flex flex-wrap gap-2">
             <button
               onClick={() => setEveningChoice("nhanh")}
-              className="min-h-11 rounded-xl bg-accent px-4 font-semibold text-ink"
+              className="min-h-11 rounded-xl bg-accent px-4 font-semibold text-accent-fg"
             >
               Làm nhanh rồi nghỉ
             </button>

@@ -48,7 +48,7 @@ export function GateForm() {
         <button
           type="submit"
           disabled={busy || !password}
-          className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-accent text-lg font-semibold text-ink disabled:opacity-60"
+          className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-accent text-lg font-semibold text-accent-fg disabled:opacity-60"
         >
           {busy && <LoaderCircle className="size-5 animate-spin" aria-hidden />} Vào Lớp Mình
         </button>

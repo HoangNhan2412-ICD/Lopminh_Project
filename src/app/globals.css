@@ -5,7 +5,7 @@
   @theme bên dưới (bg-bg, text-ink, bg-primary…), không viết mã hex trực tiếp.
   Bản sao cho các file HTML mẫu nằm ở design/_tokens.css — sửa ở đây thì sửa cả bên đó.
 */
-:root {
+:root, .presentation[data-theme="light"] {
   --bg: #faf7f0;
   --surface: #ffffff;
   --surface-muted: #f2eee4;
@@ -15,6 +15,9 @@
   --primary-hover: #2a4d3f;
   --primary-fg: #ffffff;
   --primary-soft: #e3ece6;
+  color-scheme: light;
+  --accent-fg: #1f2a24;
+  --quiz-fg: #ffffff;
   --accent: #e8b04a;
   --accent-soft: #fbf0d9;
   --border: #e3ddd0;
@@ -24,7 +27,7 @@
   --homeroom-soft: #fbf1df;
   --subject: #2b6cb0;
   --subject-soft: #e6f0fa;
-  --success: #2f7d4f;
+  --success: #2c7549;
   --success-soft: #e4f3ea;
 
   /* Năm màu riêng giáo viên chọn ở Hồ sơ */
@@ -43,11 +46,35 @@
   --chalk: #f3efe2;
   --wood: #a8743a;
 
-  /* Bốn ô trắc nghiệm A-B-C-D (trùng màu với slide xuất ra, xem src/lib/lesson/theme.ts) */
+  /* Bốn ô A-B-C-D đạt AA; slide xuất file giữ palette riêng trong lesson/theme.ts. */
   --quiz-a: #c8423b;
   --quiz-b: #2b6cb0;
-  --quiz-c: #d9921f;
+  --quiz-c: #95620e;
   --quiz-d: #2f7d4f;
+}
+
+
+:root[data-theme="dark"], .presentation[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111b17;
+  --surface: #1b2922;
+  --surface-muted: #26372e;
+  --ink: #f2f1e9;
+  --ink-muted: #bac9bf;
+  --primary: #a1d4b5;
+  --primary-hover: #bce5cb;
+  --primary-fg: #13261b;
+  --primary-soft: #263f30;
+  --accent-soft: #3c321d;
+  --border: #54665a;
+  --urgent: #ffaaa0;
+  --urgent-soft: #462722;
+  --homeroom: #f2c574;
+  --homeroom-soft: #3e321e;
+  --subject: #a5cfff;
+  --subject-soft: #20384c;
+  --success: #99d8af;
+  --success-soft: #223e2d;
 }
 
 :root[data-accent="phan"] { --personal: var(--sw-phan); }
@@ -71,6 +98,8 @@ html[data-scale="rat-lon"] { font-size: 137.5%; }
   --color-primary-fg: var(--primary-fg);
   --color-primary-soft: var(--primary-soft);
   --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-quiz-fg: var(--quiz-fg);
   --color-accent-soft: var(--accent-soft);
   --color-border: var(--border);
   --color-urgent: var(--urgent);
@@ -190,3 +219,8 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Chuyển màu ngắn, không đổi màu nội dung slide. */
+body, header, main, nav, section, button, input, textarea, select { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; } }
+.driver-popover.lm-tour { background: var(--surface); }

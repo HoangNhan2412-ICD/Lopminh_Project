@@ -1,5 +1,13 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 9 (21/10/2026)
+
+- Sáng/Tối/Tự động ở nút Màu cạnh Aa và trong Hồ sơ. Mặc định Tự động, dùng Asia/Ho_Chi_Minh: sáng 06:00–17:59, tối 18:00–05:59; đang mở tự đổi qua mốc giờ. Hằng số tập trung ở lib/theme.ts.
+- Script head áp dụng trước khi body vẽ, try/catch khi localStorage bị chặn. Lựa chọn trong lm:theme và trường theme của hồ sơ app_state để đồng bộ tài khoản; bản cache màu riêng trên máy phục vụ lần mở sau. Chưa thử đồng bộ Supabase thật.
+- Thêm token tối, chuyển màu 150 ms, tôn trọng reduced-motion; đồng bộ HTML styleguide. Giữ bảng phấn, palette và file slide. Chữ trên nền vàng và avatar dùng token riêng; sửa màu nhãn thành công và ô C để đủ AA.
+- Màn hình chiếu quiz có Sáng/Tối riêng, mặc định Sáng. Sửa grid đáp án khi mở bộ quiz ở 390px; sắp lại header điện thoại để nút Màu không làm tràn.
+- 92/92 test, lint, build qua. Test bốn mốc giờ ở UTC/New_York, script khi storage lỗi và tương phản token >=4,5:1 cho chữ, nút, nhãn, A–D. Playwright 1280/390px: qua 18h tự đổi, chọn tay còn sau reload, chín trang tối không tràn/lỗi; chiếu mặc định sáng và chọn riêng, DOM slide không đổi theo giao diện app.
+
 ## Tiếp quản Codex — Giai đoạn 8, bỏ qua các điểm chờ 5–7 (21/10/2026)
 
 - Giai đoạn 5 chờ Supabase/Realtime; 6 hoãn Gmail theo người dùng; 7 chờ file mẫu chính thức Wayground/Kahoot trong docs/mau-nhap/. Không thêm quyền hoặc đoán cột.

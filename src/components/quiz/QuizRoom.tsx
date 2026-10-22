@@ -172,9 +172,9 @@ export function QuizRoom() {
                       <span className="mt-2 font-semibold text-ink-muted">{i + 1}.</span>
                       <textarea rows={2} className={inputCls} defaultValue={q.q} onBlur={(e) => updateQ(i, { q: nfc(e.target.value) })} aria-label={`Câu ${i + 1}`} placeholder="Câu hỏi" />
                     </div>
-                    <div className="grid gap-2 pl-7 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-2 pl-7 sm:grid-cols-2">
                       {q.options.map((o, k) => (
-                        <label key={k} className={cn("flex items-center gap-2 rounded-xl border p-1.5", q.answer === k ? "border-success bg-success-soft" : "border-border")}>
+                        <label key={k} className={cn("flex min-w-0 items-center gap-2 rounded-xl border p-1.5", q.answer === k ? "border-success bg-success-soft" : "border-border")}>
                           <input type="radio" name={`a-${current.id}-${i}`} checked={q.answer === k} onChange={() => updateQ(i, { answer: k })} className="ml-1 size-5" aria-label={`Đáp án đúng là ${LETTERS[k]}`} />
                           <span className="font-semibold">{LETTERS[k]}</span>
                           <input

@@ -14,6 +14,7 @@ const TEAMS = ["Tổ 1", "Tổ 2", "Tổ 3", "Tổ 4"];
  * thầy cô bấm cộng điểm. Phím tắt: Space hiện đáp án, → câu tiếp, Esc thoát.
  */
 export function QuizPlayer({ set, onClose }: { set: QuizSet; onClose: () => void }) {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const [i, setI] = useState(0);
   const [reveal, setReveal] = useState(false);
   const [left, setLeft] = useState(set.questions[0]?.seconds ?? 30);
@@ -50,49 +51,50 @@ export function QuizPlayer({ set, onClose }: { set: QuizSet; onClose: () => void
   const timeUp = left === 0;
 
   return (
-    <div className="chalkboard fixed inset-0 z-50 flex flex-col overflow-auto p-4 sm:p-8" role="dialog" aria-modal aria-label={`Trình chiếu ${set.title}`}>
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-lg text-chalk/80">
+    <div data-theme={theme} className="presentation bg-bg text-ink fixed inset-0 z-50 flex flex-col overflow-auto p-4 sm:p-8" role="dialog" aria-modal aria-label={`Trình chiếu ${set.title}`}>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <label className="flex flex-wrap items-center gap-2 text-base">Giao diện chiếu<select aria-label="Giao diện chiếu" value={theme} onChange={e => setTheme(e.target.value as "light" | "dark")} className="min-h-11 rounded-xl border border-border bg-surface px-2 text-ink"><option value="light">Sáng</option><option value="dark">Tối</option></select></label>
+        <p className="text-lg text-ink-muted">
           Câu {i + 1}/{set.questions.length}
         </p>
-        <p className={cn("text-4xl font-bold tabular-nums", timeUp ? "text-accent" : "text-chalk")} aria-live="polite">
+        <p className={cn("text-4xl font-bold tabular-nums", timeUp ? "text-accent" : "text-ink")} aria-live="polite">
           {timeUp ? "Hết giờ" : `${left}s`}
         </p>
-        <button onClick={onClose} className="flex size-12 items-center justify-center rounded-xl hover:bg-white/10" aria-label="Thoát trình chiếu">
+        <button onClick={onClose} className="flex size-12 items-center justify-center rounded-xl hover:bg-surface-muted" aria-label="Thoát trình chiếu">
           <X className="size-7" />
         </button>
       </div>
 
       <p className="mx-auto mt-6 max-w-5xl text-center text-3xl font-semibold leading-snug sm:text-5xl">{q.q}</p>
 
-      <div className="mx-auto mt-8 grid w-full max-w-6xl flex-1 gap-4 sm:grid-cols-2">
+      <div className="mx-auto mt-8 grid w-full max-w-6xl flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
         {q.options.map((o, k) => (
           <div
             key={k}
             className={cn(
-              "flex min-h-24 items-center gap-4 rounded-2xl px-5 py-4 text-2xl font-semibold text-white transition-opacity sm:text-3xl",
+              "flex min-h-24 items-center gap-4 rounded-2xl px-5 py-4 text-2xl font-semibold text-quiz-fg transition-opacity sm:text-3xl",
               TILE[k],
               reveal && k !== q.answer && "opacity-30",
             )}
           >
-            <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-3xl font-bold text-ink">{LETTERS[k]}</span>
+            <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-surface text-3xl font-bold text-ink">{LETTERS[k]}</span>
             {o}
           </div>
         ))}
       </div>
 
-      {reveal && q.explain && <p className="mx-auto mt-5 max-w-4xl text-center text-xl text-chalk/90">{q.explain}</p>}
+      {reveal && q.explain && <p className="mx-auto mt-5 max-w-4xl text-center text-xl text-ink-muted">{q.explain}</p>}
 
       <div className="mx-auto mt-6 flex w-full max-w-6xl flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2" aria-label="Điểm các tổ">
           {TEAMS.map((t, k) => (
-            <div key={t} className="flex items-center gap-1 rounded-xl bg-white/10 px-2 py-1">
+            <div key={t} className="flex items-center gap-1 rounded-xl bg-surface-muted px-2 py-1">
               <span className="px-1 font-medium">{t}</span>
-              <button className="flex size-11 items-center justify-center rounded-lg hover:bg-white/10" aria-label={`Trừ điểm ${t}`} onClick={() => setScores((s) => s.map((v, j) => (j === k ? Math.max(0, v - 1) : v)))}>
+              <button className="flex size-11 items-center justify-center rounded-lg hover:bg-surface-muted" aria-label={`Trừ điểm ${t}`} onClick={() => setScores((s) => s.map((v, j) => (j === k ? Math.max(0, v - 1) : v)))}>
                 <Minus className="size-5" />
               </button>
               <span className="w-8 text-center text-2xl font-bold tabular-nums">{scores[k]}</span>
-              <button className="flex size-11 items-center justify-center rounded-lg hover:bg-white/10" aria-label={`Cộng điểm ${t}`} onClick={() => setScores((s) => s.map((v, j) => (j === k ? v + 1 : v)))}>
+              <button className="flex size-11 items-center justify-center rounded-lg hover:bg-surface-muted" aria-label={`Cộng điểm ${t}`} onClick={() => setScores((s) => s.map((v, j) => (j === k ? v + 1 : v)))}>
                 <Plus className="size-5" />
               </button>
             </div>
@@ -100,17 +102,17 @@ export function QuizPlayer({ set, onClose }: { set: QuizSet; onClose: () => void
         </div>
         <div className="flex gap-2">
           {!reveal && (
-            <button onClick={() => setReveal(true)} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 text-lg font-semibold text-ink">
+            <button onClick={() => setReveal(true)} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 text-lg font-semibold text-accent-fg">
               <Eye className="size-5" /> Hiện đáp án
             </button>
           )}
           {reveal && !last && (
-            <button onClick={next} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 text-lg font-semibold text-ink">
+            <button onClick={next} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 text-lg font-semibold text-accent-fg">
               Câu tiếp <ChevronRight className="size-5" />
             </button>
           )}
           {reveal && last && (
-            <button onClick={onClose} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 text-lg font-semibold text-ink">
+            <button onClick={onClose} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-accent px-5 text-lg font-semibold text-accent-fg">
               Kết thúc
             </button>
           )}
