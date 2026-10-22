@@ -19,7 +19,7 @@ Từ đó mỗi lần push lên nhánh này, Vercel tự build lại.
 ## Đã cấu hình sẵn trong code
 
 - `vercel.json` đặt máy chủ ở Singapore (`sin1`) cho gần Việt Nam.
-- Soạn bài chạy tối đa 180 giây, dưới giới hạn 300 giây của gói Hobby.
+- Soạn bài dùng route tối đa 270 giây; cần Fluid Compute với hạn mức ít nhất 270 giây (xem phần Job bên dưới).
 - Tải tài liệu lên Kho tối đa 4 MB mỗi tệp (Vercel giới hạn 4,5 MB mỗi request). Tệp lớn hơn chỉ lưu chữ trên máy.
 - Có `SITE_PASSWORD` thì mọi trang và mọi API đều phải nhập mật khẩu trước (cookie nhớ 30 ngày).
 
@@ -71,3 +71,9 @@ Route dùng Next.js `after()` với `maxDuration = 270`. Cần bật Fluid Compu
 `after()` tiếp tục sau response nhưng không phải hàng đợi bảo đảm chạy lại khi tiến trình bị hủy. Job quá 5 phút được đánh dấu lỗi khi truy vấn tiếp; giáo viên tạo lại. Kết quả lưu trong jobs, mở lại Soạn Bài để xem và lưu vào danh sách. Chưa có dọn lịch sử jobs tự động.
 
 Trước phát hành: đăng nhập thật, soạn một bài, tắt mạng hoặc đóng tab sau khi nhận mã, mở lại và đối chiếu kết quả. Thử hai tài khoản không đọc được job nhau. Các bước này chưa thực hiện vì chưa có project Supabase.
+
+## Đối chiếu lỗi 404 (21/10/2026)
+
+Ở lượt kiểm tra cuối, `https://lopminhproject.vercel.app/` và `/tam-tinh` đều trả HTTP 200, header `x-matched-path` đúng route Next.js. Đây là kiểm tra HTTP công khai, chưa xác nhận bản deploy đang trùng commit mới nhất hoặc AI hoạt động. Không còn tái hiện 404 tại thời điểm này.
+
+Repo ghim `framework: nextjs`, `buildCommand: npm run build`, `installCommand: npm ci`, `outputDirectory: .next` trong vercel.json theo [tài liệu cấu hình Vercel](https://vercel.com/docs/project-configuration/vercel-json). Nếu lỗi quay lại: đối chiếu deployment/commit trên dashboard, nhánh Production là v4-nang-cap, Root Directory là thư mục chứa package.json ở gốc repo; không trỏ vào public hay legacy-v3. Redeploy commit mới và kiểm tra build log có bảng route Next.js. Không dùng rewrite toàn bộ URL về index.html cho ứng dụng này.

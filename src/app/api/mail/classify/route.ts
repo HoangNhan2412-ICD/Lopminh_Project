@@ -1,3 +1,5 @@
+import { logAiError } from "@/lib/ai/errors";
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { isAiConfigured } from "@/lib/ai/client";
 import { generateJson } from "@/lib/ai/json";
@@ -30,7 +32,7 @@ Với MỖI thư, trả về một phần tử theo đúng thứ tự thư đầ
 Không bịa thông tin không có trong thư.`;
 
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Thư gửi lên chưa đúng." }, { status: 400 });
   const { mails, classes, today } = parsed.data;
   const fallback = () => mails.map((m) => ({ ...classifyFallback(m, classes, today), mode: "tu-khoa" as const }));
@@ -57,7 +59,7 @@ export async function POST(req: Request) {
     });
     return Response.json({ results });
   } catch (err) {
-    console.error("mail/classify lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ results: fallback() });
   }
 }

@@ -177,7 +177,7 @@ function DocsTab() {
         <CardHeader icon={<MessageCircleQuestion className="size-6" />} title="Hỏi kho tài liệu" subtitle={`Ví dụ: “Tuần 10 dạy bài gì?”, “Hạn nộp sáng kiến kinh nghiệm?”`} />
         <div className="space-y-3 p-5">
           <div className="flex gap-2">
-            <input className={inputCls} value={question} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => e.key === "Enter" && ask()} placeholder={`${capFirst(h)} hỏi gì cũng được…`} aria-label="Câu hỏi" />
+            <input className={inputCls} value={question} onChange={(e) => setQuestion(nfc(e.target.value))} onKeyDown={(e) => e.key === "Enter" && ask()} placeholder={`${capFirst(h)} hỏi gì cũng được…`} aria-label="Câu hỏi" />
             <Button onClick={ask} disabled={asking || !question.trim()} className="shrink-0">
               {asking ? <LoaderCircle className="size-5 animate-spin" aria-hidden /> : <Search className="size-5" aria-hidden />}
             </Button>

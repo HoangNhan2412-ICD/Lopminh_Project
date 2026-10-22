@@ -3,6 +3,14 @@ export function nfc(s: string): string {
   return s.normalize("NFC");
 }
 
+/** Chỉ dùng cho dữ liệu JSON; chuẩn hóa chuỗi lồng nhau trước khi lưu/gọi AI. */
+export function nfcJson<T>(value: T): T {
+  if (typeof value === "string") return nfc(value) as T;
+  if (Array.isArray(value)) return value.map(nfcJson) as T;
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, v]) => [key, nfcJson(v)])) as T;
+  return value;
+}
+
 /** Bỏ dấu để tìm kiếm/so khớp: "Tâm" → "tam", "Đạt" → "dat". */
 export function stripDiacritics(s: string): string {
   return s

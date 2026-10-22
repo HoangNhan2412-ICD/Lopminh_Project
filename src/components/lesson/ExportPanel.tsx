@@ -61,8 +61,7 @@ export function ExportPanel({
       });
       download(blob, `${fileBase(plan)}.pptx`);
       toast.success("Đã tải file PowerPoint");
-    } catch (e) {
-      console.error(e);
+    } catch {
       toast.error("Chưa dựng được file PowerPoint, mình thử lại nhé.");
     } finally {
       setProgress(null);
@@ -76,8 +75,7 @@ export function ExportPanel({
       const blob = await buildDocx(plan, profile, students);
       download(blob, `GiaoAn_5512_${fileBase(plan)}.docx`);
       toast.success("Đã tải giáo án Word");
-    } catch (e) {
-      console.error(e);
+    } catch {
       toast.error("Chưa dựng được file Word, mình thử lại nhé.");
     } finally {
       setProgress(null);
@@ -162,7 +160,7 @@ export function ExportPanel({
             rows={3}
             className={inputCls}
             value={more}
-            onChange={(e) => setMore(e.target.value)}
+            onChange={(e) => setMore(nfc(e.target.value))}
             placeholder="Ví dụ: thêm một trò chơi ghép đôi, phần luyện tập ngắn lại, dùng ví dụ về mùa lũ miền Trung"
           />
           <Button variant="secondary" className="w-full" disabled={redoing || !more.trim()} onClick={() => onRedo(nfc(more.trim()))}>

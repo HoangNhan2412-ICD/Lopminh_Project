@@ -283,7 +283,7 @@ Ba lựa chọn: **Sáng**, **Tối**, **Tự động**. Mặc định là Tự 
 - Thêm bước vào tour giới thiệu nút này. Test: hàm chọn giao diện theo giờ (05:59 → tối, 06:00 → sáng, 17:59 → sáng, 18:00 → tối) chạy đúng dù múi giờ máy là UTC hay America/New_York.
 - Cập nhật `design/_tokens.css` và `design/00-styleguide.html` có cả bản tối.
 
-### [ ] Giai đoạn 10 — Rà soát trước khi cho thầy cô dùng thử
+### [x] Giai đoạn 10 — Rà soát trước khi cho thầy cô dùng thử
 
 - Tìm chuỗi viết cứng "Thầy "/"Cô " kèm tên trong `src/` (trừ test và `honorific.ts`). Sửa qua `getHonorific()`.
 - Tìm mã màu hex trong `src/components/`. Chuyển sang token.

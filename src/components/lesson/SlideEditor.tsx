@@ -108,7 +108,7 @@ export function SlideEditor({
             rows={2}
             className={cn(inputCls, "mt-2")}
             value={instruction}
-            onChange={(e) => setInstruction(e.target.value)}
+            onChange={(e) => setInstruction(nfc(e.target.value))}
             placeholder="Ví dụ: thêm ví dụ tính tiền đi chợ, đổi sang dạng so sánh, bớt chữ"
           />
           <div className="mt-2 flex flex-wrap gap-2">

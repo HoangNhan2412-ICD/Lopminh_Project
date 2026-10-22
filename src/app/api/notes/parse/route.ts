@@ -1,6 +1,8 @@
+import { logAiError } from "@/lib/ai/errors";
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
-import { getGemini } from "@/lib/ai/client";
-import { MODELS } from "@/lib/ai/models";
+import { isAiConfigured } from "@/lib/ai/client";
+import { generateJson } from "@/lib/ai/json";
 import { notesParsePrompt } from "@/lib/ai/prompts";
 import { parseNotesFallback, parsedNoteSchema, type ParsedNote } from "@/lib/notes/parse";
 import { nfc } from "@/lib/text";
@@ -23,30 +25,10 @@ const bodySchema = z.object({
     .max(80),
 });
 
-const responseJsonSchema = {
-  type: "object",
-  properties: {
-    notes: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          rawName: { type: "string" },
-          studentId: { type: ["string", "null"] },
-          kind: { type: "string", enum: ["chuyen-can", "suc-khoe", "tam-ly", "hoc-tap", "khen-thuong", "khac"] },
-          text: { type: "string" },
-          until: { type: "string" },
-          absentToday: { type: "boolean" },
-        },
-        required: ["rawName", "studentId", "kind", "text"],
-      },
-    },
-  },
-  required: ["notes"],
-};
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) {
     return Response.json({ error: "Dữ liệu gửi lên không hợp lệ." }, { status: 400 });
   }
@@ -54,32 +36,15 @@ export async function POST(req: Request) {
   const input = nfc(text);
   const fallback = () => parseNotesFallback(input, roster as Student[], today);
 
-  const ai = getGemini();
-  if (!ai) return Response.json({ mode: "demo", notes: fallback() });
+  if (!isAiConfigured()) return Response.json({ mode: "demo", notes: fallback() });
 
   try {
-    const res = await ai.models.generateContent({
-      model: MODELS.fast,
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `Danh sách lớp (id | họ tên | tên gọi):\n${roster
-                .map((s) => `${s.id} | ${s.fullName} | ${s.shortName}`)
-                .join("\n")}\n\nGhi chú của giáo viên:\n${input}`,
-            },
-          ],
-        },
-      ],
-      config: {
-        systemInstruction: notesParsePrompt(today),
-        responseMimeType: "application/json",
-        responseJsonSchema,
-        temperature: 0.1,
-      },
+    const json = await generateJson({
+      role: "fast", label: "notes/parse", temperature: 0.1, timeoutMs: 50_000, totalTimeoutMs: 50_000,
+      system: notesParsePrompt(today),
+      user: `Danh sách lớp (id | họ tên | tên gọi):\n${roster.map(s => `${s.id} | ${s.fullName} | ${s.shortName}`).join("\n")}\n\nGhi chú của giáo viên:\n${input}`,
+      schema: z.object({ notes: z.array(parsedNoteSchema) }),
     });
-    const json = JSON.parse(res.text ?? "{}");
     const ids = new Set(roster.map((s) => s.id));
     const notes: ParsedNote[] = z
       .array(parsedNoteSchema)
@@ -92,7 +57,7 @@ export async function POST(req: Request) {
       }));
     return Response.json({ mode: "ai", notes });
   } catch (err) {
-    console.error("notes/parse: Gemini lỗi, dùng bộ tách dự phòng", (err as Error).message);
+    logAiError(err);
     return Response.json({ mode: "fallback", notes: fallback() });
   }
 }

@@ -190,7 +190,7 @@ export function MailboxView() {
           </div>
           <label className="relative block">
             <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-ink-muted" aria-hidden />
-            <input className={cn(inputCls, "pl-10")} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm thư, gõ không dấu cũng được: hop to, an 9a…" aria-label="Tìm thư" />
+            <input className={cn(inputCls, "pl-10")} value={query} onChange={(e) => setQuery(nfc(e.target.value))} placeholder="Tìm thư, gõ không dấu cũng được: hop to, an 9a…" aria-label="Tìm thư" />
           </label>
 
           <ul className="space-y-3">
@@ -240,7 +240,7 @@ export function MailboxView() {
                             Nhờ Bé Bảng viết nháp trả lời
                           </label>
                           <div className="mt-2 flex gap-2">
-                            <input id={`y-${m.id}`} className={inputCls} value={intent} onChange={(e) => setIntent(e.target.value)} placeholder="Ý chính, ví dụ: đồng ý, hẹn thứ Năm 16h" />
+                            <input id={`y-${m.id}`} className={inputCls} value={intent} onChange={(e) => setIntent(nfc(e.target.value))} placeholder="Ý chính, ví dụ: đồng ý, hẹn thứ Năm 16h" />
                             <Button size="sm" onClick={() => makeDraft(m)} disabled={drafting} className="shrink-0">
                               {drafting ? <LoaderCircle className="size-4 animate-spin" aria-hidden /> : <PenLine className="size-4" aria-hidden />} Viết nháp
                             </Button>
@@ -273,7 +273,7 @@ export function MailboxView() {
           <Card>
             <CardHeader icon={<MessageSquareText className="size-6" />} title="Dán tin nhắn Zalo hoặc email" subtitle="Nhiều tin thì cách nhau một dòng trống. Dòng đầu mỗi tin là tiêu đề." />
             <div className="space-y-3 p-5">
-              <textarea rows={6} className={inputCls} value={paste} onChange={(e) => setPaste(e.target.value)} placeholder={"Thông báo họp tổ\nCác thầy cô họp tổ lúc 14h thứ Sáu tại phòng 204.\n\nPhụ huynh em Chi\nXin phép cho cháu nghỉ buổi chiều."} />
+              <textarea rows={6} className={inputCls} value={paste} onChange={(e) => setPaste(nfc(e.target.value))} placeholder={"Thông báo họp tổ\nCác thầy cô họp tổ lúc 14h thứ Sáu tại phòng 204.\n\nPhụ huynh em Chi\nXin phép cho cháu nghỉ buổi chiều."} />
               <Button className="w-full" onClick={addPasted} disabled={busy || !paste.trim()}>
                 Lọc các tin này
               </Button>

@@ -124,7 +124,7 @@ export function QuizRoom() {
                   </Button>
                 </div>
               )}
-              <textarea rows={6} className={inputCls} value={source} onChange={(e) => setSource(e.target.value)} placeholder="Dán nội dung bài giảng vào đây…" />
+              <textarea rows={6} className={inputCls} value={source} onChange={(e) => setSource(nfc(e.target.value))} placeholder="Dán nội dung bài giảng vào đây…" />
               <div className="flex flex-wrap items-end gap-3">
                 <label className="block">
                   <span className="text-sm text-ink-muted">Số câu</span>
@@ -144,7 +144,7 @@ export function QuizRoom() {
                   {busy ? "Đang soạn…" : "Soạn câu hỏi"}
                 </Button>
               </div>
-              <button onClick={manual} className="text-primary underline-offset-4 hover:underline">
+              <button onClick={manual} className="min-h-11 px-2 text-primary underline-offset-4 hover:underline">
                 Hoặc tự gõ câu hỏi
               </button>
             </div>
@@ -278,7 +278,7 @@ export function QuizRoom() {
           <Card>
             <CardHeader icon={<QrCode className="size-6" />} title="Mã QR cho học sinh quét" subtitle="Dán link phòng Wayground, Kahoot, Quizlet hay Google Form" />
             <div className="space-y-3 p-5">
-              <input className={inputCls} value={link} onChange={(e) => setLink(e.target.value.trim())} placeholder="https://…" aria-label="Link phòng quiz" />
+              <input className={inputCls} value={link} onChange={(e) => setLink(nfc(e.target.value.trim()))} placeholder="https://…" aria-label="Link phòng quiz" />
               {/^https?:\/\/\S+\.\S+/.test(link) ? (
                 <div className="flex flex-col items-center gap-3">
                   <div className="rounded-xl bg-surface p-3 shadow-[var(--shadow-card)]">

@@ -1,3 +1,5 @@
+import { logAiError } from "@/lib/ai/errors";
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { isAiConfigured } from "@/lib/ai/client";
 import { generateJson } from "@/lib/ai/json";
@@ -19,7 +21,7 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Thiếu thông tin slide cần sửa." }, { status: 400 });
   const { profile, lessonTitle, subject, grade, slide, outline, instruction } = parsed.data;
 
@@ -47,7 +49,7 @@ export async function POST(req: Request) {
     });
     return Response.json({ slide: { ...next, id: slide.id } });
   } catch (err) {
-    console.error("lesson/slide lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ error: "Gemini đang bận, thầy cô thử lại sau ít phút nhé." }, { status: 502 });
   }
 }

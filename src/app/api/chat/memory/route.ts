@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { ThinkingLevel } from "@google/genai";
 import { getGemini } from "@/lib/ai/client";
@@ -14,7 +15,7 @@ const bodySchema = z.object({
 
 /** Cập nhật sổ ghi nhớ của Góc Tâm Tình bằng model nhanh, chạy ngầm sau vài lượt trò chuyện. */
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Dữ liệu không hợp lệ." }, { status: 400 });
   const ai = getGemini();
   if (!ai) return Response.json({ memory: parsed.data.memory });

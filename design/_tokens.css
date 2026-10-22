@@ -43,6 +43,7 @@
   --board-deep: #16302a;
   --chalk: #f3efe2;
   --wood: #a8743a;
+  --mascot-blush: #f2a7a0;
 
   /* Bốn ô trắc nghiệm A-B-C-D (trùng màu với slide xuất ra, xem src/lib/lesson/theme.ts) */
   --quiz-a: #c8423b;

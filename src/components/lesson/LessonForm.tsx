@@ -142,7 +142,7 @@ export function LessonForm({ busy, docCount, onSubmit }: { busy: boolean; docCou
               rows={3}
               className={cn(inputCls, "pr-14")}
               value={wishes}
-              onChange={(e) => setWishes(e.target.value)}
+              onChange={(e) => setWishes(nfc(e.target.value))}
               placeholder="Ví dụ: có trò chơi đố vui đầu giờ, thêm ví dụ tính tiền đi chợ, em An nghỉ ốm cần phiếu bù"
             />
             {speech.supported && (

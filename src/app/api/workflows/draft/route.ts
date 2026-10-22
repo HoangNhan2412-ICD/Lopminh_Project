@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { isAiConfigured } from "@/lib/ai/client";
 import { generateJson } from "@/lib/ai/json";
@@ -7,7 +8,7 @@ import { nfc } from "@/lib/text";
 export const maxDuration = 90;
 const bodySchema = z.object({ source: z.string().min(1).max(16000), advanced: z.boolean() });
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Thiếu nội dung bài học." }, { status: 400 });
   if (!isAiConfigured()) return Response.json({ mode: "demo" });
   try {

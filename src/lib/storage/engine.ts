@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 export interface CloudStorage {
   save: (key: string, value: unknown) => Promise<void>;
   remove: (keys: string[]) => Promise<void>;
@@ -33,6 +34,7 @@ export class StorageEngine {
   }
   write(key: string, value: unknown, epoch = this.generation) {
     if (epoch !== this.generation || this.deleting.has(key)) return;
+    value = nfcJson(value);
     if (this.cloud) {
       this.values.set(key, value); this.queue.set(key, value); this.notify(); void this.flush();
     } else {

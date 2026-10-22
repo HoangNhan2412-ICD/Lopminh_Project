@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 import { after } from "next/server";
 import { z } from "zod";
 import { authenticatedSupabase } from "@/lib/supabase/server";
@@ -19,7 +20,7 @@ export async function GET(req: Request) {
 }
 export async function POST(req: Request) {
   const session = await authenticatedSupabase(); if (!session) return json({ error: "Cần đăng nhập để soạn bài chạy nền." }, 401);
-  const raw = await req.json().catch(() => null);
+  const raw = nfcJson(await req.json().catch(() => null));
   let input, meta;
   try { input = parseLessonInput(raw?.input); meta = metaSchema.parse(raw?.meta); }
   catch { return json({ error: "Yêu cầu soạn bài chưa hợp lệ." }, 400); }

@@ -1,3 +1,5 @@
+import { logAiError } from "@/lib/ai/errors";
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { isAiConfigured } from "@/lib/ai/client";
 import { generateJson } from "@/lib/ai/json";
@@ -27,7 +29,7 @@ Luật:
 - title: tên bộ câu hỏi ngắn gọn.`;
 
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Nội dung bài giảng cần dài hơn một chút." }, { status: 400 });
   if (!isAiConfigured()) {
     return Response.json(
@@ -48,7 +50,7 @@ export async function POST(req: Request) {
     });
     return Response.json({ set });
   } catch (err) {
-    console.error("quiz/generate lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ error: "Gemini đang bận, thầy cô thử lại sau ít phút nhé." }, { status: 502 });
   }
 }

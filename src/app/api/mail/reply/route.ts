@@ -1,3 +1,5 @@
+import { logAiError } from "@/lib/ai/errors";
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { getGemini } from "@/lib/ai/client";
 import { MODELS } from "@/lib/ai/models";
@@ -14,7 +16,7 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Thiếu nội dung thư." }, { status: 400 });
   const { profile, mail, intent } = parsed.data;
   const ai = getGemini();
@@ -40,7 +42,7 @@ ${profileBlock(profile)}`,
     });
     return Response.json({ draft: fixAddress((res.text ?? "").trim(), profile) });
   } catch (err) {
-    console.error("mail/reply lỗi:", (err as Error).message);
+    logAiError(err);
     return Response.json({ error: "Gemini đang bận, thử lại sau ít phút nhé." }, { status: 502 });
   }
 }

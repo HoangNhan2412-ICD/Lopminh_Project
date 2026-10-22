@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getGemini } from "@/lib/ai/client";
 import { MODELS, type ModelRole } from "@/lib/ai/models";
 import { AiRequestError, classifyAiError, logAiError } from "@/lib/ai/errors";
+import { nfc } from "@/lib/text";
 
 /** Bỏ các khóa Gemini không cần ($schema, default) khỏi JSON Schema sinh từ zod. */
 export function toGeminiSchema(schema: z.ZodType): Record<string, unknown> {
@@ -40,16 +41,16 @@ export async function generateJson<T>(opts: {
   if (!ai) throw new Error("NO_KEY");
   const jsonSchema = toGeminiSchema(opts.schema);
   let lastErr: unknown;
-  const deadline = opts.totalTimeoutMs ? Date.now() + opts.totalTimeoutMs : Infinity;
+  const deadline = Date.now() + (opts.totalTimeoutMs ?? opts.timeoutMs ?? 120_000);
   for (let attempt = 0; attempt < 3; attempt++) {
     if (Date.now() >= deadline) break;
     try {
       const started = Date.now();
       const res = await ai.models.generateContent({
         model: MODELS[opts.role],
-        contents: [{ role: "user", parts: [{ text: opts.user }] }],
+        contents: [{ role: "user", parts: [{ text: nfc(opts.user) }] }],
         config: {
-          systemInstruction: opts.system,
+          systemInstruction: nfc(opts.system),
           responseMimeType: "application/json",
           responseJsonSchema: jsonSchema,
           temperature: opts.temperature ?? 0.6,
@@ -60,7 +61,7 @@ export async function generateJson<T>(opts: {
       console.info(
         `[ai] ${opts.label} ${MODELS[opts.role]} ${Date.now() - started}ms in=${u?.promptTokenCount ?? "?"} cached=${u?.cachedContentTokenCount ?? 0} out=${u?.candidatesTokenCount ?? "?"}`,
       );
-      return opts.schema.parse(JSON.parse(res.text ?? "{}"));
+      return opts.schema.parse(JSON.parse(nfc(res.text ?? "{}")));
     } catch (err) {
       lastErr = err;
       if (attempt < 2 && classifyAiError(err).retryable && Date.now() + 1500 * (attempt + 1) < deadline) {

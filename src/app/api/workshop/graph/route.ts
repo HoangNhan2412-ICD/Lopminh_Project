@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { isAiConfigured } from "@/lib/ai/client";
 import { generateJson } from "@/lib/ai/json";
@@ -8,7 +9,7 @@ import { nfc } from "@/lib/text";
 export const maxDuration = 90;
 const requestSchema = z.object({ text: z.string().min(3).max(1500) });
 export async function POST(req: Request) {
-  const body = requestSchema.safeParse(await req.json().catch(() => null));
+  const body = requestSchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!body.success) return Response.json({ error: "Hãy mô tả đồ thị trong 3–1500 ký tự." }, { status: 400 });
   const text = nfc(body.data.text);
   try {

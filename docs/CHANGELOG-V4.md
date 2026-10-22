@@ -1,5 +1,13 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 10 (21/10/2026)
+
+- Rà xưng hô, màu và log: chuyển màu linh vật về token, bỏ log lỗi thô SDK ở các API và xuất file. Không đổi thông tin 115/Ngày Mai trong prompt.
+- NFC cho JSON đầu vào, dữ liệu lưu, prompt/kết quả AI và ô nhập văn bản còn sót. Ghi chú dùng generateJson chung; giới hạn ngân sách retry theo timeout route. Thêm test Unicode và log riêng tư.
+- Sửa nút tự gõ quiz cao 27px. Playwright 11 trang × 1280/390px: không tràn/lỗi JavaScript, vùng bấm hiện diện phần chính >=44px. 96/96 test, lint, build qua; checklist ghi rõ chưa bao phủ mọi dialog/thiết bị.
+- Website Vercel / và /tam-tinh hiện HTTP 200, không tái hiện 404 cũ. Ghim Next.js, npm ci/build và .next trong vercel.json để tránh nhầm preset/output. Chưa có quyền dashboard để đối chiếu commit production; hướng dẫn kiểm tra trong DEPLOY.
+- Npm audit 9 mục (7 cao, 2 vừa), liên quan dependency lint, image-size/pptxgenjs, uuid/exceljs. Chưa chạy force/downgrade tự động. Checklist docs/KIEM-TRA-TRUOC-PHAT-HANH.md ghi hạng mục cần xử lý và kiểm tra tay.
+
 ## Tiếp quản Codex — Giai đoạn 9 (21/10/2026)
 
 - Sáng/Tối/Tự động ở nút Màu cạnh Aa và trong Hồ sơ. Mặc định Tự động, dùng Asia/Ho_Chi_Minh: sáng 06:00–17:59, tối 18:00–05:59; đang mở tự đổi qua mốc giờ. Hằng số tập trung ở lib/theme.ts.

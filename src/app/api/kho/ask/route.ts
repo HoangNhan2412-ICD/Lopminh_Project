@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { getGemini } from "@/lib/ai/client";
 import { MODELS } from "@/lib/ai/models";
@@ -17,7 +18,7 @@ const bodySchema = z.object({
 
 /** Hỏi đáp trên kho tài liệu riêng của giáo viên, có ghi nguồn. */
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) return Response.json({ error: "Câu hỏi hoặc kho chưa hợp lệ." }, { status: 400 });
   const ai = getGemini();
   if (!ai) return Response.json({ error: "Chưa có khóa Gemini." }, { status: 503 });

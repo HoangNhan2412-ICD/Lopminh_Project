@@ -1,3 +1,4 @@
+import { nfcJson } from "@/lib/text";
 import { z } from "zod";
 import { ThinkingLevel } from "@google/genai";
 import { getGemini } from "@/lib/ai/client";
@@ -67,7 +68,7 @@ async function* demoReply(p: TeacherProfile, message: string) {
 }
 
 export async function POST(req: Request) {
-  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
+  const parsed = bodySchema.safeParse(nfcJson(await req.json().catch(() => null)));
   if (!parsed.success) {
     return Response.json({ error: "Dữ liệu gửi lên không hợp lệ." }, { status: 400 });
   }

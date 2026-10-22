@@ -253,7 +253,7 @@ export function ChatView() {
           <textarea
             id="chat-input"
             value={speech.interim ? `${input} ${speech.interim}` : input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(nfc(e.target.value))}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();

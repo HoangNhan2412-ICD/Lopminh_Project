@@ -48,4 +48,4 @@ async function main() {
   console.log("Tên kho (không phải khóa):",store);
   console.log("Tự đặt tên này vào GEMINI_SHARED_STORE ở máy và Vercel.");
 }
-main().catch(error=>{console.error(error instanceof Error && !('status' in error) ? error.message : "Nạp kho thất bại. Kiểm tra cấu hình và quyền dịch vụ; không in lỗi thô SDK.");process.exitCode=1;});
+main().catch(()=>{console.error("Nạp kho thất bại. Kiểm tra nguồn, định dạng và cấu hình dịch vụ; không in lỗi thô SDK.");process.exitCode=1;});
