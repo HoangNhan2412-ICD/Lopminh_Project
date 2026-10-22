@@ -1,0 +1,201 @@
+"use client";
+import { ThemePicker, ThemeSync } from "@/components/shell/ThemePicker";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
+import { MessageCircleHeart } from "lucide-react";
+import { WorkflowSync } from "@/components/today/WorkflowSync";
+import { BeBangAvatar } from "@/components/BeBangAvatar";
+import { FontScaleToggle } from "@/components/shell/FontScaleToggle";
+import { GuideTour } from "@/components/shell/GuideTour";
+import { ProfileInitials, ProfileSwitcher } from "@/components/shell/ProfileSwitcher";
+import { NAV, groupOf } from "@/lib/nav";
+import { addressOf } from "@/lib/persona/honorific";
+import { useApp } from "@/lib/store/app-store";
+import { cn } from "@/lib/text";
+
+function isActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
+
+function Sidebar() {
+  const pathname = usePathname();
+  const { profile } = useApp();
+  return (
+    <aside className="sticky top-0 hidden h-dvh w-72 shrink-0 flex-col border-r border-border bg-surface lg:flex">
+      <Link href="/" className="flex items-center gap-3 px-5 py-5">
+        <BeBangAvatar size={44} />
+        <span>
+          <span className="block text-xl font-bold leading-tight text-primary">Lớp Mình</span>
+          <span className="block text-sm text-ink-muted">cùng Bé Bảng</span>
+        </span>
+      </Link>
+
+      <nav data-tour="nav" aria-label="Điều hướng chính" className="flex-1 overflow-y-auto px-3 pb-4">
+        {NAV.map((group) => (
+          <div key={group.id} className="mt-4 first:mt-1">
+            <p className="px-3 pb-1.5 text-sm font-semibold text-ink-muted">{group.label}</p>
+            <ul className="space-y-0.5">
+              {group.items.map((item) => {
+                const active = isActive(pathname, item.href);
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "flex min-h-11 items-center gap-3 rounded-xl px-3 font-medium transition-colors",
+                        active ? "bg-primary text-primary-fg" : "text-ink hover:bg-surface-muted",
+                      )}
+                    >
+                      <Icon className="size-5 shrink-0" aria-hidden />
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
+
+      <Link
+        href="/ho-so"
+        className={cn(
+          "m-3 flex items-center gap-3 rounded-xl border border-border p-3 hover:bg-surface-muted",
+          pathname.startsWith("/ho-so") && "border-personal bg-surface-muted",
+        )}
+      >
+        <ProfileInitials name={profile.callName} />
+        <span className="min-w-0">
+          <span className="block truncate font-semibold">{addressOf(profile)}</span>
+          <span className="block truncate text-sm text-ink-muted">Hồ sơ thấu hiểu bản thân</span>
+        </span>
+      </Link>
+    </aside>
+  );
+}
+
+function MobileNav() {
+  const pathname = usePathname();
+  const current = groupOf(pathname);
+  return (
+    <nav
+      aria-label="Điều hướng chính"
+      className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
+    >
+      <ul className="grid grid-cols-4">
+        {NAV.map((g) => {
+          const Icon = g.items[0].icon;
+          const active = g.id === current.id && !pathname.startsWith("/ho-so");
+          return (
+            <li key={g.id}>
+              <Link
+                href={g.items[0].href}
+                className={cn(
+                  "flex min-h-16 flex-col items-center justify-center gap-1 text-sm font-medium",
+                  active ? "text-primary" : "text-ink-muted",
+                )}
+              >
+                <Icon className="size-6" aria-hidden />
+                {g.short}
+              </Link>
+            </li>
+          );
+        })}
+        <li>
+          <Link
+            href="/ho-so"
+            className={cn(
+              "flex min-h-16 flex-col items-center justify-center gap-1 text-sm font-medium",
+              pathname.startsWith("/ho-so") ? "text-primary" : "text-ink-muted",
+            )}
+          >
+            <BeBangAvatar size={26} />
+            Hồ sơ
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+/** Trên điện thoại: hàng mục con của trụ cột đang mở. */
+function MobileSubNav() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/ho-so")) return null;
+  const group = groupOf(pathname);
+  return (
+    <div className="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
+      {group.items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className={cn(
+            "flex min-h-11 shrink-0 items-center rounded-full border px-4 text-sm font-medium",
+            isActive(pathname, item.href)
+              ? "border-primary bg-primary text-primary-fg"
+              : "border-border bg-surface text-ink",
+          )}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+export function AppShell({ children }: { children: ReactNode }) {
+  const { ready, profile } = useApp();
+  const pathname = usePathname();
+  if (pathname === "/dang-nhap") return <>{children}</>;
+
+  return (
+    <div className="flex min-h-dvh">
+      <ThemeSync />
+      <Sidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 border-b border-border bg-bg/95 px-4 py-3 backdrop-blur sm:px-6">
+          <Link href="/" className="hidden items-center gap-2 min-[480px]:flex lg:hidden">
+            <BeBangAvatar size={36} />
+            <span className="hidden text-lg font-bold text-primary min-[480px]:inline">Lớp Mình</span>
+          </Link>
+          <div className="hidden lg:block" />
+          <div className="flex w-full flex-wrap items-center justify-between gap-2 min-[480px]:w-auto min-[480px]:justify-end">
+            {ready && <GuideTour />}
+            <FontScaleToggle />
+            <ThemePicker compact />
+            <ProfileSwitcher />
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 lg:pb-28">
+          <MobileSubNav />
+          {ready ? (
+            // key theo hồ sơ: đổi hồ sơ là dựng lại toàn bộ trang, không sót state của người trước.
+            <div key={profile.id}><WorkflowSync />{children}</div>
+          ) : (
+            <div className="flex items-center gap-3 py-16 text-ink-muted" aria-live="polite">
+              <BeBangAvatar size={40} mood="nghi" />
+              Bé Bảng đang mở sổ…
+            </div>
+          )}
+        </main>
+      </div>
+      <MobileNav />
+      {ready && pathname !== "/tam-tinh" && (
+        <Link
+          href="/tam-tinh"
+          data-tour="chat-shortcut"
+          aria-label="Trò chuyện với Bé Bảng"
+          className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom))] right-4 z-20 inline-flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-primary p-3 font-semibold text-primary-fg shadow-[var(--shadow-card)] hover:bg-primary-hover lg:bottom-5 lg:right-6 lg:px-5"
+        >
+          <MessageCircleHeart className="size-6" aria-hidden />
+          <span className="hidden lg:inline">Trò chuyện với Bé Bảng</span>
+        </Link>
+      )}
+    </div>
+  );
+}

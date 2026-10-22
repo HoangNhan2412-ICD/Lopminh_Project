@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lớp Mình — Trang Hôm Nay (bản mẫu)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="_tokens.css" />
+  <style>
+    /* Bản mẫu để cả nhóm sửa giao diện bằng trình duyệt. Sửa xong, nhờ Claude Code chuyển sang
+       src/components/today/TodayBoard.tsx, ClassBoard.tsx, QuickNoteInput.tsx. */
+    main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 20px; }
+    .board { padding: 24px 28px 18px; }
+    .board-top { display: grid; gap: 28px; grid-template-columns: auto 1fr; }
+    .clock { font-size: 4.2rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .clock small { font-size: 1.4rem; opacity: .6; margin-left: 4px; }
+    .date { margin-top: 8px; opacity: .8; }
+    .hello { font-size: 1.45rem; font-weight: 600; line-height: 1.3; }
+    .say { margin-top: 8px; font-size: 1.1rem; line-height: 1.6; opacity: .88; max-width: 60ch; }
+    .read { margin-top: 8px; background: none; border: 0; color: var(--accent); font: 500 1rem var(--font); min-height: 44px; cursor: pointer; padding: 0; }
+    .periods { display: flex; gap: 8px; overflow-x: auto; border-top: 1px dashed rgb(243 239 226 / .25); margin-top: 18px; padding: 14px 0 12px; }
+    .period { min-width: 140px; min-height: 64px; border: 2px solid rgb(243 239 226 / .3); border-radius: 12px; padding: 8px 12px; color: inherit; background: none; text-align: left; font: inherit; cursor: pointer; }
+    .period b { display: block; font-size: 1.15rem; }
+    .period span { font-size: .85rem; opacity: .9; }
+    .period.live { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+    .period.home { border-style: dashed; min-width: 110px; }
+    .cols { display: grid; gap: 20px; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+    .card h2 { font-size: 1.15rem; padding: 18px 20px 4px; }
+    .card .sub { padding: 0 20px; color: var(--ink-muted); font-size: .9rem; }
+    .row { padding: 14px 20px; border-top: 1px solid var(--border); }
+    .row p { margin-top: 6px; }
+    .band { background: var(--surface-muted); padding: 8px 20px; font-weight: 600; font-size: .9rem; color: var(--ink-muted); margin-top: 12px; }
+    .composer { padding: 16px 20px 20px; display: grid; gap: 10px; }
+    textarea.input { min-height: 110px; resize: vertical; }
+    @media (max-width: 860px) { .cols, .board-top { grid-template-columns: 1fr; } .clock { font-size: 3.2rem; } }
+  </style>
+</head>
+<body>
+<main>
+  <!-- Tấm bảng: điểm nhấn duy nhất của trang. Phần dưới giữ yên tĩnh. -->
+  <section class="chalkboard board">
+    <div class="board-top">
+      <div>
+        <!-- SỬA Ở ĐÂY: giờ và ngày mẫu -->
+        <p class="clock">07:52<small>14</small></p>
+        <p class="date">Thứ Ba, 20/10/2026</p>
+        <p class="date">Đang trong giờ dạy</p>
+      </div>
+      <div>
+        <!-- SỬA Ở ĐÂY: lời chào. Trong app, danh xưng Thầy/Cô lấy theo hồ sơ -->
+        <p class="hello">Chào Cô Mai Hoa, chúc cô buổi sáng nhẹ nhàng.</p>
+        <p class="say">Lớp 9A hôm nay có 1 em nghỉ: An. Cô đang dạy tiết 1 lớp 9A, có gì cứ nói để em ghi lại.</p>
+        <button class="read">Đọc to</button>
+      </div>
+    </div>
+    <div class="periods">
+      <!-- SỬA Ở ĐÂY: các tiết trong ngày -->
+      <button class="period live"><span>Tiết 1, 07:00</span><b>★ 9A</b><span>Còn 8 phút</span></button>
+      <button class="period"><span>Tiết 3, 08:50</span><b>9C</b></button>
+      <button class="period"><span>Tiết 4, 09:40</span><b>9C</b></button>
+      <button class="period home"><b>Ở nhà</b></button>
+    </div>
+    <div class="chalk-tray"></div>
+  </section>
+
+  <div class="cols">
+    <section class="card">
+      <h2>★ Lớp 9A, chủ nhiệm</h2>
+      <p class="sub">Sĩ số 8, có mặt 7, vắng 1</p>
+      <p class="band">Cần cô để ý hôm nay</p>
+      <div class="row">
+        <b>Hoàng Minh An</b> <span class="chip chip-urgent">Vắng</span>
+        <p><span class="chip chip-urgent">Sức khỏe</span> Nghỉ ốm sốt, phụ huynh xin phép đến hết tuần</p>
+      </div>
+      <div class="row">
+        <b>Bùi Minh Tâm</b>
+        <p><span class="chip chip-accent">Học tập</span> Cần giảng lại công thức căn bậc hai</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Ghi nhanh tình hình lớp</h2>
+      <p class="sub">Gõ hoặc nói, Bé Bảng tách thành từng ghi chú</p>
+      <div class="composer">
+        <textarea class="input" placeholder="Ví dụ: An nghỉ ốm sốt đến hết tuần; Chi cần cô giảng lại bài cũ"></textarea>
+        <div style="display:flex; gap:8px; justify-content:space-between; align-items:center">
+          <button class="btn btn-secondary">Nói</button>
+          <button class="btn btn-primary">Ghi lại</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

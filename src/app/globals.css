@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+/*
+  Bộ token màu của Lớp Mình. Component chỉ được dùng các lớp sinh ra từ
+  @theme bên dưới (bg-bg, text-ink, bg-primary…), không viết mã hex trực tiếp.
+  Bản sao cho các file HTML mẫu nằm ở design/_tokens.css — sửa ở đây thì sửa cả bên đó.
+*/
+:root, .presentation[data-theme="light"] {
+  --bg: #faf7f0;
+  --surface: #ffffff;
+  --surface-muted: #f2eee4;
+  --ink: #1f2a24;
+  --ink-muted: #56615a;
+  --primary: #1e3a2f;
+  --primary-hover: #2a4d3f;
+  --primary-fg: #ffffff;
+  --primary-soft: #e3ece6;
+  color-scheme: light;
+  --accent-fg: #1f2a24;
+  --quiz-fg: #ffffff;
+  --accent: #e8b04a;
+  --accent-soft: #fbf0d9;
+  --border: #e3ddd0;
+  --urgent: #b42318;
+  --urgent-soft: #fdecea;
+  --homeroom: #9a6213;
+  --homeroom-soft: #fbf1df;
+  --subject: #2b6cb0;
+  --subject-soft: #e6f0fa;
+  --success: #2c7549;
+  --success-soft: #e4f3ea;
+
+  /* Năm màu riêng giáo viên chọn ở Hồ sơ */
+  --sw-bang: #1e3a2f;
+  --sw-phan: #9a6213;
+  --sw-sen: #b5476b;
+  --sw-troi: #2b6cb0;
+  --sw-la: #2f7d4f;
+
+  /* Màu chủ đạo cá nhân — mặc định là xanh bảng */
+  --personal: var(--sw-bang);
+
+  /* Tấm bảng: điểm nhấn duy nhất của giao diện (đầu trang Hôm Nay, bìa Hồ sơ) */
+  --board: #1e3a2f;
+  --board-deep: #16302a;
+  --chalk: #f3efe2;
+  --wood: #a8743a;
+  --mascot-blush: #f2a7a0;
+
+  /* Bốn ô A-B-C-D đạt AA; slide xuất file giữ palette riêng trong lesson/theme.ts. */
+  --quiz-a: #c8423b;
+  --quiz-b: #2b6cb0;
+  --quiz-c: #95620e;
+  --quiz-d: #2f7d4f;
+}
+
+
+:root[data-theme="dark"], .presentation[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111b17;
+  --surface: #1b2922;
+  --surface-muted: #26372e;
+  --ink: #f2f1e9;
+  --ink-muted: #bac9bf;
+  --primary: #a1d4b5;
+  --primary-hover: #bce5cb;
+  --primary-fg: #13261b;
+  --primary-soft: #263f30;
+  --accent-soft: #3c321d;
+  --border: #54665a;
+  --urgent: #ffaaa0;
+  --urgent-soft: #462722;
+  --homeroom: #f2c574;
+  --homeroom-soft: #3e321e;
+  --subject: #a5cfff;
+  --subject-soft: #20384c;
+  --success: #99d8af;
+  --success-soft: #223e2d;
+}
+
+:root[data-accent="phan"] { --personal: var(--sw-phan); }
+:root[data-accent="sen"] { --personal: var(--sw-sen); }
+:root[data-accent="troi"] { --personal: var(--sw-troi); }
+:root[data-accent="la"] { --personal: var(--sw-la); }
+
+/* Cỡ chữ: nền 18px, nút "Aa" tăng lên hai mức. Mọi kích thước dùng rem nên co giãn theo. */
+html { font-size: 112.5%; }
+html[data-scale="lon"] { font-size: 125%; }
+html[data-scale="rat-lon"] { font-size: 137.5%; }
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-quiz-fg: var(--quiz-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-border: var(--border);
+  --color-urgent: var(--urgent);
+  --color-urgent-soft: var(--urgent-soft);
+  --color-homeroom: var(--homeroom);
+  --color-homeroom-soft: var(--homeroom-soft);
+  --color-subject: var(--subject);
+  --color-subject-soft: var(--subject-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-personal: var(--personal);
+  --color-sw-bang: var(--sw-bang);
+  --color-sw-phan: var(--sw-phan);
+  --color-sw-sen: var(--sw-sen);
+  --color-sw-troi: var(--sw-troi);
+  --color-sw-la: var(--sw-la);
+  --color-board: var(--board);
+  --color-chalk: var(--chalk);
+  --color-wood: var(--wood);
+  --color-quiz-a: var(--quiz-a);
+  --color-quiz-b: var(--quiz-b);
+  --color-quiz-c: var(--quiz-c);
+  --color-quiz-d: var(--quiz-d);
+
+  --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(31 42 36 / 0.06), 0 1px 1px rgb(31 42 36 / 0.04);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Đặt trong @layer components để các lớp tiện ích (fixed, absolute…) vẫn ghi đè được */
+@layer components {
+/* Mặt bảng: nền xanh có vệt phấn mờ (nhiễu SVG nhẹ) và quầng sáng như bảng thật bị lau dở */
+.chalkboard {
+  --board-tone: var(--board);
+  position: relative;
+  isolation: isolate;
+  color: var(--chalk);
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgb(255 255 255 / 0.07), transparent 55%),
+    radial-gradient(80% 70% at 100% 100%, rgb(0 0 0 / 0.18), transparent 60%),
+    var(--board-tone);
+}
+.chalkboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.16;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.chalkboard-personal { --board-tone: var(--personal); }
+/* Máng phấn bằng gỗ ở mép dưới tấm bảng */
+.chalk-tray {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: linear-gradient(var(--wood), color-mix(in oklab, var(--wood), black 25%));
+}
+.chalk-tray::after {
+  content: "";
+  position: absolute;
+  right: 12%;
+  top: -5px;
+  width: 38px;
+  height: 7px;
+  border-radius: 4px;
+  background: var(--chalk);
+  transform: rotate(-4deg);
+}
+}
+
+/* Hộp hướng dẫn (driver.js): chữ to, nút to cho thầy cô lớn tuổi */
+.driver-popover.lm-tour {
+  max-width: 26rem;
+  padding: 1.1rem 1.2rem;
+  border-radius: 0.9rem;
+  font-family: var(--font-sans);
+  color: var(--ink);
+}
+.driver-popover.lm-tour .driver-popover-title { font-size: 1.15rem; font-weight: 700; }
+.driver-popover.lm-tour .driver-popover-description { font-size: 1rem; line-height: 1.55; margin-top: 0.4rem; }
+.driver-popover.lm-tour .driver-popover-footer { margin-top: 1rem; gap: 0.5rem; flex-wrap: wrap; }
+.driver-popover.lm-tour .driver-popover-footer button {
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border-radius: 0.7rem;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  text-shadow: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+}
+.driver-popover.lm-tour .driver-popover-footer .driver-popover-next-btn { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.driver-popover.lm-tour .lm-tour-later { border: 0 !important; background: transparent !important; color: var(--ink-muted) !important; }
+.driver-popover.lm-tour .driver-popover-progress-text { color: var(--ink-muted); font-size: 0.9rem; }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Chuyển màu ngắn, không đổi màu nội dung slide. */
+body, header, main, nav, section, button, input, textarea, select { transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; } }
+.driver-popover.lm-tour { background: var(--surface); }

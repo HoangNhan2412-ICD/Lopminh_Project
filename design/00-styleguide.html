@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lớp Mình — Bộ màu và thành phần</title>
+  <link rel="stylesheet" href="_tokens.css" />
+  <style>
+    main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+    section { margin-top: 40px; }
+    h1 { font-size: 2rem; color: var(--primary); }
+    h2 { font-size: 1.25rem; margin-bottom: 12px; }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .swatch { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); }
+    .swatch div { height: 64px; }
+    .swatch p { padding: 8px 10px; font-size: 0.8rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .type p { margin-top: 6px; }
+    .msg { padding: 14px 16px; border-left: 4px solid; border-radius: 10px; background: var(--surface); margin-top: 10px; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="row" aria-label="Giao diện mẫu"><button class="btn btn-secondary" onclick="document.documentElement.dataset.theme='light'">Sáng</button><button class="btn btn-secondary" onclick="document.documentElement.dataset.theme='dark'">Tối</button></div>
+  <h1>Lớp Mình — Bộ màu và thành phần</h1>
+  <p class="muted" style="margin-top:6px">Trang này là chuẩn chung của cả nhóm. Muốn đổi màu: sửa trong <code>_tokens.css</code>, mở lại trang để xem.</p>
+
+  <section>
+    <h2>Màu nền và chữ</h2>
+    <div class="grid">
+      <!-- SỬA Ở ĐÂY: thêm/bớt ô màu nếu thêm token mới -->
+      <div class="swatch"><div style="background:var(--bg)"></div><p><b>--bg</b><br>Nền trang</p></div>
+      <div class="swatch"><div style="background:var(--surface)"></div><p><b>--surface</b><br>Thẻ, khung</p></div>
+      <div class="swatch"><div style="background:var(--surface-muted)"></div><p><b>--surface-muted</b><br>Nền phụ</p></div>
+      <div class="swatch"><div style="background:var(--ink)"></div><p><b>--ink</b><br>Chữ chính</p></div>
+      <div class="swatch"><div style="background:var(--ink-muted)"></div><p><b>--ink-muted</b><br>Chữ phụ</p></div>
+      <div class="swatch"><div style="background:var(--border)"></div><p><b>--border</b><br>Viền</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Màu thương hiệu</h2>
+    <div class="grid">
+      <div class="swatch"><div style="background:var(--primary)"></div><p><b>--primary</b><br>Xanh bảng — nút chính</p></div>
+      <div class="swatch"><div style="background:var(--primary-soft)"></div><p><b>--primary-soft</b><br>Nền chọn</p></div>
+      <div class="swatch"><div style="background:var(--accent)"></div><p><b>--accent</b><br>Vàng phấn — điểm nhấn hiếm</p></div>
+      <div class="swatch"><div style="background:var(--accent-soft)"></div><p><b>--accent-soft</b><br>Nền nhắc nhẹ</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Màu nhãn (chỉ dùng cho nhãn, không tô cả khối)</h2>
+    <div class="row">
+      <span class="chip chip-urgent">BGH khẩn</span>
+      <span class="chip chip-homeroom">★ Chủ nhiệm 9A</span>
+      <span class="chip chip-subject">Bộ môn 9C</span>
+      <span class="chip chip-success">Đã xong</span>
+      <span class="chip chip-accent">Học tập</span>
+      <span class="chip">Bình thường</span>
+    </div>
+    <div class="msg" style="border-color:var(--urgent)"><span class="chip chip-urgent">BGH khẩn</span> Nộp đề giữa kỳ trước 17h thứ Sáu.</div>
+    <div class="msg" style="border-color:var(--homeroom)"><span class="chip chip-homeroom">Chủ nhiệm 9A</span> Phụ huynh em An xin cho em nghỉ ốm đến hết tuần.</div>
+  </section>
+
+  <section class="type">
+    <h2>Chữ (Be Vietnam Pro, nền 18px)</h2>
+    <p style="font-size:2rem;font-weight:700">Tiêu đề trang 36 — Góc Cởi Bỏ Chiếc Áo</p>
+    <p style="font-size:1.55rem;font-weight:700">Tiêu đề lớn 28 — Soạn Bài Số 5512</p>
+    <p style="font-size:1.22rem;font-weight:600">Tiêu đề thẻ 22 — Nhập liệu giọng nói tiếng Việt</p>
+    <p>Chữ thân 18 — Ở đây Cô không cần là giáo viên. Cứ kể, Bé Bảng nghe.</p>
+    <p class="muted" style="font-size:0.89rem">Chữ ghi chú 16 — Mỗi dòng một ý, Ctrl + Enter để gửi nhanh.</p>
+  </section>
+
+  <section>
+    <h2>Nút (cao tối thiểu 44px)</h2>
+    <div class="row">
+      <button class="btn btn-primary">Ghi lại</button>
+      <button class="btn btn-secondary">Sửa lại câu</button>
+      <button class="btn btn-ghost">Đọc to</button>
+    </div>
+    <p class="muted" style="margin-top:8px">Mỗi thẻ chỉ có tối đa một nút xanh đậm.</p>
+  </section>
+
+  <section>
+    <h2>Thẻ mẫu</h2>
+    <div class="card" style="padding:20px;max-width:520px">
+      <h3 style="font-size:1.1rem">Ghi nhanh tình hình lớp</h3>
+      <p class="muted" style="font-size:0.89rem">Lớp 9A · cô gõ hoặc nói, Bé Bảng tách thành từng ghi chú</p>
+      <textarea class="input" rows="3" style="margin-top:12px" placeholder="Ví dụ: An nghỉ ốm sốt đến hết tuần"></textarea>
+      <div class="row" style="justify-content:flex-end;margin-top:12px">
+        <button class="btn btn-primary">Ghi lại</button>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

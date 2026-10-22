@@ -1,0 +1,113 @@
+/*
+  Bộ token màu và chữ của Lớp Mình cho các file HTML mẫu trong thư mục design/.
+  Đây là bản sao của src/app/globals.css — sửa màu ở đây thì báo để chuyển sang app.
+  Không cần mạng, không cần cài gì: mở file .html bằng trình duyệt là xem được.
+*/
+:root {
+  --bg: #faf7f0;
+  --surface: #ffffff;
+  --surface-muted: #f2eee4;
+  --ink: #1f2a24;
+  --ink-muted: #56615a;
+  --primary: #1e3a2f;
+  --primary-hover: #2a4d3f;
+  --primary-fg: #ffffff;
+  --primary-soft: #e3ece6;
+  color-scheme: light;
+  --accent-fg: #1f2a24;
+  --quiz-fg: #ffffff;
+  --accent: #e8b04a;
+  --accent-soft: #fbf0d9;
+  --border: #e3ddd0;
+  --urgent: #b42318;
+  --urgent-soft: #fdecea;
+  --homeroom: #9a6213;
+  --homeroom-soft: #fbf1df;
+  --subject: #2b6cb0;
+  --subject-soft: #e6f0fa;
+  --success: #2c7549;
+  --success-soft: #e4f3ea;
+
+  /* Năm màu riêng giáo viên chọn ở Hồ sơ */
+  --sw-bang: #1e3a2f;
+  --sw-phan: #9a6213;
+  --sw-sen: #b5476b;
+  --sw-troi: #2b6cb0;
+  --sw-la: #2f7d4f;
+
+  /* Màu chủ đạo cá nhân — mặc định là xanh bảng */
+  --personal: var(--sw-bang);
+
+  /* Tấm bảng: điểm nhấn duy nhất của giao diện (đầu trang Hôm Nay, bìa Hồ sơ) */
+  --board: #1e3a2f;
+  --board-deep: #16302a;
+  --chalk: #f3efe2;
+  --wood: #a8743a;
+  --mascot-blush: #f2a7a0;
+
+  /* Bốn ô trắc nghiệm A-B-C-D (trùng màu với slide xuất ra, xem src/lib/lesson/theme.ts) */
+  --quiz-a: #c8423b;
+  --quiz-b: #2b6cb0;
+  --quiz-c: #95620e;
+  --quiz-d: #2f7d4f;
+}
+
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111b17;
+  --surface: #1b2922;
+  --surface-muted: #26372e;
+  --ink: #f2f1e9;
+  --ink-muted: #bac9bf;
+  --primary: #a1d4b5;
+  --primary-hover: #bce5cb;
+  --primary-fg: #13261b;
+  --primary-soft: #263f30;
+  --accent-soft: #3c321d;
+  --border: #54665a;
+  --urgent: #ffaaa0;
+  --urgent-soft: #462722;
+  --homeroom: #f2c574;
+  --homeroom-soft: #3e321e;
+  --subject: #a5cfff;
+  --subject-soft: #20384c;
+  --success: #99d8af;
+  --success-soft: #223e2d;
+}
+
+:root[data-accent="phan"] { --personal: var(--sw-phan); }
+:root[data-accent="sen"] { --personal: var(--sw-sen); }
+:root[data-accent="troi"] { --personal: var(--sw-troi); }
+:root[data-accent="la"] { --personal: var(--sw-la); }
+
+
+:root { --font: "Be Vietnam Pro", system-ui, sans-serif; --radius-card: 12px; --shadow-card: 0 1px 2px rgb(31 42 36 / .06); }
+
+* { box-sizing: border-box; }
+html { font-size: 112.5%; } /* chữ nền 18px */
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); line-height: 1.5; }
+h1, h2, h3, p { margin: 0; }
+
+/* Thành phần dùng chung */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 12px; font: 600 1rem var(--font); border: 0; cursor: pointer; }
+.btn-primary { background: var(--primary); color: var(--primary-fg); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--border); }
+.btn-ghost { background: transparent; color: var(--primary); }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 999px; font-size: 0.875rem; font-weight: 500; background: var(--surface-muted); }
+.chip-urgent { background: var(--urgent-soft); color: var(--urgent); }
+.chip-homeroom { background: var(--homeroom-soft); color: var(--homeroom); }
+.chip-subject { background: var(--subject-soft); color: var(--subject); }
+.chip-success { background: var(--success-soft); color: var(--success); }
+.chip-accent { background: var(--accent-soft); color: var(--ink); }
+.muted { color: var(--ink-muted); }
+.input { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 12px; font: 1rem var(--font); color: var(--ink); background: var(--surface); }
+.input:focus { outline: 3px solid var(--accent); outline-offset: 1px; border-color: var(--primary); }
+
+/* Tấm bảng phấn: dùng chung cho các trang mẫu */
+.chalkboard { position: relative; color: var(--chalk); border-radius: var(--radius-card); overflow: hidden;
+  background: radial-gradient(120% 90% at 12% 0%, rgb(255 255 255 / .07), transparent 55%), radial-gradient(80% 70% at 100% 100%, rgb(0 0 0 / .18), transparent 60%), var(--board); }
+.chalk-tray { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: var(--wood); }
+.chalk-tray::after { content: ""; position: absolute; right: 12%; top: -5px; width: 38px; height: 7px; border-radius: 4px; background: var(--chalk); transform: rotate(-4deg); }

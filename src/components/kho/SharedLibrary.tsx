@@ -1,0 +1,20 @@
+"use client";
+import { useState } from "react";
+import { Card, Chip } from "@/components/ui";
+import { VAN_BAN } from "@/content/thu-vien/van-ban";
+import { TEXTBOOKS } from "@/content/thu-vien/catalog";
+import { useApp } from "@/lib/store/app-store";
+import { stripDiacritics } from "@/lib/text";
+export function SharedLibrary(){
+ const {profile}=useApp();const [query,setQuery]=useState("");const [kind,setKind]=useState("all");const [subject,setSubject]=useState(profile.subject);const [grade,setGrade]=useState("");
+ const match=(s:string)=>stripDiacritics(s).includes(stripDiacritics(query));
+ const docs=VAN_BAN.filter(d=>match(`${d.soHieu} ${d.ten} ${d.tags.join(" ")} ${d.tomTat.map(t=>t.text).join(" ")}`));
+ const books=TEXTBOOKS.filter(b=>(!subject||b.mon===subject)&&(!grade||b.lop===Number(grade))&&match(`${b.mon} ${b.lop} ${b.chuong.map(c=>`${c.ten} ${c.bai.map(x=>x.ten).join(" ")}`).join(" ")}`));
+ const input="mt-1 min-h-11 w-full rounded-xl border border-border bg-surface p-3";
+ return <section className="space-y-4"><p className="rounded-xl bg-accent-soft p-4">Thư viện chung đang chờ nhóm đối chiếu bản gốc. Các mục chưa kiểm tra chưa được dùng làm nguồn soạn bài.</p>
+ <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"><label>Tìm trong thư viện<input className={input} value={query} onChange={e=>setQuery(e.target.value.normalize("NFC"))} placeholder="Số hiệu, môn hoặc tên bài…" /></label><label>Loại<select className={input} value={kind} onChange={e=>setKind(e.target.value)}><option value="all">Tất cả</option><option value="van-ban">Văn bản</option><option value="sgk">SGK</option></select></label><label>Môn<select className={input} value={subject} onChange={e=>setSubject(e.target.value)}><option value="">Tất cả môn</option>{Array.from(new Set(TEXTBOOKS.map(b=>b.mon))).map(m=><option key={m}>{m}</option>)}</select></label><label>Lớp<select className={input} value={grade} onChange={e=>setGrade(e.target.value)}><option value="">Tất cả lớp</option>{Array.from(new Set(TEXTBOOKS.map(b=>b.lop))).sort((a,b)=>a-b).map(g=><option key={g}>{g}</option>)}</select></label></div>
+ <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">{kind!=="sgk"&&docs.map(d=><Card key={d.id} className="space-y-3 p-5"><h2 className="text-xl font-semibold">{d.soHieu}</h2><p>{d.ten}</p><Chip tone={d.daKiemTra?"success":"accent"}>{d.daKiemTra?`Đối chiếu ${d.ngayKiemTra}`:"Chưa đối chiếu bản gốc"}</Chip>{d.ngayBanHanh&&<p>Ban hành: {d.ngayBanHanh} · Hiệu lực: {d.ngayHieuLuc ?? "Xem bản gốc"}</p>}{d.tomTat.map((t,i)=><blockquote key={i} className="border-l-4 border-subject bg-subject-soft p-3"><p>{t.text}</p><cite className="text-sm not-italic">{t.location}</cite></blockquote>)}<div className="flex flex-wrap gap-2">{d.tags.map(t=><Chip key={t}>#{t}</Chip>)}</div>{d.banGoc?<a href={d.banGoc} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-semibold text-primary">Mở bản gốc ↗</a>:<p className="text-sm text-ink-muted">Chờ PDF và đường dẫn chính thức từ nhóm.</p>}</Card>)}
+ {kind!=="van-ban"&&books.map(b=><Card key={b.id} className="space-y-3 p-5"><h2 className="text-xl font-semibold">{b.mon} {b.lop}</h2><p>{b.bo}</p><Chip tone={b.daKiemTra?"success":"accent"}>{b.daKiemTra?`Đối chiếu ${b.ngayKiemTra}`:"Chưa đối chiếu mục lục sách thật"}</Chip>{!b.chuong.length&&<p className="text-ink-muted">Chưa nạp tên chương, bài hoặc yêu cầu cần đạt.</p>}{b.chuong.map(c=><section key={c.id}><h3 className="font-semibold">Tập {c.tap} · {c.ten}</h3>{c.bai.map(l=><div key={l.id} className="mt-2 border-l-4 border-subject pl-3"><p>{l.ten} · {l.soTietGoiY} tiết gợi ý</p>{l.yeuCauCanDat.map((y,i)=><p key={i} className="text-sm">{y.text} — <a href={y.source} target="_blank" rel="noopener noreferrer" className="underline">{y.location}</a></p>)}<a href={l.docSach} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center font-semibold text-primary">Đọc sách ↗</a></div>)}</section>)}</Card>)}</div>
+ {(!docs.length||kind==="sgk")&&(!books.length||kind==="van-ban")&&<p>Chưa có mục phù hợp bộ lọc.</p>}
+ </section>;
+}
