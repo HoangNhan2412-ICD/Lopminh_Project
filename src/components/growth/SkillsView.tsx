@@ -10,6 +10,7 @@ import { honorificLower } from "@/lib/persona/honorific";
 import { speakVi } from "@/lib/speech";
 import { useApp } from "@/lib/store/app-store";
 import { capFirst, cn } from "@/lib/text";
+import { GuideImage } from "@/components/GuideImage";
 
 const NONE: string[] = [];
 
@@ -58,7 +59,7 @@ export function SkillsView() {
             {open.steps.map((s, i) => (
               <li key={s} className="flex gap-4">
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-fg">{i + 1}</span>
-                <p className="pt-2 text-lg leading-relaxed">{s}</p>
+                <div className="min-w-0 flex-1"><p className="pt-2 text-lg leading-relaxed">{s}</p>{open.images?.[i] && <GuideImage {...open.images[i]} />}</div>
               </li>
             ))}
           </ol>

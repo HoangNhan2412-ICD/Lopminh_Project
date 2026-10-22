@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui";
 import { speakVi } from "@/lib/speech";
 import { cn } from "@/lib/text";
+import { GuideImage } from "@/components/GuideImage";
 
 /*
   Hướng dẫn từng bước cho thầy cô lớn tuổi. Tên nút trên các trang có thể đổi chút theo phiên bản,
@@ -70,7 +71,10 @@ export function PlatformGuide() {
         {g.steps.map((s, i) => (
           <li key={s} className="flex gap-4">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-fg">{i + 1}</span>
-            <p className="pt-1.5 text-lg leading-relaxed">{s}</p>
+            <div className="min-w-0 flex-1"><p className="pt-1.5 text-lg leading-relaxed">{s}</p>
+              {i === 0 && <GuideImage name={`quiz-${tab}`} alt={`Vị trí nút ${tab === "quizlet" ? "Chép cho Quizlet" : `Tải file ${tab === "kahoot" ? "Kahoot" : "Wayground"}`} trong Phòng Quiz`} />}
+              {tab === "wayground" && i === 5 && <GuideImage name="quiz-qr" alt="Ô dán link phòng và mã QR hiện trong Lớp Mình" />}
+            </div>
           </li>
         ))}
       </ol>

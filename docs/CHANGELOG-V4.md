@@ -1,5 +1,13 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 8, bỏ qua các điểm chờ 5–7 (21/10/2026)
+
+- Giai đoạn 5 chờ Supabase/Realtime; 6 hoãn Gmail theo người dùng; 7 chờ file mẫu chính thức Wayground/Kahoot trong docs/mau-nhap/. Không thêm quyền hoặc đoán cột.
+- Thêm script Playwright chụp bằng context mới, chỉ localhost, xác nhận demo không Supabase. Năm ảnh WebP 1200×800: ba nút xuất quiz, ô QR, ô dán tin; khoanh đỏ vùng thao tác, không chụp dữ liệu thật.
+- Gắn ảnh có alt tiếng Việt và nút mở lớn vào bước Lớp Mình trong PlatformGuide và Kỹ Năng Số. Các bước trên Wayground/Kahoot/Quizlet, PowerPoint, Camera/Zalo, Google Drive/Form: cần **chụp tay**, chưa có ảnh, không dùng ảnh giả.
+- Cài Playwright ở devDependencies để nhóm chạy lại script; không thêm dịch vụ. Hướng dẫn chạy trong docs/ANH-HUONG-DAN.md.
+- 88/88 test, lint, build qua. Playwright ở 1280/390px: ảnh trong ba tab nền tảng và hai bài kỹ năng tải thành công, không tràn ngang, không lỗi JavaScript. Đã xem ảnh và sửa nút chat nổi che vùng chụp.
+
 ## Tiếp quản Codex — Giai đoạn 4: code/demo, chờ thử dịch vụ thật (21/10/2026)
 
 - Migration 0003 thêm jobs có RLS, mã yêu cầu chống tạo trùng và tối đa một job đang chạy mỗi hồ sơ. POST trả mã trước; Next after() soạn và lưu kết quả, tiến độ theo bước thật; GET chỉ đọc job của chủ tài khoản.

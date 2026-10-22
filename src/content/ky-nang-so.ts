@@ -12,6 +12,7 @@ export interface SkillLesson {
   related?: "soan-bai" | "quiz" | "hop-thu" | "kho";
   tryUrl?: string;
   steps: string[];
+  images?: Record<number, { name: string; alt: string }>;
 }
 
 export const SKILLS: SkillLesson[] = [
@@ -72,6 +73,7 @@ export const SKILLS: SkillLesson[] = [
   },
   {
     id: "google-form",
+    images: { 4: { name: "quiz-qr", alt: "Dán link Google Form vào ô Link phòng quiz để tạo mã QR" } },
     title: "Tạo bài kiểm tra nhanh bằng Google Form",
     why: "Học sinh làm trên điện thoại, máy tự chấm điểm.",
     minutes: 3,
@@ -87,6 +89,7 @@ export const SKILLS: SkillLesson[] = [
   },
   {
     id: "zalo-may-tinh",
+    images: { 3: { name: "dan-tin", alt: "Ô Dán tin nhắn Zalo hoặc email trong Hộp Thư Lớp Mình" } },
     title: "Dùng Zalo trên máy tính",
     why: "Đọc tin nhóm lớp bằng màn hình to, dán tin vào Hộp Thư Lớp Mình cho nhanh.",
     minutes: 2,

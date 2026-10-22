@@ -232,6 +232,8 @@ Xong khi: tắt mạng giữa chừng rồi bật lại, giáo án vẫn hiện 
 
 ### [ ] Giai đoạn 5 — Phòng quiz trên điện thoại học sinh
 
+> Tạm dừng: người dùng chưa có Supabase, chưa có Realtime để thử phòng thật.
+
 **DỪNG nếu chưa có Supabase** (cần Realtime).
 
 - Giáo viên bấm "Mở phòng" trong Phòng Quiz → tạo phòng mã 6 số + mã QR (dùng `qrcode.react`) dẫn tới `/choi/<ma>`.
@@ -243,6 +245,8 @@ Xong khi: một máy tính chiếu + 3 tab điện thoại giả lập chơi tr�
 
 ### [ ] Giai đoạn 6 — Đọc Gmail (chỉ đọc)
 
+> Tạm hoãn theo xác nhận của người dùng; chưa xin quyền Gmail.
+
 **DỪNG trước khi code**: hỏi mình đã làm bước 1–3 trong `docs/GMAIL.md` chưa. Đây là quyền "restricted", chưa xác minh thì tối đa 100 tài khoản thử.
 
 - Làm theo bước 4–5 của `docs/GMAIL.md`. Nút "Kết nối Gmail" trong Hộp Thư, xin quyền riêng khi bấm (không xin lúc đăng nhập).
@@ -253,12 +257,14 @@ Xong khi: có test cho phần ghép thư Gmail thành `RawMail[]` (dùng dữ li
 
 ### [ ] Giai đoạn 7 — Đối chiếu file nhập Wayground và Kahoot
 
+> Tạm dừng: chưa có file mẫu chính thức trong docs/mau-nhap/. Đã nhắc nhóm cung cấp; chưa đoán hoặc sửa cột.
+
 **DỪNG**: nhờ mình tải file mẫu chính thức của Wayground (Quizizz) và Kahoot, đặt vào `docs/mau-nhap/`. Không tự đoán cột.
 
 - So cột, dòng tiêu đề, dòng bắt đầu dữ liệu, giới hạn thời gian và số đáp án với `src/lib/quiz/export.ts`. Sửa cho khớp.
 - Thêm test đọc file mẫu và so tiêu đề với file mình xuất.
 
-### [ ] Giai đoạn 8 — Ảnh minh họa cho hướng dẫn
+### [x] Giai đoạn 8 — Ảnh minh họa cho hướng dẫn
 
 - Script Playwright (`scripts/chup-huong-dan.ts`) chạy app ở chế độ demo, chụp các bước trong `PlatformGuide.tsx` (phần của Lớp Mình) và `src/content/ky-nang-so.ts` vào `public/guides/` (WebP, rộng ≤ 1200px).
 - Gắn ảnh vào từng bước, có `alt` tiếng Việt. Bước nằm trên trang của nền tảng khác (Wayground, Kahoot, Quizlet) thì không chụp, ghi rõ "chụp tay" trong CHANGELOG.
