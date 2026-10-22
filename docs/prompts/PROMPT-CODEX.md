@@ -218,6 +218,8 @@ Xong khi: không có biến Supabase thì app y như cũ; có thì đăng nhập
 
 ### [ ] Giai đoạn 4 — Soạn giáo án chạy nền (luật số 6)
 
+> Code, 88 test, demo và PostgreSQL cục bộ đã qua; chờ Supabase/Vercel thật để thử mất mạng và đóng tab. after() có giới hạn thời gian, chưa có worker tự phục hồi.
+
 Vấn đề: `/api/lesson/generate` là một request kéo tới 3 phút; mạng chập chờn là mất.
 
 - Bảng `jobs` (id, user_id, kind, status `cho|dang-chay|xong|loi`, progress 0–100, step, result jsonb, error, created_at) trong migration mới, có RLS.

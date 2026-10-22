@@ -1,10 +1,12 @@
 "use client";
 
-import { BookOpen, Check, ChevronLeft, LoaderCircle, Plus, Trash2 } from "lucide-react";
+import { BookOpen, ChevronLeft, LoaderCircle, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { BeBangAvatar } from "@/components/BeBangAvatar";
 import { ExportPanel } from "@/components/lesson/ExportPanel";
+import { useAccount } from "@/components/account/AccountProvider";
+import { LessonJobs } from "@/components/lesson/LessonJobs";
 import { LessonForm } from "@/components/lesson/LessonForm";
 import { PlanView } from "@/components/lesson/PlanView";
 import { SlideCanvas } from "@/components/lesson/SlideCanvas";
@@ -29,14 +31,6 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "xuat", label: "Xuất file" },
 ];
 
-const STEPS = [
-  { at: 0, label: "Đọc tình hình lớp và phong cách dạy" },
-  { at: 6, label: "Soạn mục tiêu và bốn hoạt động 5512" },
-  { at: 25, label: "Viết slide, lời giảng và gợi ý hình" },
-  { at: 50, label: "Soạn câu hỏi trắc nghiệm và phiếu hai tầng" },
-  { at: 75, label: "Kiểm tra slide: bớt chữ, tách slide dài" },
-];
-
 function Generating({ startedAt }: { startedAt: number }) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -44,7 +38,6 @@ function Generating({ startedAt }: { startedAt: number }) {
     return () => clearInterval(t);
   }, []);
   const secs = Math.max(0, Math.floor((now - startedAt) / 1000));
-  const current = STEPS.reduce((idx, s, i) => (secs >= s.at ? i : idx), 0);
   return (
     <Card className="p-6">
       <div className="flex items-center gap-4">
@@ -54,20 +47,7 @@ function Generating({ startedAt }: { startedAt: number }) {
           <p className="text-ink-muted">Đã {secs} giây. Thường mất 1–2 phút, làm kỹ để dùng được ngay trên lớp.</p>
         </div>
       </div>
-      <ol className="mt-6 space-y-3" aria-live="polite">
-        {STEPS.map((s, i) => (
-          <li key={s.label} className={cn("flex items-center gap-3", i > current && "text-ink-muted")}>
-            {i < current ? (
-              <Check className="size-5 text-success" aria-label="Xong" />
-            ) : i === current ? (
-              <LoaderCircle className="size-5 animate-spin text-primary" aria-label="Đang làm" />
-            ) : (
-              <span className="size-5 rounded-full border-2 border-border" aria-hidden />
-            )}
-            {s.label}
-          </li>
-        ))}
-      </ol>
+      <p className="mt-5 flex items-center gap-3" role="status"><LoaderCircle className="size-5 animate-spin" />Đang nhận giáo án, slide và câu hỏi từ Bé Bảng.</p>
     </Card>
   );
 }
@@ -75,6 +55,8 @@ function Generating({ startedAt }: { startedAt: number }) {
 export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) {
   const { profile, students, notes } = useApp();
   const h = honorificLower(profile);
+  const { userId } = useAccount();
+  const [jobRefresh, setJobRefresh] = useState(0);
   const [lessons, setLessons] = useLessons(profile.id);
   const [docs] = useDocs(profile.id);
   const [storeName] = useStoreName(profile.id);
@@ -101,17 +83,24 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
       setView("busy");
     }
     try {
+      const input = {
+        request: r, profile, context: classContext(roster, classNotes, tiers),
+        redo: redo ? { previousTitle: redo.base.title, more: redo.more } : undefined,
+        avoidImages: usedImages.slice(-30), knowledge: useKho ? { docs: docsForLesson(docs, r.topic), storeName } : undefined,
+      };
+      if (userId) {
+        const res = await fetch("/api/jobs/lesson", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input, meta: { requestId: crypto.randomUUID(), lessonId: redo?.base.id ?? newId("bai"), theme: redo?.base.theme ?? "bang-xanh", tiers } }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw Error(data.error ?? "Chưa tạo được công việc.");
+        setJobRefresh(n => n + 1); setView("list");
+        toast.info("Đã nhận yêu cầu. Bài tiếp tục được soạn trên server; mở phần Bài đang soạn để xem kết quả.");
+        return;
+      }
       const res = await fetch("/api/lesson/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          request: r,
-          profile,
-          context: classContext(roster, classNotes, tiers),
-          redo: redo ? { previousTitle: redo.base.title, more: redo.more } : undefined,
-          avoidImages: usedImages.slice(-30),
-          knowledge: useKho ? { docs: docsForLesson(docs, r.topic), storeName } : undefined,
-        }),
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
       });
       const data = (await res.json()) as { mode: LessonPlan["mode"]; plan?: LessonPlanContent; warning?: string; error?: string };
       if (!res.ok || !data.plan) throw new Error(data.error ?? "Chưa soạn được bài.");
@@ -142,11 +131,18 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
     }
   }
 
+  const jobPanel = <LessonJobs profileId={profile.id} refresh={jobRefresh} onOpen={lesson => {
+    const existing = lessons.find(l => l.id === lesson.id);
+    if (!existing || existing.updatedAt < lesson.updatedAt) save(lesson);
+    setView(lesson.id); setTab("slide"); setSlideIdx(0);
+  }} />;
+
   /* ---------- Danh sách / tạo mới ---------- */
   if (view === "busy") return <Generating startedAt={startedAt} />;
   if (view === "new" || (!plan && lessons.length === 0)) {
     return (
       <div className="space-y-4">
+        {jobPanel}
         {lessons.length > 0 && (
           <Button variant="ghost" size="sm" onClick={() => setView("list")}>
             <ChevronLeft className="size-5" aria-hidden /> Các bài đã soạn
@@ -160,6 +156,7 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
   if (!plan) {
     return (
       <div className="space-y-4">
+        {jobPanel}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-bold">Soạn Bài</h1>
           <Button onClick={() => setView("new")}>
@@ -219,6 +216,7 @@ export function LessonStudio({ initialLessonId }: { initialLessonId?: string }) 
 
   return (
     <div className="space-y-4">
+        {jobPanel}
       <Button variant="ghost" size="sm" onClick={() => setView("list")}>
         <ChevronLeft className="size-5" aria-hidden /> Các bài đã soạn
       </Button>

@@ -33,13 +33,16 @@ export async function generateJson<T>(opts: {
   schema: z.ZodType<T>;
   temperature?: number;
   timeoutMs?: number;
+  totalTimeoutMs?: number;
   label: string;
 }): Promise<T> {
   const ai = getGemini();
   if (!ai) throw new Error("NO_KEY");
   const jsonSchema = toGeminiSchema(opts.schema);
   let lastErr: unknown;
+  const deadline = opts.totalTimeoutMs ? Date.now() + opts.totalTimeoutMs : Infinity;
   for (let attempt = 0; attempt < 3; attempt++) {
+    if (Date.now() >= deadline) break;
     try {
       const started = Date.now();
       const res = await ai.models.generateContent({
@@ -50,7 +53,7 @@ export async function generateJson<T>(opts: {
           responseMimeType: "application/json",
           responseJsonSchema: jsonSchema,
           temperature: opts.temperature ?? 0.6,
-          abortSignal: AbortSignal.timeout(opts.timeoutMs ?? 120_000),
+          abortSignal: AbortSignal.timeout(Math.max(1, Math.min(opts.timeoutMs ?? 120_000, deadline - Date.now()))),
         },
       });
       const u = res.usageMetadata;
@@ -60,7 +63,7 @@ export async function generateJson<T>(opts: {
       return opts.schema.parse(JSON.parse(res.text ?? "{}"));
     } catch (err) {
       lastErr = err;
-      if (attempt < 2 && classifyAiError(err).retryable) {
+      if (attempt < 2 && classifyAiError(err).retryable && Date.now() + 1500 * (attempt + 1) < deadline) {
         await sleep(1500 * (attempt + 1));
         continue;
       }

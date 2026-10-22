@@ -61,3 +61,13 @@ Nút “Xóa toàn bộ trò chuyện” xóa cả lịch sử và sổ ghi nh�
 Kho Gemini riêng khi đăng nhập dùng tên kho có chữ ký gắn với tài khoản; không thể tự gán tên kho của người khác. Kho demo cũ chưa có chữ ký cần tải lại tài liệu vào tài khoản. Đổi khóa Gemini làm chữ ký cũ hết hiệu lực, cần tải lại tài liệu; không xóa tài liệu cũ tự động. Kho chung chỉ lấy từ biến server `GEMINI_SHARED_STORE`.
 
 Kiểm chứng đã làm: unit test đổi tài khoản/cache/ghi chậm/lỗi mạng/xóa; PostgreSQL 17 cục bộ chạy migrations và kiểm tra RLS bằng 2 vai người dùng giả. Đây không thay thế kiểm tra đăng nhập Google, cookie trên Vercel và project Supabase thật.
+
+## Job soạn giáo án
+
+Áp dụng thêm `supabase/migrations/0003_job_soan_bai.sql` sau 0002. Khi đăng nhập, Soạn Bài tạo job và theo dõi trạng thái; không có Supabase vẫn gọi trực tiếp như demo. Kiểm tra RLS cục bộ bằng `scripts/kiem-tra-jobs.sql` trên DB thử nghiệm có hai user giả (không chạy trên dữ liệu thật).
+
+Route dùng Next.js `after()` với `maxDuration = 270`. Cần bật Fluid Compute và kiểm tra thời lượng Function trong Vercel; Hobby hỗ trợ tối đa 300 giây theo [tài liệu thời lượng](https://vercel.com/docs/functions/configuring-functions/duration). Phần lấy tài liệu tối đa 40 giây, Gemini tổng 180 giây, còn thời gian lưu kết quả.
+
+`after()` tiếp tục sau response nhưng không phải hàng đợi bảo đảm chạy lại khi tiến trình bị hủy. Job quá 5 phút được đánh dấu lỗi khi truy vấn tiếp; giáo viên tạo lại. Kết quả lưu trong jobs, mở lại Soạn Bài để xem và lưu vào danh sách. Chưa có dọn lịch sử jobs tự động.
+
+Trước phát hành: đăng nhập thật, soạn một bài, tắt mạng hoặc đóng tab sau khi nhận mã, mở lại và đối chiếu kết quả. Thử hai tài khoản không đọc được job nhau. Các bước này chưa thực hiện vì chưa có project Supabase.

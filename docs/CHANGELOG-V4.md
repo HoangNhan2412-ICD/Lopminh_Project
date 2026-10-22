@@ -1,5 +1,13 @@
 # Nhật ký thay đổi V4
 
+## Tiếp quản Codex — Giai đoạn 4: code/demo, chờ thử dịch vụ thật (21/10/2026)
+
+- Migration 0003 thêm jobs có RLS, mã yêu cầu chống tạo trùng và tối đa một job đang chạy mỗi hồ sơ. POST trả mã trước; Next after() soạn và lưu kết quả, tiến độ theo bước thật; GET chỉ đọc job của chủ tài khoản.
+- Soạn Bài theo dõi mỗi 2,5 giây khi đang chạy/mất mạng, mở lại xem được kết quả và lưu vào danh sách. Không có Supabase giữ luồng trực tiếp; bỏ thanh tiến độ giả theo đồng hồ.
+- Giới hạn route 270 giây, truy xuất kho 40 giây, ngân sách thử lại Gemini 180 giây. Job quá 5 phút chuyển lỗi và cho tạo lại. after() không phải hàng đợi bền vững: tiến trình bị hủy không tự tiếp tục. Xưởng học liệu vẫn giữ hàng đợi xuất file trong trình duyệt; âm thanh/video đang hoãn.
+- 88/88 test, lint, build qua (33 route). Test kiểm tra trả mã trước khi soạn, lưu kết quả, chống trùng, lỗi an toàn và polling phục hồi sau mất mạng giả lập. PostgreSQL 17: RLS hai tài khoản, anonymous bị chặn, unique job và lưu kết quả đều qua; dữ liệu test rollback.
+- Playwright demo 1280/390px: soạn bài, tải lại còn dữ liệu, không lỗi JavaScript/tràn ngang. Thời gian bấm soạn tới bản xem trước khung demo: 384 ms / 132 ms trên máy này; không phải độ trễ Gemini. Chưa thử ngắt mạng/đóng tab trên Supabase + Vercel thật, nên chưa đánh dấu giai đoạn xong.
+
 ## Tiếp quản Codex — Giai đoạn 3: code và demo, chờ project thật (21/10/2026)
 
 - Thêm client/server `@supabase/ssr`, refresh cookie sau cổng mật khẩu, callback Google, trang Tài khoản trong menu hồ sơ. Khi có cấu hình Supabase, API làm việc yêu cầu phiên hợp lệ; thiếu cấu hình vẫn dùng demo. Không xin Gmail hoặc đổi model.
